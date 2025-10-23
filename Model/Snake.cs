@@ -14,11 +14,14 @@
             : startingLength;
 
         public int CurrentLength { get; };
+
         public Segment[] GetSnake { get; set; } = [];
+
         private struct Segment
         {
-            int X { get; set; }
-            int Y { get; set; }
+            int? X { get; set; }
+            int? Y { get; set; }
+            bool IsBent { get; set; }
         }
 
         private struct Head : Segment { }
