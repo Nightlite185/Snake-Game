@@ -16,17 +16,17 @@
                 //setting X next coord depending on the direction
                 int nextX = direction switch
                 {
-                    Direction.Left => startingCoords.X + i, 
+                    Direction.Left => startingCoords.X + i, // TO DO: ENCAPSULATE THIS
                     Direction.Right => startingCoords.X - i, 
-
-                    _ => startingCoords.X
+                                                           
+                    _ => startingCoords.X// 
                 };
                 
                 //setting Y next coord depending on the direction
                 int nextY = direction switch
                 {
-                    Direction.Up => startingCoords.Y - i, 
-                    Direction.Down => startingCoords.Y + i, 
+                    Direction.Up => startingCoords.Y + i, // TO DO: ENCAPSULATE THIS
+                    Direction.Down => startingCoords.Y - i, 
 
                     _ => startingCoords.X
                 };
@@ -50,12 +50,12 @@
             SnakeSegment tail = Tail; // assigning tail to new var for reusing, its a waste to call Last() more than once.
 
             // calculating new segment's coords after growing
-            SnakeSegment newSegment = tail.Facing switch
+            SnakeSegment newSegment = tail.Facing switch 
             {
-                Direction.Left => new(tail.X + 1, tail.Y, tail.Facing),
-                Direction.Right => new(tail.X - 1, tail.Y, tail.Facing),
-                Direction.Up => new(tail.X, tail.Y - 1, tail.Facing),
-                Direction.Down => new(tail.X, tail.Y + 1, tail.Facing),
+                Direction.Left => new(tail.X + 1, tail.Y, tail.Facing),     // TO DO: ENCAPSULATE bc this uses  
+                Direction.Right => new(tail.X - 1, tail.Y, tail.Facing),    // rly similar logic to the 
+                Direction.Up => new(tail.X, tail.Y + 1, tail.Facing),       // new snake's constructor.
+                Direction.Down => new(tail.X, tail.Y - 1, tail.Facing),     // 
 
                 _ => throw new Exception("Sth went wrong, tail's Direction enum was neither of it's values - probably null")
             };
@@ -77,6 +77,5 @@
             public bool IsBent { get; set; } = false;
             public bool IsHead { get; set; } = isHead;
         }
-        
-    }                                                                                    // instead of blindly extending the Head class with Segment.
+    }
 }
