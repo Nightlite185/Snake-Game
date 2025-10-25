@@ -3,7 +3,7 @@
 namespace SnakeGame.Model
 {
     public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4}
-    class Snake
+    public class Snake
     {
         public Snake(int startingLength, Direction direction, (int X, int Y) startingCoords, int maxLength)
         {

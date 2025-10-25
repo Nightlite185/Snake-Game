@@ -28,30 +28,45 @@
                 Snake.Die();
                 GameState.Lose();
             }
-
+            
+            var tail = Snake.Tail; // save tail
             var oldHead = Snake.Head; // save old head
 
-            PopAndGlue();
+            Grid[(tail.Y, tail.X)].ClearSnake();
+
+            PopAndGlue(tail);
             UpdateCoordsAndDirection(newDirection, oldHead);
-            UpdateGrid();
+
+            Grid[(Snake.Head.Y, Snake.Head.X)].AddSnake(Snake.Head);
+
         }
-        public void Run()
+        public void RunGame()
+        {
+            throw new NotImplementedException();
+
+            // gotta handle collisions before updating the grid with new snake pos (check them)
+
+            // also remember to update grid EVERY TIME SNAKE EATS FOOD
+        }
+        private bool CheckForCollisions()
         {
             throw new NotImplementedException();
         }
-        public void CheckForCollisions()
+        public void HandleCollisions()
         {
-            throw new NotImplementedException("");
+            throw new NotImplementedException();
         }
-
+        public void SpawnRandomFood()
+        {
+            throw new NotImplementedException();
+        }
+        
         #endregion main management methods
 
-        #region MoveSnake() method helpers
-        private void PopAndGlue()
+        #region private helper methods
+        private void PopAndGlue(Snake.SnakeSegment tail)
         {
-            var tail = Snake.Tail; // save tail
-
-            Snake.Body.RemoveAt(Snake.CurrentLength - 1); // pop it from the body
+            Snake.Body.RemoveAt(Snake.CurrentLength - 1); // pop tail from the body
             Snake.Head.IsHead = false; // update old head's flag
 
             Snake.Body.Insert(0, tail); // glue it to the front
@@ -74,11 +89,6 @@
             Snake.Head.X = oldHead.X + newX;
             Snake.Head.Y = oldHead.Y + newY;
         }
-        private void UpdateGrid()
-        {
-            throw new NotImplementedException();
-        }
-        
         #endregion
     }
 }
