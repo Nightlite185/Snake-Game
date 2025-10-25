@@ -1,7 +1,7 @@
 ﻿namespace SnakeGame.Model
 {
-    internal enum GameStates {Lost, Won, NotStarted, Paused, Running};
-    internal class GameState()
+    public enum GameStates {Lost, Won, NotStarted, Paused, Running};
+    public class GameState()
     {
         public event Action<GameStates>? OnStateChange;
         public GameStates CurrentState { get; private set; } = GameStates.NotStarted;
