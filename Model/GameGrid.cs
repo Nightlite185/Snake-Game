@@ -4,25 +4,26 @@ namespace SnakeGame.Model
 {
     public class GameGrid(int rows, int cols)
     {
-        //public int Rows { get; } = rows;
-        //public int Columns { get; } = cols;
-
         private readonly Square[,] grid = new Square[rows, cols];
         public void ClearGrid() => Array.Clear(grid);
 
-        public Square this[int x, int y] // custom indexer
+        public Square this[(int row, int col) coords] // custom indexer
         {
-            get => grid[y, x];
-            set => grid[y, x] = value;
+            get => grid[coords.row, coords.col];
+            set => grid[coords.row, coords.col] = value;
         }
 
-        public class Square(object? item = null)
+        public class Square
         {
             public Rectangle Visual { get; set; }
-            public object? Contents { get; private set; } = item;
-            public bool IsEmpty => Contents == null;
-            public void ClearContents() => Contents = null;
-            public void SetContents(object item) => Contents = item;
+            public Snake.SnakeSegment? SnakeContents { get; set; }
+            public Food? FoodContents { get; set; }
+            public bool HasSnake => SnakeContents != null;
+            public bool HasFood => FoodContents != null;
+            public void ClearFood() => FoodContents = null;
+            public void ClearSnake() => SnakeContents = null;
+            public void AddFood(Food food) => FoodContents = food;
+            public void AddSnake(Snake.SnakeSegment snake) => SnakeContents = snake;
         }
     }
 }
