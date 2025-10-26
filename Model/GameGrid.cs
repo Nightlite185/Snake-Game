@@ -23,7 +23,6 @@ namespace SnakeGame.Model
 
         public class Square
         {
-            public Rectangle Visual { get; set; }
             public Snake.SnakeSegment? SnakeContents { get; set; }
             public Food? FoodContents { get; set; }
             public bool HasSnake => SnakeContents != null;
