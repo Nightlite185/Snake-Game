@@ -27,7 +27,7 @@ namespace SnakeGame.Model
             public Food? FoodContents { get; set; }
             public bool HasSnake => SnakeContents != null;
             public bool HasFood => FoodContents != null;
-            public Food? FoodEaten()
+            public Food? TakeFood()
             {
                 var food = FoodContents;
                 FoodContents = null;
