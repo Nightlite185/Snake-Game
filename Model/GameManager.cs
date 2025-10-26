@@ -96,7 +96,14 @@
             Snake.Body.Insert(0, tail); // glue it to the front
             Snake.Head.IsHead = true; // and update new head's (old tail's) flag
         }
+        private bool CheckForWin() 
+            => Snake.CurrentLength switch
+            {
+                > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size, fix me. current state - {GameState.CurrentState}"),
+                MaxSnakeLength => true,
 
+                _ => false
+            };
         private static (int newX, int newY) GetNextSquare((int X, int Y) coords, Direction direction)
             => direction switch
             {
