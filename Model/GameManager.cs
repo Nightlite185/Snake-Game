@@ -51,17 +51,11 @@
 
             // also remember to update grid EVERY TIME SNAKE EATS FOOD
         }
-        public bool HandleCollisions(Direction newDirection)
+        public bool CheckForCollisions(Direction newDirection)
         {
             (int nextX, int nextY) = GetNextSquare((Snake.Head.X, Snake.Head.Y), newDirection);
 
-            if (Snake.Head.X == nextX && Snake.Head.Y == nextY)
-            {
-                GameState.Lose();
-                return true;
-            }
-            
-            return false;
+            return Grid[(nextY, nextX)].HasSnake;
         }
         public void SpawnRandomFood()
         {
