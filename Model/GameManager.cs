@@ -4,20 +4,24 @@
     {
         #region const definitions
         // grid
-        private const int gridRows = 400;
-        private const int gridColumns = 400;
+        private const int gridRows = 20;
+        private const int gridColumns = 30;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
-        private const int MaxLength = 50; // placeholder - depends on the size of the grid
+        private const int MaxSnakeLength = gridRows * gridColumns; // placeholder - depends on the size of the grid
         private const Direction StartingDirection = Direction.Up;
         private static readonly (int X, int Y) startingCoords = (50, 50);
+
+        //Food Pool
+        private const int FoodPoolMaxCapacity = 8;
         #endregion
 
         #region constructing game objects
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
-        private Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxLength);
+        private Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState GameState { get; init; } = new();
+        private FoodPool FoodPool { get; set; } = new(maxCapacity: 8);
         #endregion
 
         #region main management methods 
@@ -59,9 +63,28 @@
         }
         public void SpawnRandomFood()
         {
-            throw new NotImplementedException();
+            var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood);
+
+            if (!emptySquares.Any())
+                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {GameState.CurrentState}");
+                
+            var rand = new Random();
+            (int row, int col) randomCoords = (rand.Next(), rand.Next());
+
+            var food = FoodPool.PopAndAssign(randomCoords);
+
+            Grid[randomCoords].AddFood(food);
         }
-        
+        private void EatIfHasFood()
+        {
+            Food food;
+            var here = Grid[(Snake.Head.Y, Snake.Head.X)];
+
+            if (!here.HasFood) return;   
+
+            food = here.FoodEaten()!;
+            FoodPool.ReturnToPool(food);
+        }
         #endregion main management methods
 
         #region private helper methods
