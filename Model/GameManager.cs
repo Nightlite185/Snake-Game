@@ -51,13 +51,17 @@
 
             // also remember to update grid EVERY TIME SNAKE EATS FOOD
         }
-        private bool CheckForCollisions()
+        public bool HandleCollisions(Direction newDirection)
         {
-            throw new NotImplementedException();
-        }
-        public void HandleCollisions()
-        {
-            throw new NotImplementedException();
+            (int nextX, int nextY) = GetNextSquare((Snake.Head.X, Snake.Head.Y), newDirection);
+
+            if (Snake.Head.X == nextX && Snake.Head.Y == nextY)
+            {
+                GameState.Lose();
+                return true;
+            }
+            
+            return false;
         }
         public void SpawnRandomFood()
         {
@@ -86,7 +90,7 @@
 
                 _ => throw new Exception($"Something unexpected happened, {nameof(direction)}'s value is {direction}")
             };
-
+            
         #endregion
     }
 }
