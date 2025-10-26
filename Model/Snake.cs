@@ -16,8 +16,8 @@ namespace SnakeGame.Model
         }
         
         public int CurrentLength { get => Body.Count; init {} }
-        public SnakeSegment Head { get => Body[0]; set {} }
-        public SnakeSegment Tail { get => Body.Last(); set{}}
+        public SnakeSegment Head => Body[0];
+        public SnakeSegment Tail => Body.Last();
         public List<SnakeSegment> Body { get; set; } = [];
         public bool Alive { get; private set; } = true;
         

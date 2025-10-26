@@ -37,8 +37,9 @@ namespace SnakeGame.Model
         }
     }
     public class Food
-    {
+    {   [Obsolete]
         public int? Row { get; set; }
+        [Obsolete]
         public int? Col { get; set; }
         public bool IsActive => Row.HasValue && Col.HasValue;
 

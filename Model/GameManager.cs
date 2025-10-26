@@ -25,7 +25,7 @@
         #endregion
 
         #region main management methods 
-        public void MoveSnake(Direction newDirection) // to rethink later if linked list is not a bad idea here
+        public void MoveSnake(Direction newDirection) // LINKED LIST IS A MUSTTT. MAKE ITTTT PLSSS LOLLL
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
             {
@@ -69,26 +69,28 @@
                 throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {GameState.CurrentState}");
                 
             var rand = new Random();
-            (int row, int col) randomCoords = (rand.Next(), rand.Next());
+            (int row, int col) randomCoords = (rand.Next(), rand.Next()); // TO DO:: make lower and upper bounds to the random ints.
 
             var food = FoodPool.PopAndAssign(randomCoords);
 
             Grid[randomCoords].AddFood(food);
         }
-        private void EatIfHasFood()
+        private void EatIfHasFood() 
         {
             Food food;
             var here = Grid[(Snake.Head.Y, Snake.Head.X)];
 
-            if (!here.HasFood) return;   
+            if (!here.HasFood) return;
 
-            food = here.FoodEaten()!;
+            food = here.TakeFood()!;
+            Snake.Eat();
             FoodPool.ReturnToPool(food);
+            // increment the game score here
         }
         #endregion main management methods
 
         #region private helper methods
-        private void PopAndGlue(Snake.SnakeSegment tail)
+        private void PopAndGlue(Snake.SnakeSegment tail) // TO DO: MOVE THIS TO SNAKE'S METHODS SINCE IT SHOULD MANAGE THAT ON ITS OWN. 
         {
             Snake.Body.RemoveAt(Snake.CurrentLength - 1); // pop tail from the body
             Snake.Head.IsHead = false; // update old head's flag
