@@ -35,10 +35,13 @@
             Grid[(tail.Y, tail.X)].ClearSnake();
 
             PopAndGlue(tail);
-            UpdateCoordsAndDirection(newDirection, oldHead);
+            var (newX, newY) = GetNextSquare((oldHead.X, oldHead.Y), newDirection);
+
+            Snake.Head.Facing = newDirection;
+            Snake.Head.X = oldHead.X + newX;
+            Snake.Head.Y = oldHead.Y + newY;
 
             Grid[(Snake.Head.Y, Snake.Head.X)].AddSnake(Snake.Head);
-
         }
         public void RunGame()
         {
@@ -72,23 +75,18 @@
             Snake.Body.Insert(0, tail); // glue it to the front
             Snake.Head.IsHead = true; // and update new head's (old tail's) flag
         }
-        private void UpdateCoordsAndDirection(Direction newDirection, Snake.SnakeSegment oldHead)
-        {
-            Snake.Head.Facing = newDirection;
 
-            var (newX, newY) = newDirection switch
+        private static (int newX, int newY) GetNextSquare((int X, int Y) coords, Direction direction)
+            => direction switch
             {
-                Direction.Up => (0, -1),
-                Direction.Down => (0, +1),
-                Direction.Right => (+1, 0),
-                Direction.Left => (-1, 0),
+                Direction.Up => (coords.X, coords.Y -1),
+                Direction.Down => (coords.X, coords.Y +1),
+                Direction.Right => (coords.X +1, coords.Y),
+                Direction.Left => (coords.X -1, coords.Y),
 
-                _ => throw new Exception($"Something unexpected happened, {nameof(newDirection)}'s value is {newDirection}")
+                _ => throw new Exception($"Something unexpected happened, {nameof(direction)}'s value is {direction}")
             };
 
-            Snake.Head.X = oldHead.X + newX;
-            Snake.Head.Y = oldHead.Y + newY;
-        }
         #endregion
     }
 }
