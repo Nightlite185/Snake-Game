@@ -2,31 +2,50 @@
 {
     public class FoodPool
     {
-        private readonly List<Food> foods = [];
-
-        public Food? PopFood()
+        public FoodPool(int maxCapacity)
         {
-            if (foods.Count == 0) return null;
-
-            Food item = foods.Last();
-            foods.RemoveAt(foods.Count - 1);
-
-            return item;
+            foodStack = new Stack<Food>(maxCapacity);
+            this.Fill();
         }
-        
-        public void ReturnToPool(Food food) => foods.Add(food);
+        private readonly Stack<Food> foodStack;
+        public Food PopAndAssign((int row, int col) newCoords)
+        {
+            if (foodStack.Count == 0)
+                throw new InvalidOperationException("Cannot pop food since the pool is empty.");
+
+            var food = foodStack.Pop();
+
+            food.Row = newCoords.row;
+            food.Col = newCoords.col;
+
+            return food;
+        }
+        public void ReturnToPool(Food food)
+        {
+            food.Reset();
+            foodStack.Push(food);
+        }
+        public void Reset() 
+        {
+            foodStack.Clear();
+            this.Fill();
+        }
+        public void Fill()
+        {
+            for (int i = foodStack.Count - 1; i < foodStack.Capacity; i++)
+                foodStack.Push(new Food());
+        }
     }
     public class Food
     {
-        public int? X { get; private set; }
-        public int? Y { get; private set; }
+        public int? Row { get; set; }
+        public int? Col { get; set; }
+        public bool IsActive => Row.HasValue && Col.HasValue;
 
-        public bool IsActive => X.HasValue && Y.HasValue;
-
-        public void Reset() // it should return to the pool of food objects instead of making a new obj after this method is called. 
+        public void Reset() 
         {
-            this.X = null;
-            this.Y = null;
+            this.Row = null;
+            this.Col = null;
         }
     }
 }
