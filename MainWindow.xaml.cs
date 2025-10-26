@@ -1,7 +1,7 @@
 ﻿using SnakeGame.ViewModel;
 using System.Windows;
 
-namespace firstProjectUwU
+namespace SnakeGameProject
 {
     public partial class MainWindow : Window
     {

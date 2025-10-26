@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace firstProjectUwU
+namespace SnakeGameProject
 {
     /// <summary>
     /// Interaction logic for App.xaml
