@@ -1,11 +1,19 @@
+using System.Collections;
 using System.Drawing;
 
 namespace SnakeGame.Model
 {
-    public class GameGrid(int rows, int cols)
+    public class GameGrid(int rows, int cols) : IEnumerable<GameGrid.Square>
     {
         private readonly Square[,] grid = new Square[rows, cols];
         public void ClearGrid() => Array.Clear(grid);
+
+        public IEnumerator<Square> GetEnumerator()
+        {
+            foreach (var square in grid)
+                yield return square;
+        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public Square this[(int row, int col) coords] // custom indexer
         {
