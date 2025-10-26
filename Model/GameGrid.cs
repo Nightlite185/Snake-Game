@@ -28,7 +28,13 @@ namespace SnakeGame.Model
             public Food? FoodContents { get; set; }
             public bool HasSnake => SnakeContents != null;
             public bool HasFood => FoodContents != null;
-            public void ClearFood() => FoodContents = null;
+            public Food? FoodEaten()
+            {
+                var food = FoodContents;
+                FoodContents = null;
+                
+                return food;
+            }
             public void ClearSnake() => SnakeContents = null;
             public void AddFood(Food food) => FoodContents = food;
             public void AddSnake(Snake.SnakeSegment snake) => SnakeContents = snake;
