@@ -31,10 +31,22 @@ namespace SnakeGame.Model
         }
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public Square this[(int row, int col) coords] // custom indexer
+        public Square? this[(int row, int col) coords] // custom indexer, returns null if its a wall in getter, throws in setter.
         {
-            get => grid[coords.row, coords.col];
-            set => grid[coords.row, coords.col] = value;
+            get
+            {
+               if (coords.row < 0 || coords.col < 0 || coords.row >= RowCount || coords.col >= ColCount)
+                    return null; // null means wall, so its meaningful.
+               
+                return grid[coords.row, coords.col];
+            }
+            set
+            {
+                if (coords.row < 0 || coords.col < 0 || coords.row >= RowCount || coords.col >= ColCount)
+                    throw new IndexOutOfRangeException($"Given coords are not inside the grid's bounds, fix this. current coords: row = {coords.row}, col= {coords.col}");
+                
+                grid[coords.row, coords.col] = value!;
+            }
         }
 
         public class Square

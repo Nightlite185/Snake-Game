@@ -61,7 +61,6 @@ namespace SnakeGame.Model
             public Direction Facing { get; set; } = direction;
             public bool IsBent { get; set; } = false;
             public bool IsHead { get; set; } = isHead;
-            public Rectangle Visual { get; set; }
         }
     }
 }

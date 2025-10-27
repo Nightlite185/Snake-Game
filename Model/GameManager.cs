@@ -98,7 +98,7 @@
             Food food;
             var here = Grid[(Snake.Head.Y, Snake.Head.X)]
                 ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall, fix me. X = {Snake.Head.X}, Y= {Snake.Head.Y}");
-
+            
             if (!here.HasFood) return;
 
             food = here.TakeFood()!;
