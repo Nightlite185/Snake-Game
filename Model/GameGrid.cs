@@ -5,8 +5,24 @@ namespace SnakeGame.Model
 {
     public class GameGrid(int rows, int cols) : IEnumerable<GameGrid.Square>
     {
+        private readonly int RowCount = rows;
+        private readonly int ColCount = cols;
         private readonly Square[,] grid = new Square[rows, cols];
         public void ClearGrid() => Array.Clear(grid);
+        public Square? GetNextSquare((int X, int Y) coords, Direction direction, out (int X, int Y) newCoords) // returns null if its a wall.
+        { // this method could return bool signalizing success, and have an out param that returns the actual square, since its nullable.
+            newCoords = direction switch
+            {
+                Direction.Up => (coords.X, coords.Y - 1),
+                Direction.Down => (coords.X, coords.Y + 1),
+                Direction.Right => (coords.X + 1, coords.Y),
+                Direction.Left => (coords.X - 1, coords.Y),
+
+                _ => throw new Exception($"Unexpected value of {nameof(direction)} - '{direction}'")
+            };
+
+            return this[newCoords];
+        }
 
         public IEnumerator<Square> GetEnumerator()
         {

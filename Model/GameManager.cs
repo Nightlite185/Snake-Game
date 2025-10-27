@@ -106,16 +106,6 @@
 
                 _ => false
             };
-        private static (int newX, int newY) GetNextSquare((int X, int Y) coords, Direction direction)
-            => direction switch
-            {
-                Direction.Up => (coords.X, coords.Y -1),
-                Direction.Down => (coords.X, coords.Y +1),
-                Direction.Right => (coords.X +1, coords.Y),
-                Direction.Left => (coords.X -1, coords.Y),
-
-                _ => throw new Exception($"Something unexpected happened, {nameof(direction)}'s value is {direction}")
-            };
             
         #endregion
     }
