@@ -55,11 +55,16 @@
 
             // also remember to update grid EVERY TIME SNAKE EATS FOOD
         }
+        private void LoseGame()
+        {
+            GameState.Lose();
+            
+        }
         public bool CheckForCollisions(Direction newDirection)
         {
-            (int nextX, int nextY) = GetNextSquare((Snake.Head.X, Snake.Head.Y), newDirection);
+            GameGrid.Square? square = Grid.GetNextSquare((Snake.Head.X, Snake.Head.Y), newDirection, out _);
 
-            return Grid[(nextY, nextX)].HasSnake;
+            return square?.HasSnake ?? true;
         }
         public void SpawnRandomFood()
         {
@@ -69,23 +74,27 @@
                 throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {GameState.CurrentState}");
                 
             var rand = new Random();
-            (int row, int col) randomCoords = (rand.Next(), rand.Next()); // TO DO:: make lower and upper bounds to the random ints.
+            (int row, int col) randomCoords = (rand.Next(gridRows - 1), rand.Next(gridColumns - 1));
 
-            var food = FoodPool.PopAndAssign(randomCoords);
+            var food = FoodPool.Pop(randomCoords);
 
-            Grid[randomCoords].AddFood(food);
+            var foodSquare = Grid[randomCoords] ??
+                throw new IndexOutOfRangeException($"cannot spawn food inside a wall. The coords given are: row= {randomCoords.row}, col= {randomCoords.col}");
+
+            foodSquare.AddFood(food);
         }
         private void EatIfHasFood() 
         {
             Food food;
-            var here = Grid[(Snake.Head.Y, Snake.Head.X)];
+            var here = Grid[(Snake.Head.Y, Snake.Head.X)]
+                ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall, fix me. X = {Snake.Head.X}, Y= {Snake.Head.Y}");
 
             if (!here.HasFood) return;
 
             food = here.TakeFood()!;
             Snake.Eat();
             FoodPool.ReturnToPool(food);
-            // increment the game score here
+            // increment the game score here (this for later)
         }
         #endregion main management methods
 
