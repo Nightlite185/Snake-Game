@@ -11,7 +11,7 @@
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
         private const int MaxSnakeLength = gridRows * gridColumns; // placeholder - depends on the size of the grid
         private const Direction StartingDirection = Direction.Up;
-        private static readonly (int X, int Y) startingCoords = (50, 50);
+        private static readonly (int X, int Y) startingCoords = (10, 10);
 
         //Food Pool
         private const int FoodPoolMaxCapacity = 8;
@@ -36,16 +36,26 @@
             var tail = Snake.Tail; // save tail
             var oldHead = Snake.Head; // save old head
 
-            Grid[(tail.Y, tail.X)].ClearSnake();
+            var tailSquare = Grid[(tail.Y, tail.X)]
+                ?? throw new IndexOutOfRangeException($"tail's coords are out of grid's bounds. tail's Y = {tail.Y}, and X= {tail.X}");
+            
+            tailSquare.ClearSnake();
 
             PopAndGlue(tail);
-            var (newX, newY) = GetNextSquare((oldHead.X, oldHead.Y), newDirection);
+            var newHeadSquare = Grid.GetNextSquare((oldHead.X, oldHead.Y), newDirection, out (int X, int Y) newCoords);
+
+            if (newHeadSquare == null)
+            {
+                Snake.Die();
+                GameState.Lose(); // gotta wrap this Lose into a bigger method later that handles losing and objects cleanup.
+                return;
+            }
 
             Snake.Head.Facing = newDirection;
-            Snake.Head.X = oldHead.X + newX;
-            Snake.Head.Y = oldHead.Y + newY;
+            Snake.Head.X = oldHead.X + newCoords.X;
+            Snake.Head.Y = oldHead.Y + newCoords.Y;
 
-            Grid[(Snake.Head.Y, Snake.Head.X)].AddSnake(Snake.Head);
+            newHeadSquare.AddSnake(Snake.Head);
         }
         public void RunGame()
         {
