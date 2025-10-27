@@ -25,7 +25,7 @@
         #endregion
 
         #region main management methods 
-        public void MoveSnake(Direction newDirection) // LINKED LIST IS A MUSTTT. MAKE ITTTT PLSSS LOLLL
+        public void MoveSnake(Direction newDirection) // this method needs to be inside snake, not here.
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
             {
@@ -111,10 +111,10 @@
         #region private helper methods
         private void PopAndGlue(Snake.SnakeSegment tail) // TO DO: MOVE THIS TO SNAKE'S METHODS SINCE IT SHOULD MANAGE THAT ON ITS OWN. 
         {
-            Snake.Body.RemoveAt(Snake.CurrentLength - 1); // pop tail from the body
+            Snake.Body.RemoveLast(); // pop tail from the body
             Snake.Head.IsHead = false; // update old head's flag
 
-            Snake.Body.Insert(0, tail); // glue it to the front
+            Snake.Body.AddFirst(tail); // glue it to the front
             Snake.Head.IsHead = true; // and update new head's (old tail's) flag
         }
         private bool CheckForWin() 

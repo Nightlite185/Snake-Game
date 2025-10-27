@@ -10,15 +10,15 @@ namespace SnakeGame.Model
             ArgumentOutOfRangeException.ThrowIfLessThan(startingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startingLength, maxLength);
 
-            Body.Add(new SnakeSegment(startingCoords.X, startingCoords.Y, direction, isHead: true)); // adding head first
+            Body.AddLast(new SnakeSegment(startingCoords.X, startingCoords.Y, direction, isHead: true)); // adding head first
 
             Grow(times: startingLength - 1);
         }
         
         public int CurrentLength { get => Body.Count; init {} }
-        public SnakeSegment Head => Body[0];
-        public SnakeSegment Tail => Body.Last();
-        public List<SnakeSegment> Body { get; set; } = [];
+        public SnakeSegment Head => Body.First!.Value;
+        public SnakeSegment Tail => Body.Last!.Value;
+        public LinkedList<SnakeSegment> Body { get; set; } = [];
         public bool Alive { get; private set; } = true;
         
         private void Grow(int times)
@@ -38,7 +38,7 @@ namespace SnakeGame.Model
                     _ => throw new Exception($"Sth went wrong, tail's Direction's value is {tail.Facing}")
                 };
 
-                this.Body.Add(newSegment);
+                this.Body.AddLast(newSegment);
             }
         }
         public void Eat()
