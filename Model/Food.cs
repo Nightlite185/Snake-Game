@@ -15,9 +15,6 @@ namespace SnakeGame.Model
 
             var food = foodStack.Pop();
 
-            food.Row = newCoords.row;
-            food.Col = newCoords.col;
-
             return food;
         }
         public void ReturnToPool(Food food)
@@ -37,16 +34,9 @@ namespace SnakeGame.Model
         }
     }
     public class Food
-    {   [Obsolete]
-        public int? Row { get; set; }
-        [Obsolete]
-        public int? Col { get; set; }
-        public bool IsActive => Row.HasValue && Col.HasValue;
-
-        public void Reset() 
-        {
-            this.Row = null;
-            this.Col = null;
-        }
+    {
+        public bool IsActive { get; private set; }
+        public void Reset() => IsActive = false;
+        public void Activate() => IsActive = true;
     }
 }
