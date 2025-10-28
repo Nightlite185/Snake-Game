@@ -21,11 +21,11 @@
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
         private Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState GameState { get; init; } = new();
-        private FoodPool FoodPool { get; set; } = new(maxCapacity: 8);
+        private FoodPool FoodPool { get; set; } = new(FoodPoolMaxCapacity);
         #endregion
 
         #region main management methods 
-        public void MoveSnake(Direction newDirection) // this method needs to be inside snake, not here.
+        public void SafelyMoveSnake(Direction newDirection)
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
             {
@@ -33,29 +33,22 @@
                 GameState.Lose();
             }
             
-            var tail = Snake.Tail; // save tail
-            var oldHead = Snake.Head; // save old head
-
-            var tailSquare = Grid[(tail.Y, tail.X)]
-                ?? throw new IndexOutOfRangeException($"tail's coords are out of grid's bounds. tail's Y = {tail.Y}, and X= {tail.X}");
+            var tailSquare = Grid[Snake.TailPos]
+                ?? throw new IndexOutOfRangeException($"tail's coords are out of grid's bounds. Their values: {Snake.TailPos}");
             
             tailSquare.ClearSnake();
 
-            PopAndGlue(tail);
-            var newHeadSquare = Grid.GetNextSquare((oldHead.X, oldHead.Y), newDirection, out (int X, int Y) newCoords);
+            var newHeadSquare = Grid.GetNextSquare(Snake.HeadPos, newDirection);
 
-            if (newHeadSquare == null)
+            if (newHeadSquare == null) // null here means wall collision --> game over.
+                LoseGame();
+
+            else
             {
-                Snake.Die();
-                GameState.Lose(); // gotta wrap this Lose into a bigger method later that handles losing and objects cleanup.
-                return;
+                Snake.Move(newHeadSquare.Coords, newDirection); // actually moving the snake
+                newHeadSquare.AddSnake(Snake.Head); // updating the grid
             }
-
-            Snake.Head.Facing = newDirection;
-            Snake.Head.X = oldHead.X + newCoords.X;
-            Snake.Head.Y = oldHead.Y + newCoords.Y;
-
-            newHeadSquare.AddSnake(Snake.Head);
+                
         }
         public void RunGame()
         {
@@ -67,14 +60,9 @@
         }
         private void LoseGame()
         {
+            Snake.Die();
             GameState.Lose();
-            
-        }
-        public bool CheckForCollisions(Direction newDirection)
-        {
-            GameGrid.Square? square = Grid.GetNextSquare((Snake.Head.X, Snake.Head.Y), newDirection, out _);
-
-            return square?.HasSnake ?? true;
+            // to add more later
         }
         public void SpawnRandomFood()
         {
@@ -109,14 +97,7 @@
         #endregion main management methods
 
         #region private helper methods
-        private void PopAndGlue(Snake.SnakeSegment tail) // TO DO: MOVE THIS TO SNAKE'S METHODS SINCE IT SHOULD MANAGE THAT ON ITS OWN. 
-        {
-            Snake.Body.RemoveLast(); // pop tail from the body
-            Snake.Head.IsHead = false; // update old head's flag
 
-            Snake.Body.AddFirst(tail); // glue it to the front
-            Snake.Head.IsHead = true; // and update new head's (old tail's) flag
-        }
         private bool CheckForWin() 
             => Snake.CurrentLength switch
             {

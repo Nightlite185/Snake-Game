@@ -21,7 +21,19 @@ namespace SnakeGame.Model
         public LinkedList<SnakeSegment> Body { get; set; } = [];
         public bool Alive { get; private set; } = true;
         
-        private void Grow(int times)
+        public void Move(Coords newHeadCoords, Direction newDirection)
+        {
+            var tail = this.Tail; // save tail's ref
+
+            Body.RemoveLast(); // pop tail from the body
+            Body.AddFirst(tail); // glue it to the front
+
+            // updating head with new data
+            Head.Coords = newHeadCoords;
+            Head.Facing = newDirection;
+        }
+
+        private void GrowBy(int times)
         {
             for (int i = 0; i < times; i++)
             {
