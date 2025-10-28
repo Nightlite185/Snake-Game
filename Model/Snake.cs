@@ -1,23 +1,23 @@
-﻿using System.Drawing;
-
-namespace SnakeGame.Model
+﻿namespace SnakeGame.Model
 {
     public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4}
     public class Snake
     {
-        public Snake(int startingLength, Direction direction, (int X, int Y) startingCoords, int maxLength)
+        public Snake(int startingLength, Direction direction, Coords startingCoords, int maxLength)
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(startingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startingLength, maxLength);
 
-            Body.AddLast(new SnakeSegment(startingCoords.X, startingCoords.Y, direction, isHead: true)); // adding head first
+            Body.AddFirst(new SnakeSegment(startingCoords, direction)); // adding head first
 
-            Grow(times: startingLength - 1);
+            GrowBy(times: startingLength - 1);
         }
         
         public int CurrentLength { get => Body.Count; init {} }
         public SnakeSegment Head => Body.First!.Value;
+        public Coords HeadPos => Head.Coords;
         public SnakeSegment Tail => Body.Last!.Value;
+        public Coords TailPos => Tail.Coords;
         public LinkedList<SnakeSegment> Body { get; set; } = [];
         public bool Alive { get; private set; } = true;
         
@@ -42,10 +42,10 @@ namespace SnakeGame.Model
                 // calculating new segment's coords after growing
                 SnakeSegment newSegment = tail.Facing switch
                 {
-                    Direction.Left => new(tail.X + 1, tail.Y, tail.Facing), 
-                    Direction.Right => new(tail.X - 1, tail.Y, tail.Facing),
-                    Direction.Up => new(tail.X, tail.Y + 1, tail.Facing),   
-                    Direction.Down => new(tail.X, tail.Y - 1, tail.Facing), 
+                    Direction.Left  => new ( new (TailPos.Row, TailPos.Col + 1), tail.Facing ), 
+                    Direction.Right => new ( new (TailPos.Row, TailPos.Col - 1), tail.Facing ),
+                    Direction.Up    => new ( new (TailPos.Row + 1, TailPos.Col), tail.Facing ),   
+                    Direction.Down  => new ( new (TailPos.Row - 1, TailPos.Col), tail.Facing ), 
 
                     _ => throw new Exception($"Sth went wrong, tail's Direction's value is {tail.Facing}")
                 };
@@ -57,7 +57,7 @@ namespace SnakeGame.Model
         {
             if (!Alive) throw new InvalidOperationException("can't eat if you're dead bro");
 
-            Grow(times: 1);
+            GrowBy(times: 1);
         }
         public void Die()
         {
@@ -66,13 +66,11 @@ namespace SnakeGame.Model
             OnDeath?.Invoke(this);
         }
         public event Action<Snake>? OnDeath;
-        public class SnakeSegment(int x, int y, Direction direction, bool isHead = false)
+        public class SnakeSegment(Coords coords, Direction direction)
         {
-            public int X { get; set; } = x;
-            public int Y { get; set; } = y;
+            public Coords Coords { get; set; } = coords;
             public Direction Facing { get; set; } = direction;
-            public bool IsBent { get; set; } = false;
-            public bool IsHead { get; set; } = isHead;
+
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Drawing;
 
 namespace SnakeGame.Model
 {
@@ -9,19 +8,19 @@ namespace SnakeGame.Model
         private readonly int ColCount = cols;
         private readonly Square[,] grid = new Square[rows, cols];
         public void ClearGrid() => Array.Clear(grid);
-        public Square? GetNextSquare((int X, int Y) coords, Direction direction, out (int X, int Y) newCoords) // returns null if its a wall.
+        public Square? GetNextSquare(Coords coords, Direction direction) // returns null if its a wall.
         { // this method could return bool signalizing success, and have an out param that returns the actual square, since its nullable.
-            newCoords = direction switch
+            coords = direction switch
             {
-                Direction.Up => (coords.X, coords.Y - 1),
-                Direction.Down => (coords.X, coords.Y + 1),
-                Direction.Right => (coords.X + 1, coords.Y),
-                Direction.Left => (coords.X - 1, coords.Y),
+                Direction.Up => new(coords.Col, coords.Row - 1),
+                Direction.Down => new(coords.Col, coords.Row + 1),
+                Direction.Right => new(coords.Col + 1, coords.Row),
+                Direction.Left => new(coords.Col - 1, coords.Row),
 
                 _ => throw new Exception($"Unexpected value of {nameof(direction)} - '{direction}'")
             };
 
-            return this[newCoords];
+            return this[coords];
         }
 
         public IEnumerator<Square> GetEnumerator()
@@ -31,26 +30,27 @@ namespace SnakeGame.Model
         }
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public Square? this[(int row, int col) coords] // custom indexer, returns null if its a wall in getter, throws in setter.
+        public Square? this[Coords coords] // custom indexer, returns null if its a wall in getter, throws in setter.
         {
             get
             {
-               if (coords.row < 0 || coords.col < 0 || coords.row >= RowCount || coords.col >= ColCount)
+               if (coords.Row < 0 || coords.Col < 0 || coords.Row >= RowCount || coords.Col >= ColCount)
                     return null; // null means wall, so its meaningful.
                
-                return grid[coords.row, coords.col];
+                return grid[coords.Row, coords.Col];
             }
             set
             {
-                if (coords.row < 0 || coords.col < 0 || coords.row >= RowCount || coords.col >= ColCount)
-                    throw new IndexOutOfRangeException($"Given coords are not inside the grid's bounds, fix this. current coords: row = {coords.row}, col= {coords.col}");
+                if (coords.Row < 0 || coords.Col < 0 || coords.Row >= RowCount || coords.Col >= ColCount)
+                    throw new IndexOutOfRangeException($"Given coords are not inside the grid's bounds, fix this. current coords: {coords}");
                 
-                grid[coords.row, coords.col] = value!;
+                grid[coords.Row, coords.Col] = value!;
             }
         }
 
         public class Square
         {
+            public Coords Coords { get; set; }
             public Snake.SnakeSegment? SnakeContents { get; set; }
             public Food? FoodContents { get; set; }
             public bool HasSnake => SnakeContents != null;
