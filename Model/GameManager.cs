@@ -1,10 +1,22 @@
-﻿namespace SnakeGame.Model
+namespace SnakeGame.Model
 {
     public class GameManager()
     {
-        public int Score { get; private set; }
+        public int Score
+        {
+            get;
+
+            private set => field = value switch
+            {
+                > MaxScore => throw new ArgumentOutOfRangeException("Score cannot be higher than the grid's square count."),
+                < 0 => throw new ArgumentOutOfRangeException("Score cannot be lower than 0"),
+
+                _ => value
+            };
+        }
 
         #region const definitions
+        private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
         private const int gridRows = 20;
         private const int gridColumns = 30;
@@ -22,17 +34,17 @@
         #region constructing game objects
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
         private Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
-        public GameState GameState { get; init; } = new();
-        private FoodPool FoodPool { get; set; } = new(FoodPoolMaxCapacity);
+        public GameState State { get; init; } = new();
+        private FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity);
         #endregion
 
-        #region main management methods 
+        #region main management methods
         public void SafelyMoveSnake(Direction newDirection)
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
             {
                 Snake.Die();
-                GameState.Lose();
+                State.Lose();
             }
 
             var tailSquare = Grid[Snake.TailPos]
@@ -54,24 +66,39 @@
         }
         public void RunGame()
         {
-            throw new NotImplementedException();
+            State.Start();
 
-            // gotta handle collisions before updating the grid with new snake pos (check them)
+            while (State.CurrentState == GameStates.Running)
+            {
+                // here goes some event listener that will set the dir depending on the key
+                Direction direction = Direction.Up;
 
-            // also remember to update grid EVERY TIME SNAKE EATS FOOD
+                EatIfHasFood();
+
+                SafelyMoveSnake(direction);
+
+                if (CheckForWin())
+                    WinGame();
+            }
         }
         private void LoseGame()
         {
             Snake.Die();
-            GameState.Lose();
+            State.Lose();
+            Score = 0;
             // to add more later
+        }
+        private void WinGame()
+        {
+            State.Win();
+            // to add more later on
         }
         public void SpawnRandomFood()
         {
             var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood);
 
             if (!emptySquares.Any())
-                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {GameState.CurrentState}");
+                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {State.CurrentState}");
                 
             var rand = new Random();
             Coords randomCoords = new(rand.Next(gridRows - 1), rand.Next(gridColumns - 1));
@@ -95,6 +122,11 @@
             Snake.Eat();
             FoodPool.ReturnToPool(food);
 
+            var tailSquare = Grid[Snake.TailPos]
+                ?? throw new IndexOutOfRangeException($"Snake's tail is out of bounds. Its coords: {Snake.TailPos}");
+            
+            tailSquare.AddSnake(Snake.Tail); // updating the grid with freshly grown tail.
+
             this.Score++;
         }
         #endregion main management methods
@@ -102,10 +134,10 @@
         #region private helper methods
         
         private bool CheckForWin() 
-            => Snake.CurrentLength switch
+            => Score switch
             {
-                > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size, fix me. current state - {GameState.CurrentState}"),
-                MaxSnakeLength => true,
+                > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.CurrentState}, score = {Score}, snake's length = {Snake.CurrentLength}"),
+                MaxScore when State.CurrentState == GameStates.Running => true,
 
                 _ => false
             };
