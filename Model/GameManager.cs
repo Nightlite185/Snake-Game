@@ -16,6 +16,7 @@ namespace SnakeGame.Model
         }
 
         #region const definitions
+        private const int TickLength = 200;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
         private const int gridRows = 20;
@@ -64,7 +65,7 @@ namespace SnakeGame.Model
             }
                 
         }
-        public void RunGame()
+        public async Task RunGameAsync()
         {
             State.Start();
 
@@ -79,6 +80,8 @@ namespace SnakeGame.Model
 
                 if (CheckForWin())
                     WinGame();
+
+                await Task.Delay(TickLength);
             }
         }
         private void LoseGame()
