@@ -8,7 +8,7 @@ namespace SnakeGame.Model
             this.Fill();
         }
         private readonly Stack<Food> foodStack;
-        public Food Pop((int row, int col) newCoords)
+        public Food Pop()
         {
             if (foodStack.Count == 0)
                 throw new InvalidOperationException("Cannot pop food since the pool is empty.");

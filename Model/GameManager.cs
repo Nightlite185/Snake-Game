@@ -74,7 +74,7 @@
             var rand = new Random();
             (int row, int col) randomCoords = (rand.Next(gridRows - 1), rand.Next(gridColumns - 1));
 
-            var food = FoodPool.Pop(randomCoords);
+            var food = FoodPool.Pop();
 
             var foodSquare = Grid[randomCoords] ??
                 throw new IndexOutOfRangeException($"cannot spawn food inside a wall. The coords given are: row= {randomCoords.row}, col= {randomCoords.col}");
