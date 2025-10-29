@@ -5,7 +5,7 @@ namespace SnakeGame.Model
         public FoodPool(int maxCapacity)
         {
             foodStack = new Stack<Food>(maxCapacity);
-            this.Fill();
+            this.Fill(maxCapacity);
         }
         private readonly Stack<Food> foodStack;
         public Food Pop()
@@ -22,14 +22,10 @@ namespace SnakeGame.Model
             food.Reset();
             foodStack.Push(food);
         }
-        public void Reset() 
+        
+        public void Fill(int MaxCapacity)
         {
-            foodStack.Clear();
-            this.Fill();
-        }
-        public void Fill()
-        {
-            for (int i = foodStack.Count - 1; i < foodStack.Capacity; i++)
+            for (int i = foodStack.Count - 1; i < MaxCapacity; i++)
                 foodStack.Push(new Food());
         }
     }
