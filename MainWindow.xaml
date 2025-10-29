@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnakeGameProject"
+        xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:GameViewModel}"
         mc:Ignorable="d"
         Title="Snake game" Height="433" Width="800">
     <Grid Margin="0,0,0,-62" RenderTransformOrigin="0.501,0.5">
@@ -15,7 +15,8 @@
                 <GradientStop Color="#FF00D6FF" Offset="0.9999"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Canvas x:Name="GameCanvas" Background="#FF010613" Margin="200,10,200,13" Height="400" Width="400"/>
+        <Canvas x:Name="GameCanvas" Background="#FF010613" Margin="204,18,204,69"/>
+        <Button Content="Start" Command="{Binding StartGameCommand}" HorizontalAlignment="Center" Margin="0,425,0,0" VerticalAlignment="Top" Height="44" Width="100" FontSize="18" FontWeight="Bold"/>
 
     </Grid>
 </Window>

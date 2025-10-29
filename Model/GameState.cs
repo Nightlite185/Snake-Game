@@ -13,7 +13,7 @@
 
         public void Pause() => CurrentState = (CurrentState != GameStates.Running)
             ? throw new InvalidOperationException($"cannot pause a game that is {CurrentState}.")
-            : ChangeState(GameStates.Paused); // maybe just do it the {} way everywhere and reduce overhead by not calling additional method, idk Ill think later.
+            : ChangeState(GameStates.Paused);
             
         public void Resume() => CurrentState = (CurrentState != GameStates.Paused)
             ? throw new InvalidOperationException($"cannot resume a game that is {CurrentState}.") 
