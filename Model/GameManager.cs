@@ -14,17 +14,18 @@ namespace SnakeGame.Model
                 _ => value
             };
         }
-
+        public Direction QueuedDirection { get; set; }
         #region const definitions
         private const int TickLength = 200;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
         private const int gridRows = 20;
-        private const int gridColumns = 30;
+        private const int gridColumns = 20;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
-        private const int MaxSnakeLength = gridRows * gridColumns; // placeholder - depends on the size of the grid
+        private const int MaxSnakeLength = gridRows * gridColumns;
+
         private const Direction StartingDirection = Direction.Up;
         private static readonly Coords startingCoords = new(10, 10);
 
@@ -71,12 +72,11 @@ namespace SnakeGame.Model
 
             while (State.CurrentState == GameStates.Running)
             {
-                // here goes some event listener that will set the dir depending on the key
-                Direction direction = Direction.Up;
+                Direction inputDirection = QueuedDirection;
 
                 EatIfHasFood();
 
-                SafelyMoveSnake(direction);
+                SafelyMoveSnake(inputDirection);
 
                 if (CheckForWin())
                     WinGame();
