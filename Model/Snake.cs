@@ -37,20 +37,21 @@
         {
             for (int i = 0; i < times; i++)
             {
-                SnakeSegment tail = this.Tail; // assigning tail to new var for reusing, its a waste to call Last() more than once.
+                SnakeSegment tail = this.Tail; // assigning tail to new var for reusing, its a waste to call Last() more than once
 
                 // calculating new segment's coords after growing
-                SnakeSegment newSegment = tail.Facing switch
+                Coords coords = tail.Facing switch
                 {
-                    Direction.Left  => new ( new (TailPos.Row, TailPos.Col + 1), tail.Facing ), 
-                    Direction.Right => new ( new (TailPos.Row, TailPos.Col - 1), tail.Facing ),
-                    Direction.Up    => new ( new (TailPos.Row + 1, TailPos.Col), tail.Facing ),   
-                    Direction.Down  => new ( new (TailPos.Row - 1, TailPos.Col), tail.Facing ), 
-
-                    _ => throw new Exception($"Sth went wrong, tail's Direction's value is {tail.Facing}")
+                    Direction.Left => new(tail.Coords.Row, tail.Coords.Col + 1),
+                    Direction.Right => new(tail.Coords.Row, tail.Coords.Col - 1),
+                    Direction.Up => new(tail.Coords.Row + 1, tail.Coords.Col),
+                    Direction.Down => new(tail.Coords.Row - 1, tail.Coords.Col),
+                    _ => throw new Exception($"Unexpected tail's direction: {tail.Facing}")
                 };
 
-                this.Body.AddLast(newSegment);
+                SnakeSegment newSegment = new(coords, tail.Facing);
+
+                Body.AddLast(newSegment);
             }
         }
         public void Eat()
