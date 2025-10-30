@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using SnakeGame.Model;
+using System.Windows.Input;
 
 namespace SnakeGameProject
 {
@@ -13,6 +14,7 @@ namespace SnakeGameProject
         private readonly Coords bounds;
         private readonly double tileHeight;
         private readonly double tileWidth;
+        private readonly Rectangle[,] rectPool;
         private void InitializeRectPool()
         {
             for (double row = 0; row < bounds.Row; row += tileHeight)
@@ -31,7 +33,7 @@ namespace SnakeGameProject
                 }
             }
         }
-        private readonly Rectangle[,] rectPool;
+        public void Window_KeyDown(object sender, KeyEventArgs e) => viewModel.KeyDownHandler(e);
         public void RenderGameObjects()
         {
             foreach (var obj in viewModel.Renderable())
@@ -43,7 +45,7 @@ namespace SnakeGameProject
             }
         }
         public void ClearFrame() => GameCanvas.Children.Clear();
-
+        
         public MainWindow()
         {
             InitializeComponent();

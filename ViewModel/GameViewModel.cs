@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Threading.Tasks.Dataflow;
 using System.Windows.Input;
 using System.Windows.Media;
 using SnakeGame.Helpers;
@@ -24,15 +23,14 @@ namespace SnakeGame.ViewModel
         #region ICommands
         public ICommand StartGameCommand { get; }
         #endregion
-        
-        public void KeyInputHandler(string key)
+        public void KeyDownHandler(KeyEventArgs e)
         {
-            gameManager.QueuedDirection = key switch
+            gameManager.QueuedDirection = e.Key switch
             {
-                "W" or "UpArrow" => Direction.Up,
-                "S" or "DownArrow" => Direction.Down,
-                "A" or "LeftArrow" => Direction.Left,
-                "D" or "RightArrow" => Direction.Right,
+                Key.Up or Key.W => Direction.Up,
+                Key.Down or Key.S => Direction.Down,
+                Key.Left or Key.A => Direction.Left,
+                Key.Right or Key.D => Direction.Right,
 
                 _ => gameManager.QueuedDirection
             };
