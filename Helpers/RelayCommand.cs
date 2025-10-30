@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace SnakeGame.Commands
+namespace SnakeGame.Helpers
 {
     public class RelayCommand(Func<Task> func) : ICommand
     {
