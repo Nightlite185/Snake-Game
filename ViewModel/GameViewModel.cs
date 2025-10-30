@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Windows.Input;
 using System.Windows.Media;
 using SnakeGame.Helpers;
@@ -13,12 +14,12 @@ namespace SnakeGame.ViewModel
         private readonly MainWindow view;
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush color)> Renderable()
-        => gameManager.Snake.Body
-            .Select(s => (s.Coords, Brushes.LightGreen))
-            .Concat(
-                gameManager.FoodPool.ActiveFoods
-                .Select(f => (f.Coords, Brushes.Red))
-            );
+            => gameManager.Snake.Body
+                .Select(s => (s.Coords, Brushes.LightGreen))
+                .Concat(
+                    gameManager.FoodPool.ActiveFoods
+                    .Select(f => (f.Coords, Brushes.Red))
+                );
 
         #region ICommands
         public ICommand StartGameCommand { get; }
@@ -36,11 +37,14 @@ namespace SnakeGame.ViewModel
             };
         }
         public event PropertyChangedEventHandler? PropertyChanged;
+        public event Action? OnRenderRequest;
         public GameViewModel(MainWindow view)
         {
             gameManager = new();
             this.view = view;
             StartGameCommand = new RelayCommand(gameManager.RunGameAsync);
+
+            gameManager.OnIterationEnd += () => OnRenderRequest?.Invoke();
         }
     }
 }

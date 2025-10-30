@@ -34,17 +34,19 @@ namespace SnakeGameProject
             }
         }
         public void Window_KeyDown(object sender, KeyEventArgs e) => viewModel.KeyDownHandler(e);
+        
         public void RenderGameObjects()
         {
-            foreach (var obj in viewModel.Renderable())
-            {
-                var rect = rectPool[obj.coords.Row, obj.coords.Col];
+            GameCanvas.Children.Clear();
 
-                rect.Fill = obj.color;
+            foreach (var (coords, color) in viewModel.Renderable())
+            {
+                var rect = rectPool[coords.Row, coords.Col];
+
+                rect.Fill = color;
                 GameCanvas.Children.Add(rect);
             }
         }
-        public void ClearFrame() => GameCanvas.Children.Clear();
         
         public MainWindow()
         {
@@ -52,6 +54,8 @@ namespace SnakeGameProject
 
             DataContext = viewModel;
             viewModel = new(this);
+
+            viewModel.OnRenderRequest += RenderGameObjects;
 
             bounds = GameViewModel.Dimensions;
             tileHeight = GameCanvas.ActualHeight / bounds.Row;

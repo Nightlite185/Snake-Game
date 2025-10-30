@@ -4,6 +4,7 @@ namespace SnakeGame.Model
     {
         #region ViewModel public API
         public event Action? OnScoreChanged;
+        public event Action? OnIterationEnd;
         public int Score
         { 
             get;
@@ -95,6 +96,8 @@ namespace SnakeGame.Model
 
                 if (i % FoodSpawningFrequency == 0)
                     SpawnRandomFood();
+
+                OnIterationEnd?.Invoke();
 
                 await Task.Delay(TickLength);
             }
