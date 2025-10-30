@@ -3,34 +3,61 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
+using SnakeGame.Model;
 
 namespace SnakeGameProject
 {
     public partial class MainWindow : Window
     {
         private readonly GameViewModel viewModel;
-        private void DrawTestRect()
+        private readonly Coords bounds;
+        private readonly double tileHeight;
+        private readonly double tileWidth;
+        private void InitializeRectPool()
         {
-            Rectangle rect = new()
+            for (double row = 0; row < bounds.Row; row += tileHeight)
             {
-                Width = 20,
-                Height = 20,
-                Fill = Brushes.Red
-            };
+                for (double col = 0; col < bounds.Col; col += tileWidth)
+                {
+                    Rectangle rect = new()
+                    {
+                        Width = tileWidth,
+                        Height = tileHeight,
+                        Fill = Brushes.Transparent,
+                    };
 
-            Canvas.SetLeft(rect, 0);
-            Canvas.SetTop(rect, 0);
-
-            GameCanvas.Children.Add(rect);
+                    Canvas.SetTop(rect, row);
+                    Canvas.SetLeft(rect, col);
+                }
+            }
         }
+        private readonly Rectangle[,] rectPool;
+        public void RenderGameObjects()
+        {
+            foreach (var obj in viewModel.Renderable())
+            {
+                var rect = rectPool[obj.coords.Row, obj.coords.Col];
+
+                rect.Fill = obj.color;
+                GameCanvas.Children.Add(rect);
+            }
+        }
+        public void ClearFrame() => GameCanvas.Children.Clear();
+
         public MainWindow()
         {
-            this.viewModel = new();
             InitializeComponent();
 
             DataContext = viewModel;
+            viewModel = new(this);
 
-            DrawTestRect();
+            bounds = GameViewModel.Dimensions;
+            tileHeight = GameCanvas.ActualHeight / bounds.Row;
+            tileWidth = GameCanvas.ActualWidth / bounds.Col;
+
+            rectPool = new Rectangle[bounds.Row, bounds.Col];
+
+            InitializeRectPool();
         }
     }
 }
