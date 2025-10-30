@@ -2,25 +2,33 @@ namespace SnakeGame.Model
 {
     public class GameManager()
     {
+        #region ViewModel public API
+        public event Action? OnScoreChanged;
         public int Score
-        {
+        { 
             get;
-
-            private set => field = value switch
+            private set
             {
-                > MaxScore => throw new ArgumentOutOfRangeException("Score cannot be higher than the grid's square count."),
-                < 0 => throw new ArgumentOutOfRangeException("Score cannot be lower than 0"),
+                field = value switch
+                {
+                    > MaxScore => throw new ArgumentOutOfRangeException("Score cannot be higher than the grid's square count."),
+                    < 0 => throw new ArgumentOutOfRangeException("Score cannot be lower than 0"),
 
-                _ => value
-            };
+                    _ => value
+                };
+
+                OnScoreChanged?.Invoke();
+            }
         }
         public Direction QueuedDirection { get; set; }
+        #endregion
+        
         #region const definitions
-        private const int TickLength = 200;
+        public const int TickLength = 200;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
-        private const int gridRows = 20;
-        private const int gridColumns = 20;
+        public const int gridRows = 20;
+        public const int gridColumns = 20;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
@@ -29,15 +37,16 @@ namespace SnakeGame.Model
         private const Direction StartingDirection = Direction.Up;
         private static readonly Coords startingCoords = new(10, 10);
 
-        //Food Pool
+        //Food
         private const int FoodPoolMaxCapacity = 8;
+        private const int FoodSpawningFrequency = 3;
         #endregion
 
         #region constructing game objects
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
-        private Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
+        public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState State { get; init; } = new();
-        private FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity);
+        public FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity);
         #endregion
 
         #region main management methods
@@ -69,9 +78,12 @@ namespace SnakeGame.Model
         public async Task RunGameAsync()
         {
             State.Start();
+            int i = 0;
 
             while (State.CurrentState == GameStates.Running)
             {
+                i++;
+
                 Direction inputDirection = QueuedDirection;
 
                 EatIfHasFood();
@@ -80,6 +92,9 @@ namespace SnakeGame.Model
 
                 if (CheckForWin())
                     WinGame();
+
+                if (i % FoodSpawningFrequency == 0)
+                    SpawnRandomFood();
 
                 await Task.Delay(TickLength);
             }
@@ -106,10 +121,10 @@ namespace SnakeGame.Model
             var rand = new Random();
             Coords randomCoords = new(rand.Next(gridRows - 1), rand.Next(gridColumns - 1));
 
-            var food = FoodPool.Pop();
-
             var foodSquare = Grid[randomCoords] ??
                 throw new IndexOutOfRangeException($"cannot spawn food inside a wall. The coords given are: {randomCoords}");
+            
+            var food = FoodPool.Get(randomCoords);
 
             foodSquare.AddFood(food);
         }
