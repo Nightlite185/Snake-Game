@@ -21,7 +21,7 @@ namespace SnakeGame.Model
                 OnScoreChanged?.Invoke();
             }
         }
-        public Direction QueuedDirection { get; set; }
+        public Direction QueuedDirection { get; set; } = StartingDirection;
         #endregion
         
         #region const definitions

@@ -41,7 +41,10 @@ namespace SnakeGame.ViewModel
         {
             gameManager = new();
             this.view = view;
-            StartGameCommand = new RelayCommand(gameManager.RunGameAsync);
+            StartGameCommand = new RelayCommand(
+                execute: gameManager.RunGameAsync,
+                canExecute: () => gameManager.State.CurrentState == GameStates.NotStarted
+            );
 
             gameManager.OnIterationEnd += () => OnRenderRequest?.Invoke();
         }
