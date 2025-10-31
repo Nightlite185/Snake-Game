@@ -19,10 +19,10 @@ namespace SnakeGame.Model
         { // this method could return bool signalizing success, and have an out param that returns the actual square, since its nullable.
             coords = direction switch
             {
-                Direction.Up => new(coords.Col, coords.Row - 1),
-                Direction.Down => new(coords.Col, coords.Row + 1),
-                Direction.Right => new(coords.Col + 1, coords.Row),
-                Direction.Left => new(coords.Col - 1, coords.Row),
+                Direction.Up => new(coords.Row - 1, coords.Col),
+                Direction.Down => new(coords.Row + 1, coords.Col),
+                Direction.Right => new(coords.Row, coords.Col + 1),
+                Direction.Left => new(coords.Row, coords.Col - 1),
 
                 _ => throw new Exception($"Unexpected value of {nameof(direction)} - '{direction}'")
             };
