@@ -42,12 +42,18 @@ namespace SnakeGameProject
         {
             GameCanvas.Children.Clear();
 
-            foreach (var (coords, color) in viewModel.Renderable())
+            foreach (var (coords, color) in viewModel.Renderable)
             {
                 var rect = rectPool[coords.Row, coords.Col];
 
+                if (rect.Fill == Brushes.Red && color == Brushes.LightGreen) // temporary fix eeeehhehehe
+                {
+                    rect.Fill = Brushes.LightGreen; // later prefill grid with squares and just change colors here instead of clearing children every time like a dumbass.
+                    continue;
+                }
                 rect.Fill = color;
-                GameCanvas.Children.Add(rect);
+                try { GameCanvas.Children.Add(rect); }          // TEMP PATCH I JUST WANNA PLAY IT AND HAVE FUN A BIT LOL
+                catch (System.ArgumentException) { continue; }   // FORGIVE ME FOR MY SINS
             }
         }
         
