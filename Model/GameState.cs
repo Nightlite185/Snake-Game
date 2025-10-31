@@ -5,6 +5,7 @@
     {
         public event EventHandler<GameStates>? OnStateChange;
         public event Action? OnGameStarted;
+        public event Action? OnGameEnded;
         public GameStates CurrentState { get; private set; } = GameStates.NotStarted;
         private GameStates ChangeState(GameStates newState) // separate method to keep it clean and invoke event in the same time.
         {                                                   // kinda useless tho since its too universal..
@@ -40,6 +41,8 @@
             CurrentState = (CurrentState != GameStates.Running)
                 ? throw new InvalidOperationException($"cannot lose a game that is {CurrentState}.")
                 : GameStates.Lost;
+
+            OnGameEnded?.Invoke();
         }
 
         public void Win()
@@ -47,6 +50,8 @@
             CurrentState = (CurrentState != GameStates.Running)
                 ? throw new InvalidOperationException($"cannot win a game that is {CurrentState}.")
                 : GameStates.Won;
+            
+            OnGameEnded?.Invoke();
         }
 
         public void Reset()
