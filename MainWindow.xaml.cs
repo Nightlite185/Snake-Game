@@ -18,9 +18,9 @@ namespace SnakeGameProject
             double tileHeight = GameCanvas.ActualHeight / bounds.Row;
             double tileWidth = GameCanvas.ActualWidth / bounds.Col;
 
-            for (double row = 0; row < bounds.Row; row += tileHeight)
+            for (int row = 0; row < bounds.Row; row++)
             {
-                for (double col = 0; col < bounds.Col; col += tileWidth)
+                for (int col = 0; col < bounds.Col; col++)
                 {
                     Rectangle rect = new()
                     {
@@ -29,8 +29,10 @@ namespace SnakeGameProject
                         Fill = Brushes.Transparent,
                     };
 
-                    Canvas.SetTop(rect, row);
-                    Canvas.SetLeft(rect, col);
+                    Canvas.SetTop(rect, row * tileHeight);
+                    Canvas.SetLeft(rect, col * tileWidth);
+
+                    rectPool[row, col] = rect;
                 }
             }
         }
@@ -53,8 +55,8 @@ namespace SnakeGameProject
         {
             InitializeComponent();
 
-            DataContext = viewModel;
             viewModel = new(this);
+            DataContext = viewModel;
 
             viewModel.OnRenderRequest += RenderGameObjects;
 
