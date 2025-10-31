@@ -2,11 +2,18 @@ using System.Collections;
 
 namespace SnakeGame.Model
 {
-    public class GameGrid(int rows, int cols) : IEnumerable<GameGrid.Square>
+    public class GameGrid : IEnumerable<GameGrid.Square>
     {
-        private readonly int RowCount = rows;
-        private readonly int ColCount = cols;
-        private readonly Square[,] grid = new Square[rows, cols];
+        public GameGrid(int rows, int cols)
+        {
+            RowCount = rows;
+            ColCount = cols;
+            grid = new Square[rows, cols];
+            InitializeGrid();
+        }
+        private readonly int RowCount;
+        private readonly int ColCount;
+        private readonly Square[,] grid;
         public void ClearGrid() => Array.Clear(grid);
         public Square? GetNextSquare(Coords coords, Direction direction) // returns null if its a wall.
         { // this method could return bool signalizing success, and have an out param that returns the actual square, since its nullable.
@@ -22,7 +29,16 @@ namespace SnakeGame.Model
 
             return this[coords];
         }
-
+        private void InitializeGrid()
+        {
+            for (int row = 0; row < RowCount; row++)
+            {
+                for (int col = 0; col < ColCount; col++)
+                {
+                    grid[row, col] = new Square(new Coords(row, col));
+                }
+            }
+        }
         public IEnumerator<Square> GetEnumerator()
         {
             foreach (var square in grid)
@@ -48,9 +64,9 @@ namespace SnakeGame.Model
             }
         }
 
-        public class Square
+        public class Square(Coords coords)
         {
-            public Coords Coords { get; set; }
+            public Coords Coords { get; init; } = coords;
             public Snake.SnakeSegment? SnakeContents { get; set; }
             public Food? FoodContents { get; set; }
             public bool HasSnake => SnakeContents != null;
