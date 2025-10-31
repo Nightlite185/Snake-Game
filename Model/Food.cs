@@ -2,11 +2,27 @@ namespace SnakeGame.Model
 {
     public class FoodPool
     {
-        public FoodPool(int maxCapacity)
+        private readonly int maxActiveFoods;
+        public int ActiveCount
         {
-            foodStack = new Stack<Food>(maxCapacity);
-            this.Fill(maxCapacity);
+            get;
+            private set
+            {
+                if (value < 0)
+                    throw new InvalidOperationException("there can't be a negative count of currently active foods");
+
+                else if (value > maxActiveFoods)
+                    throw new InvalidOperationException($"There can only be {maxActiveFoods} foods simultaneously.");
+                    
+                field = value;
+            }
+        } = 0;
+        public FoodPool(int maxPoolCapacity, int maxActiveFoods)
+        {
+            foodStack = new Stack<Food>(maxPoolCapacity);
+            this.Fill(maxPoolCapacity);
             this.AllFoods = [.. foodStack];
+            this.maxActiveFoods = maxActiveFoods;
         }
         private readonly List<Food> AllFoods = [];
         public IEnumerable<Food> ActiveFoods // API for the ViewModel
@@ -22,12 +38,15 @@ namespace SnakeGame.Model
             food.Activate();
             food.ChangeCoords(newCoords);
 
+            ActiveCount++;
+
             return food;
         }
         public void ReturnToPool(Food food)
         {
             food.Dezactivate();
             foodStack.Push(food);
+            ActiveCount--;
         }
         public void Fill(int MaxCapacity)
         {

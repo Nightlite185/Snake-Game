@@ -25,7 +25,7 @@ namespace SnakeGame.Model
         #endregion
         
         #region const definitions
-        public const int TickLength = 200;
+        public const int TickLength = 600;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
         public const int gridRows = 20;
@@ -40,14 +40,15 @@ namespace SnakeGame.Model
 
         //Food
         private const int FoodPoolMaxCapacity = 8;
-        private const int FoodSpawningFrequency = 1;
+        private const int FoodSpawningFrequency = 3;
+        private const int MaxActiveFoods = 5;
         #endregion
 
         #region constructing game objects
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
         public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState State { get; init; } = new();
-        public FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity);
+        public FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
         #endregion
 
         #region main management methods
@@ -95,7 +96,7 @@ namespace SnakeGame.Model
                 if (CheckForWin())
                     WinGame();
 
-                if (i % FoodSpawningFrequency == 0)
+                if (i % FoodSpawningFrequency == 0 && FoodPool.ActiveCount < MaxActiveFoods)
                     SpawnRandomFood();
 
                 OnIterationEnd?.Invoke();
