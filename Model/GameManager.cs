@@ -40,7 +40,7 @@ namespace SnakeGame.Model
 
         //Food
         private const int FoodPoolMaxCapacity = 8;
-        private const int FoodSpawningFrequency = 3;
+        private const int FoodSpawningFrequency = 1;
         #endregion
 
         #region constructing game objects
@@ -80,6 +80,7 @@ namespace SnakeGame.Model
         {
             State.Start();
             int i = 0;
+            OnIterationEnd?.Invoke();
 
             while (State.CurrentState == GameStates.Running)
             {
@@ -135,7 +136,7 @@ namespace SnakeGame.Model
         {
             Food food;
             var here = Grid[Snake.HeadPos]
-                ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall, fix me. Current HeadPos: X = {Snake.HeadPos}");
+                ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall, fix me. Current HeadPos: {Snake.HeadPos}");
             
             if (!here.HasFood) return;
 
