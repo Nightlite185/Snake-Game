@@ -3,8 +3,8 @@ namespace SnakeGame.Model
     public class GameManager()
     {
         #region ViewModel public API
-        public event Action? OnScoreChanged;
-        public event Action? OnIterationEnd;
+        public event Action? OnScoreIncrement;
+        public event Action? OnIteration;
         public int Score
         { 
             get;
@@ -18,25 +18,25 @@ namespace SnakeGame.Model
                     _ => value
                 };
 
-                OnScoreChanged?.Invoke();
+                OnScoreIncrement?.Invoke();
             }
         }
         public Direction QueuedDirection { get; set; } = StartingDirection;
         #endregion
         
         #region const definitions
-        public const int TickLength = 600;
+        public const int TickLength = 300;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
-        public const int gridRows = 20;
-        public const int gridColumns = 20;
+        public const int gridRows = 8;
+        public const int gridColumns = 8;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
         private const int MaxSnakeLength = gridRows * gridColumns;
 
         private const Direction StartingDirection = Direction.Up;
-        private static readonly Coords startingCoords = new(10, 10);
+        private static readonly Coords startingCoords = new(gridRows/2, gridColumns/2); // exactly in the middle
 
         //Food
         private const int FoodPoolMaxCapacity = 8;
@@ -48,6 +48,17 @@ namespace SnakeGame.Model
         public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
         public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState State { get; init; } = new();
+        private void AddFirstSnakeToGrid()
+        {
+            foreach (var seg in Snake.Body)
+            {
+                var segSquare = Grid[seg.Coords] 
+                    ?? throw new IndexOutOfRangeException("square that has a snake segment is null or out of bounds.");
+
+                segSquare.AddSnake(seg);
+            }
+                
+        }
         public FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
         #endregion
 
@@ -79,9 +90,11 @@ namespace SnakeGame.Model
         }
         public async Task RunGameAsync()
         {
+            AddFirstSnakeToGrid();
+
             State.Start();
             int i = 0;
-            OnIterationEnd?.Invoke();
+            OnIteration?.Invoke();
 
             while (State.CurrentState == GameStates.Running)
             {
@@ -99,7 +112,7 @@ namespace SnakeGame.Model
                 if (i % FoodSpawningFrequency == 0 && FoodPool.ActiveCount < MaxActiveFoods)
                     SpawnRandomFood();
 
-                OnIterationEnd?.Invoke();
+                OnIteration?.Invoke();
 
                 await Task.Delay(TickLength);
             }
