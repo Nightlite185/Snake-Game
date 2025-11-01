@@ -1,17 +1,32 @@
 using System.Windows.Input;
-using SnakeGame.Model;
 
 namespace SnakeGame.Helpers
 {
-    public class RelayCommand(Func<Task> execute, Func<bool> canExecute) : ICommand
+    public class RelayCommand : ICommand
     {
-        private readonly Func<Task> execute = execute;
-        private readonly Func<bool> canExecute = canExecute;
-        public async void Execute(object? parameter = null)
-            => await execute();
+        public RelayCommand(Func<Task> executeAsync, Func<bool> canExecute)
+        {
+            this.executeAsync = executeAsync;
+            this.canExecute = canExecute;
+        }
+        public RelayCommand(Action execute, Func<bool> canExecute)
+        {
+            this.execute = execute;
+            this.canExecute = canExecute;
+        }
 
-        public bool CanExecute(object? parameter = null)
-            => canExecute();
+        private readonly Func<Task>? executeAsync;
+        private readonly Action? execute;
+        private readonly Func<bool> canExecute;
+        public async void Execute(object? parameter = null)
+        {
+            if (executeAsync != null)
+                await executeAsync();
+
+            else
+                execute!();
+        }
+        public bool CanExecute(object? parameter = null) => canExecute();
 
         public event EventHandler? CanExecuteChanged;
     }
