@@ -19,8 +19,15 @@
                 <GradientStop Color="#FF00D6FF" Offset="0.9999"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Canvas x:Name="GameCanvas" Background="#FF010613" Margin="204,18,204,69"/>
-        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Center" Margin="0,425,0,0" VerticalAlignment="Top" Height="44" Width="100" FontSize="18" FontWeight="Bold"/>
-        <Label Content="{Binding Score}" HorizontalAlignment="Left" Margin="100,154,0,0" VerticalAlignment="Top" Height="60" Width="83" FontSize="22" FontWeight="Bold"/>
+        
+        <Canvas x:Name="GameCanvas" Background="#FF010613" Margin="204,10,204,77"/>
+        
+        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Left" Margin="257,415,0,0" VerticalAlignment="Top" Height="54" Width="98" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
+        <Button x:Name="RestartButton" Content="Reset" Command="{Binding RestartGameCommand}" Visibility="{Binding RestartButton_Visibility}"  HorizontalAlignment="Left" Margin="448,415,0,0" VerticalAlignment="Top" Height="54" Width="101" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
+
+        <Rectangle HorizontalAlignment="Left" Height="72" Margin="21,176,0,0" Stroke="#FF03F9E8" VerticalAlignment="Top" Width="153" Fill="#4C000000" StrokeThickness="2"/>
+        <Label x:Name="ScoreLabel" Content="Score: " HorizontalAlignment="Left" Margin="26,192,0,0" VerticalAlignment="Top" Height="44" Width="74" FontSize="22" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0"/>
+        <Label x:Name="ScoreDisplay" Content="{Binding Score}" HorizontalAlignment="Left" Margin="100,192,0,0" VerticalAlignment="Top" Height="44" Width="74" FontSize="24" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="#FFA1FFDF"/>
+        
     </Grid>
 </Window>
