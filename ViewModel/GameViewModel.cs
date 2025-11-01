@@ -35,7 +35,6 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
-        private readonly MainWindow view;
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush color)> Renderable
             => gameManager.FoodPool.ActiveFoods
@@ -63,10 +62,10 @@ namespace SnakeGame.ViewModel
         }
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action? OnRenderRequest;
-        public GameViewModel(MainWindow view)
+        public event Action? OnRestartRequest;
+        public GameViewModel()
         {
             gameManager = new();
-            this.view = view;
             StartButton_Visibility = Visibility.Visible;
             RestartButton_Visibility = Visibility.Collapsed;
 
@@ -76,7 +75,7 @@ namespace SnakeGame.ViewModel
                 canExecute: () => gameManager.State.CurrentState == GameStates.NotStarted
             );
             RestartGameCommand = new RelayCommand(
-                execute: gameManager.State.Reset,
+                execute: gameManager.RestartGame,
                 canExecute: () => true
             );
 
@@ -88,8 +87,12 @@ namespace SnakeGame.ViewModel
 
             gameManager.State.OnGameEnded += () => StartButton_Visibility = Visibility.Visible;
             gameManager.State.OnGameEnded += () => RestartButton_Visibility = Visibility.Collapsed;
+
+            gameManager.State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
+            gameManager.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
+            gameManager.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
             
-            gameManager.OnScoreIncrement += () => Score++;
+            gameManager.OnScoreChange += () => this.Score = gameManager.Score;
             #endregion
         }
 
