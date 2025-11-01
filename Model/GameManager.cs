@@ -3,22 +3,19 @@ namespace SnakeGame.Model
     public class GameManager()
     {
         #region ViewModel public API
-        public event Action? OnScoreIncrement;
+        public event Action? OnScoreChange;
         public event Action? OnIteration;
         public int Score
         { 
             get;
             private set
             {
-                field = value switch
-                {
-                    > MaxScore => throw new ArgumentOutOfRangeException("Score cannot be higher than the grid's square count."),
-                    < 0 => throw new ArgumentOutOfRangeException("Score cannot be lower than 0"),
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value, MaxScore);
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
 
-                    _ => value
-                };
+                field = value;
 
-                OnScoreIncrement?.Invoke();
+                OnScoreChange?.Invoke();
             }
         }
         public Direction QueuedDirection { get; set; } = StartingDirection;
@@ -45,21 +42,10 @@ namespace SnakeGame.Model
         #endregion
 
         #region constructing game objects
-        public GameGrid Grid { get; init; } = new(gridRows, gridColumns);
+        public GameGrid Grid { get; private set; } = new(gridRows, gridColumns);
         public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState State { get; init; } = new();
-        private void AddFirstSnakeToGrid()
-        {
-            foreach (var seg in Snake.Body)
-            {
-                var segSquare = Grid[seg.Coords] 
-                    ?? throw new IndexOutOfRangeException("square that has a snake segment is null or out of bounds.");
-
-                segSquare.AddSnake(seg);
-            }
-                
-        }
-        public FoodPool FoodPool { get; init; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
+        public FoodPool FoodPool { get; private set; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
         #endregion
 
         #region main management methods
@@ -107,7 +93,7 @@ namespace SnakeGame.Model
                 SafelyMoveSnake(inputDirection);
 
                 if (CheckForWin())
-                    WinGame();
+                    State.Win();
 
                 if (i % FoodSpawningFrequency == 0 && FoodPool.ActiveCount < MaxActiveFoods)
                     SpawnRandomFood();
@@ -124,10 +110,13 @@ namespace SnakeGame.Model
             Score = 0;
             // to add more later
         }
-        private void WinGame()
+        public void RestartGame()
         {
-            State.Win();
-            // to add more later on
+            State.Restart();
+            Snake.Die();
+            RestartGameObjects();
+
+            Score = 0;
         }
         private void SpawnRandomFood()
         {
@@ -168,8 +157,7 @@ namespace SnakeGame.Model
         #endregion main management methods
 
         #region private helper methods
-        
-        private bool CheckForWin() 
+        private bool CheckForWin()
             => Score switch
             {
                 > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.CurrentState}, score = {Score}, snake's length = {Snake.CurrentLength}"),
@@ -177,7 +165,22 @@ namespace SnakeGame.Model
 
                 _ => false
             };
-            
+        private void AddFirstSnakeToGrid()
+        {
+            foreach (var seg in Snake.Body)
+            {
+                var segSquare = Grid[seg.Coords]
+                    ?? throw new IndexOutOfRangeException("square that has a snake segment is null or out of bounds.");
+
+                segSquare.AddSnake(seg);
+            }
+        }
+        private void RestartGameObjects() // this can be reused later in a proper constructor if I wanna later switch from primary to normal one.
+        {
+            Grid = new(gridRows, gridColumns);
+            Snake = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
+            FoodPool = new(FoodPoolMaxCapacity, MaxActiveFoods);
+        }
         #endregion
     }
 }

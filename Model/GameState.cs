@@ -3,15 +3,10 @@
     public enum GameStates {Lost, Won, NotStarted, Paused, Running};
     public class GameState()
     {
-        public event EventHandler<GameStates>? OnStateChange;
         public event Action? OnGameStarted;
         public event Action? OnGameEnded;
+        public event Action? OnGameRestarted;
         public GameStates CurrentState { get; private set; } = GameStates.NotStarted;
-        private GameStates ChangeState(GameStates newState) // separate method to keep it clean and invoke event in the same time.
-        {                                                   // kinda useless tho since its too universal..
-            OnStateChange?.Invoke(this, newState);
-            return newState;
-        }
 
         public void Pause()
         {
@@ -54,13 +49,13 @@
             OnGameEnded?.Invoke();
         }
 
-        public void Reset()
+        public void Restart()
         {
             CurrentState = (CurrentState == GameStates.NotStarted)
                 ? throw new InvalidOperationException($"cannot restart a game that is {CurrentState}.")
                 : GameStates.NotStarted;
 
-            OnGameEnded?.Invoke();
+            OnGameRestarted?.Invoke();
         }
     }
 }

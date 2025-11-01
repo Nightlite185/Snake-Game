@@ -38,12 +38,15 @@ namespace SnakeGameProject
             }
         }
         public void Window_KeyDown(object sender, KeyEventArgs e) => viewModel.KeyDownHandler(e);
-        
-        public void RenderGameObjects()
+        private void ClearVisuals()
         {
-            foreach (var rect in rectPool) // could use hashset and only go through it once, instead of clearing everything and rendering again.
-                rect.Fill = Brushes.Transparent; // this is simple but works. Idk which would be faster tho. Hashset also takes time to build from 0 every time so..
-
+            foreach (var rect in rectPool)
+                rect.Fill = Brushes.Transparent;
+        }
+        private void RenderGameObjects()
+        {
+            ClearVisuals(); // could use hashset and only go through it once, instead of clearing everything and rendering again.
+                             // This is simple but works. Idk which would be faster tho. Hashset also takes time to build from 0 every time so..
             foreach (var (coords, color) in viewModel.Renderable)
                 rectPool[coords.Row, coords.Col].Fill = color;
         }
@@ -52,14 +55,15 @@ namespace SnakeGameProject
         {
             InitializeComponent();
 
-            viewModel = new(this);
+            viewModel = new();
             DataContext = viewModel;
 
             viewModel.OnRenderRequest += RenderGameObjects;
+            viewModel.OnRestartRequest += ClearVisuals;
 
             rectPool = new Rectangle[bounds.Row, bounds.Col];
             
-            Loaded += (_, _) => InitializeRectPool();
+            Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
         }
     }
 }
