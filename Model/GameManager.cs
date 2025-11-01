@@ -28,8 +28,8 @@ namespace SnakeGame.Model
         public const int TickLength = 300;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
-        public const int gridRows = 8;
-        public const int gridColumns = 8;
+        public const int gridRows = 12;
+        public const int gridColumns = 12;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
@@ -63,7 +63,7 @@ namespace SnakeGame.Model
         #endregion
 
         #region main management methods
-        public void SafelyMoveSnake(Direction newDirection)
+        private void SafelyMoveSnake(Direction newDirection)
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
             {
@@ -129,7 +129,7 @@ namespace SnakeGame.Model
             State.Win();
             // to add more later on
         }
-        public void SpawnRandomFood()
+        private void SpawnRandomFood()
         {
             var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood);
 
