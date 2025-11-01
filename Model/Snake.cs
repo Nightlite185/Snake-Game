@@ -12,7 +12,6 @@
 
             GrowBy(times: startingLength - 1);
         }
-        
         public int CurrentLength { get => Body.Count; init {} }
         public SnakeSegment Head => Body.First!.Value;
         public Coords HeadPos => Head.Coords;
@@ -60,18 +59,14 @@
 
             GrowBy(times: 1);
         }
-        public void Die()
-        {
-            Alive = false;
-            Body.Clear();
-            OnDeath?.Invoke(this);
-        }
-        public event Action<Snake>? OnDeath;
+
+        public void Die() => Alive = (Alive == true) 
+            ? false
+            : throw new InvalidOperationException("can't die if you're already dead bro");
         public class SnakeSegment(Coords coords, Direction direction)
         {
             public Coords Coords { get; set; } = coords;
             public Direction Facing { get; set; } = direction;
-
         }
     }
 }
