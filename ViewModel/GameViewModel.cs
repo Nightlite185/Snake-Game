@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -46,6 +47,7 @@ namespace SnakeGame.ViewModel
 
         #region ICommands
         public ICommand StartGameCommand { get; }
+        public ICommand RestartGameCommand { get; }
         #endregion
         public void KeyDownHandler(KeyEventArgs e)
         {
@@ -65,16 +67,43 @@ namespace SnakeGame.ViewModel
         {
             gameManager = new();
             this.view = view;
+            StartButton_Visibility = Visibility.Visible;
+            RestartButton_Visibility = Visibility.Collapsed;
+
+            // ==== Button ICommands ====
             StartGameCommand = new RelayCommand(
-                execute: gameManager.RunGameAsync,
+                executeAsync: gameManager.RunGameAsync,
                 canExecute: () => gameManager.State.CurrentState == GameStates.NotStarted
             );
+            RestartGameCommand = new RelayCommand(
+                execute: gameManager.State.Reset,
+                canExecute: () => true
+            );
 
-            StartButton_Visibility = Visibility.Visible;
-
+            #region ==== Event Subscribers ====
             gameManager.OnIteration += () => OnRenderRequest?.Invoke();
+
             gameManager.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
+            gameManager.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
+
+            gameManager.State.OnGameEnded += () => StartButton_Visibility = Visibility.Visible;
+            gameManager.State.OnGameEnded += () => RestartButton_Visibility = Visibility.Collapsed;
+            
             gameManager.OnScoreIncrement += () => Score++;
+            #endregion
+        }
+
+        public Visibility RestartButton_Visibility 
+        {
+            get;
+            private set
+            {
+                if (field != value)
+                {
+                    field = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RestartButton_Visibility)));
+                }
+            } 
         }
     }
 }

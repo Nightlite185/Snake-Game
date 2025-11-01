@@ -59,6 +59,8 @@
             CurrentState = (CurrentState == GameStates.NotStarted)
                 ? throw new InvalidOperationException($"cannot restart a game that is {CurrentState}.")
                 : GameStates.NotStarted;
+
+            OnGameEnded?.Invoke();
         }
     }
 }
