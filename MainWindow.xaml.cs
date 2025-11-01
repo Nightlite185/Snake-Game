@@ -33,6 +33,7 @@ namespace SnakeGameProject
                     Canvas.SetLeft(rect, col * tileWidth);
 
                     rectPool[row, col] = rect;
+                    GameCanvas.Children.Add(rect);
                 }
             }
         }
@@ -40,21 +41,11 @@ namespace SnakeGameProject
         
         public void RenderGameObjects()
         {
-            GameCanvas.Children.Clear();
+            foreach (var rect in rectPool) // could use hashset and only go through it once, instead of clearing everything and rendering again.
+                rect.Fill = Brushes.Transparent; // this is simple but works. Idk which would be faster tho. Hashset also takes time to build from 0 every time so..
 
             foreach (var (coords, color) in viewModel.Renderable)
-            {
-                var rect = rectPool[coords.Row, coords.Col];
-
-                if (rect.Fill == Brushes.Red && color == Brushes.LightGreen) // temporary fix eeeehhehehe
-                {
-                    rect.Fill = Brushes.LightGreen; // later prefill grid with squares and just change colors here instead of clearing children every time like a dumbass.
-                    continue;
-                }
-                rect.Fill = color;
-                try { GameCanvas.Children.Add(rect); }          // TEMP PATCH I JUST WANNA PLAY IT AND HAVE FUN A BIT LOL
-                catch (System.ArgumentException) { continue; }   // FORGIVE ME FOR MY SINS
-            }
+                rectPool[coords.Row, coords.Col].Fill = color;
         }
         
         public MainWindow()
