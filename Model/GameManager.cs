@@ -46,6 +46,7 @@ namespace SnakeGame.Model
         public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
         public GameState State { get; init; } = new();
         public FoodPool FoodPool { get; private set; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
+        private static readonly Random rand = new();
         #endregion
 
         #region main management methods
@@ -55,6 +56,7 @@ namespace SnakeGame.Model
             {
                 Snake.Die();
                 State.Lose();
+                return;
             }
 
             var tailSquare = Grid[Snake.TailPos]
@@ -72,7 +74,6 @@ namespace SnakeGame.Model
                 Snake.Move(newHeadSquare.Coords, newDirection); // actually moving the snake
                 newHeadSquare.AddSnake(Snake.Head); // updating the grid
             }
-                
         }
         public async Task RunGameAsync()
         {
@@ -123,20 +124,16 @@ namespace SnakeGame.Model
         }
         private void SpawnRandomFood()
         {
-            var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood);
+            var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood).ToArray();
 
-            if (!emptySquares.Any())
+            if (emptySquares.Length == 0)
                 throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {State.CurrentState}");
-                
-            var rand = new Random();
-            Coords randomCoords = new(rand.Next(gridRows - 1), rand.Next(gridColumns - 1));
 
-            var foodSquare = Grid[randomCoords] ??
-                throw new IndexOutOfRangeException($"cannot spawn food inside a wall. The coords given are: {randomCoords}");
+            GameGrid.Square randomSquare = emptySquares[rand.Next(emptySquares.Length)];
             
-            var food = FoodPool.Get(randomCoords);
+            var food = FoodPool.Get(randomSquare.Coords);
 
-            foodSquare.AddFood(food);
+            randomSquare.AddFood(food);
         }
         private void EatIfHasFood() 
         {
