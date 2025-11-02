@@ -85,8 +85,8 @@ namespace SnakeGame.ViewModel
             gameManager.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
             gameManager.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
 
-            gameManager.State.OnGameEnded += () => StartButton_Visibility = Visibility.Visible;
-            gameManager.State.OnGameEnded += () => RestartButton_Visibility = Visibility.Collapsed;
+            //gameManager.State.OnGameEnded += () => StartButton_Visibility = Visibility.Visible;
+            //gameManager.State.OnGameEnded += () => RestartButton_Visibility = Visibility.Collapsed;
 
             gameManager.State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
             gameManager.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;

@@ -64,7 +64,7 @@ namespace SnakeGame.Model
 
             var newHeadSquare = Grid.GetNextSquare(Snake.HeadPos, newDirection);
 
-            if (newHeadSquare == null) // null here means wall collision --> game over.
+            if (newHeadSquare == null || newHeadSquare.HasSnake) // null here means wall collision --> game over.
                 LoseGame();
 
             else
@@ -82,7 +82,7 @@ namespace SnakeGame.Model
             int i = 0;
             OnIteration?.Invoke();
 
-            while (State.CurrentState == GameStates.Running)
+            while (State.CurrentState == GameStates.Running && Snake.Alive)
             {
                 i++;
 
@@ -113,7 +113,10 @@ namespace SnakeGame.Model
         public void RestartGame()
         {
             State.Restart();
-            Snake.Die();
+
+            if (Snake.Alive && State.CurrentState == GameStates.Running)
+                Snake.Die();
+
             RestartGameObjects();
 
             Score = 0;

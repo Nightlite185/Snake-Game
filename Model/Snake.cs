@@ -1,6 +1,6 @@
 ﻿namespace SnakeGame.Model
 {
-    public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4}
+    public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4 }
     public class Snake
     {
         public Snake(int startingLength, Direction direction, Coords startingCoords, int maxLength)
@@ -8,6 +8,7 @@
             ArgumentOutOfRangeException.ThrowIfLessThan(startingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startingLength, maxLength);
 
+            Alive = true;
             Body.AddFirst(new SnakeSegment(startingCoords, direction)); // adding head first
 
             GrowBy(times: startingLength - 1);
@@ -18,7 +19,7 @@
         public SnakeSegment Tail => Body.Last!.Value; // TO DO:: fix me: this is null if I turn in opposite side than I was going before, for some reason lol. 
         public Coords TailPos => Tail.Coords;
         public LinkedList<SnakeSegment> Body { get; set; } = [];
-        public bool Alive { get; private set; } = true;
+        public bool Alive { get; private set; }
         
         public void Move(Coords newHeadCoords, Direction newDirection)
         {
@@ -60,7 +61,7 @@
             GrowBy(times: 1);
         }
 
-        public void Die() => Alive = (Alive == true) 
+        public void Die() => Alive = (Alive == true)
             ? false
             : throw new InvalidOperationException("can't die if you're already dead bro");
         public class SnakeSegment(Coords coords, Direction direction)
