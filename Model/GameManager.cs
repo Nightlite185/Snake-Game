@@ -120,6 +120,8 @@ namespace SnakeGame.Model
 
             RestartGameObjects();
 
+            this.QueuedDirection = StartingDirection;
+
             Score = 0;
         }
         private void SpawnRandomFood()
