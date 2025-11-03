@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:GameViewModel}"
         mc:Ignorable="d"
-        Title="Snake game" Height="806" Width="884"
+        Title="Snake game" Height="806" Width="1577"
         KeyDown="Window_KeyDown"
         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
         Focusable="True"
@@ -13,11 +13,14 @@
         MinHeight="802"
         MinWidth="884" WindowStartupLocation="CenterScreen" Background="#FF0E0056" Icon="/Snake_35967.ico">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="798" Width="884">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="798" Width="1577">
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="171*"/>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="681*"/>
+            <ColumnDefinition Width="696*"/>
         </Grid.ColumnDefinitions>
+
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
@@ -27,17 +30,17 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Viewbox Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Top" Height="643" Margin="0,132,0,0" Width="642" Grid.Column="1">
+        <Viewbox Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" Height="643" Margin="0,132,0,0" Width="642" Grid.Column="1">
             <Canvas x:Name="GameCanvas" Background="#FF010613" Width="642" Height="641"/>
         </Viewbox>
 
-        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="72" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
-        <Button x:Name="RestartButton" Content="Reset" Command="{Binding RestartGameCommand}" Visibility="{Binding RestartButton_Visibility}"  HorizontalAlignment="Center" Margin="0,454,0,0" VerticalAlignment="Top" Height="72" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
+        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" Margin="0,334,0,0"/>
+        <Button x:Name="RestartButton" Content="Reset" Command="{Binding RestartGameCommand}" Visibility="{Binding RestartButton_Visibility}"  HorizontalAlignment="Center" Margin="0,425,0,0" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
 
-        <Rectangle HorizontalAlignment="Center" Height="72" Margin="0,23,0,0" Stroke="#FF03F9E8" VerticalAlignment="Top" Width="152" Fill="#4C000000" StrokeThickness="2"/>
-        <Label x:Name="ScoreLabel" Content="Score: " HorizontalAlignment="Left" Margin="28,39,0,0" VerticalAlignment="Top" Height="44" Width="74" FontSize="22" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0"/>
-        <Label x:Name="ScoreDisplay" Content="{Binding Score}" HorizontalAlignment="Left" Margin="102,39,0,0" VerticalAlignment="Top" Height="44" Width="74" FontSize="24" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="#FFA1FFDF"/>
-        <Label x:Name="Title" Content="🐍 SNAKE 🐍" Margin="178,22,202,691" FontSize="36" FontWeight="Bold" Foreground="#FF71FF00" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF00FF3E" BorderThickness="3,3,3,3" Grid.Column="1"/>
-
+        <Rectangle HorizontalAlignment="Center" Height="72" Margin="0,35,0,0" Stroke="#FF03F9E8" VerticalAlignment="Top" Width="152" Fill="#4C000000" StrokeThickness="2"/>
+        <Label x:Name="ScoreLabel" Content="Score: " HorizontalAlignment="Left" Margin="35,49,0,0" VerticalAlignment="Top" Height="44" Width="70" FontSize="22" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
+        <Label x:Name="ScoreDisplay" Content="{Binding Score}" HorizontalAlignment="Left" Margin="110,49,0,0" VerticalAlignment="Top" Height="44" Width="56" FontSize="24" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="#FFA1FFDF" RenderTransformOrigin="0.512,0.508"/>
+        <Label x:Name="Title" Content="🐍 SNAKE 🐍" Margin="194,28,230,684" FontSize="36" FontWeight="Bold" Foreground="#FF71FF00" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF00FF3E" BorderThickness="3,3,3,3" Grid.Column="1" RenderTransformOrigin="0.444,0.565"/>
+        <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Click="OptionsButton_Click"/>
     </Grid>
 </Window>
