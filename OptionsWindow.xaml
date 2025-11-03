@@ -1,0 +1,22 @@
+﻿<Window x:Class="SnakeGame.OptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:GameViewModel}"
+        mc:Ignorable="d"
+        Title="Options window" Height="360" Width="300" Background="#FF001417">
+    <Grid x:Name="OptionsGrid" RenderTransformOrigin="0.504,0.49">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="1,0">
+                <GradientStop Color="#FFC300FF"/>
+                <GradientStop Color="#FFFFDE00"/>
+                <GradientStop Color="#FFB92D0A"/>
+                <GradientStop Color="#FF52193B"/>
+                <GradientStop Color="#FFDCCEBB"/>
+                <GradientStop Color="#FFFF00EF"/>
+                <GradientStop Color="#FFE6FF00" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+    </Grid>
+</Window>

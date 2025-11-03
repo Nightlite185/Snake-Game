@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using SnakeGame.Model;
 using System.Windows.Input;
+using SnakeGame;
 
 namespace SnakeGameProject
 {
@@ -62,8 +63,14 @@ namespace SnakeGameProject
             viewModel.OnRestartRequest += ClearVisuals;
 
             rectPool = new Rectangle[bounds.Row, bounds.Col];
-            
+
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
+        }
+
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var optionsWin = new OptionsWindow(viewModel);
+            optionsWin.ShowDialog();
         }
     }
 }
