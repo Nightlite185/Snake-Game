@@ -108,8 +108,6 @@ namespace SnakeGame.Model
         {
             Snake.Die();
             State.Lose();
-            Score = 0;
-            // to add more later
         }
         public void RestartGame()
         {
