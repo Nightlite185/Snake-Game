@@ -5,6 +5,7 @@ namespace SnakeGame.Model
         #region ViewModel public API
         public event Action? OnScoreChange;
         public event Action? OnIteration;
+        public event Action<int>? GotFinalScore;
         public int Score
         { 
             get;
@@ -94,7 +95,10 @@ namespace SnakeGame.Model
                 SafelyMoveSnake(inputDirection);
 
                 if (CheckForWin())
+                {
                     State.Win();
+                    GotFinalScore?.Invoke(Score);
+                }
 
                 if (i % FoodSpawningFrequency == 0 && FoodPool.ActiveCount < MaxActiveFoods)
                     SpawnRandomFood();
@@ -108,6 +112,8 @@ namespace SnakeGame.Model
         {
             Snake.Die();
             State.Lose();
+            
+            GotFinalScore?.Invoke(Score);
         }
         public void RestartGame()
         {
