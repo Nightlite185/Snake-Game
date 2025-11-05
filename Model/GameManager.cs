@@ -185,4 +185,11 @@ namespace SnakeGame.Model
         }
         #endregion
     }
+
+    public class ScoreEntry(int score, string nick)
+    {
+        public int Score { get; set; } = score;
+        public string Nickname { get; set; } = nick;
+        public DateTime Time { get; set; } = DateTime.Now;
+    }
 }
