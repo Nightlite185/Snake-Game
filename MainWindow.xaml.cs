@@ -48,7 +48,7 @@ namespace SnakeGameProject
         {
             ClearVisuals(); // could use hashset and only go through it once, instead of clearing everything and rendering again.
                              // This is simple but works. Idk which would be faster tho. Hashset also takes time to build from 0 every time so..
-            foreach (var (coords, color) in viewModel.Renderable)
+            foreach (var (coords, color) in viewModel.GetRenderable())
                 rectPool[coords.Row, coords.Col].Fill = color;
         }
         
@@ -71,6 +71,11 @@ namespace SnakeGameProject
         {
             var optionsWin = new OptionsWindow(viewModel);
             optionsWin.ShowDialog();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

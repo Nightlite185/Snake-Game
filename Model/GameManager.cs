@@ -25,8 +25,8 @@ namespace SnakeGame.Model
         public const int TickLength = 300;
         private const int MaxScore = MaxSnakeLength - StartingLength;
         // grid
-        public const int gridRows = 12;
-        public const int gridColumns = 12;
+        public const int gridRows = 15;
+        public const int gridColumns = 15;
 
         // snake
         private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
@@ -38,7 +38,7 @@ namespace SnakeGame.Model
         //Food
         private const int FoodPoolMaxCapacity = 8;
         private const int FoodSpawningFrequency = 3;
-        private const int MaxActiveFoods = 5;
+        private const int MaxActiveFoods = 7;
         #endregion
 
         #region constructing game objects

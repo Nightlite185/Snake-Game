@@ -20,13 +20,16 @@ namespace SnakeGame.ViewModel
             }
         }
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
-        public IEnumerable<(Coords coords, SolidColorBrush color)> Renderable
-            => gameManager.FoodPool.ActiveFoods
-                .Select(f => (f.Coords, Brushes.Red))
-                .Concat(
-                    gameManager.Snake.Body
-                    .Select(s => (s.Coords, Brushes.LightGreen))
-                );
+        public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
+        {
+            foreach (var food in gameManager.FoodPool.ActiveFoods)
+                yield return (food.Coords, Brushes.Red);
+
+            yield return (gameManager.Snake.HeadPos, Brushes.RoyalBlue);
+
+            foreach (var seg in gameManager.Snake.Body.Skip(1))
+                yield return (seg.Coords, Brushes.LightSkyBlue);
+        }
 
         #region ICommands
         public ICommand StartGameCommand { get; }
