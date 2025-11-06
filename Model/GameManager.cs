@@ -51,14 +51,10 @@ namespace SnakeGame.Model
         #endregion
 
         #region main management methods
-        private void SafelyMoveSnake(Direction newDirection)
+        private bool SafelyMoveSnake(Direction newDirection) // the bool returned means whether it survived this move.
         {
             if (Math.Abs(Snake.Head.Facing - newDirection) == 2) // if u turn in opposite direction - 死ねええええ!!!!!
-            {
-                Snake.Die();
-                State.Lose();
-                return;
-            }
+                return false;
 
             var tailSquare = Grid[Snake.TailPos]
                 ?? throw new IndexOutOfRangeException($"tail's coords are out of grid's bounds. Their values: {Snake.TailPos}");
@@ -68,12 +64,13 @@ namespace SnakeGame.Model
             var newHeadSquare = Grid.GetNextSquare(Snake.HeadPos, newDirection);
 
             if (newHeadSquare == null || newHeadSquare.HasSnake) // null here means wall collision --> game over.
-                LoseGame();
+                return false;
 
             else
             {
                 Snake.Move(newHeadSquare.Coords, newDirection); // actually moving the snake
                 newHeadSquare.AddSnake(Snake.Head); // updating the grid
+                return true;
             }
         }
         public async Task RunGameAsync()
@@ -82,7 +79,7 @@ namespace SnakeGame.Model
 
             State.Start();
             int i = 0;
-            OnIteration?.Invoke();
+            OnIteration?.Invoke(); // first canvas initialization
 
             while (State.CurrentState == GameStates.Running && Snake.Alive)
             {
@@ -92,11 +89,14 @@ namespace SnakeGame.Model
 
                 EatIfHasFood();
 
-                SafelyMoveSnake(inputDirection);
+                if (SafelyMoveSnake(inputDirection) == false) // * if snake didnt make it ;(
+                    LoseGame();
 
                 if (CheckForWin())
                 {
                     State.Win();
+
+                    if (Score > 0) 
                     GotFinalScore?.Invoke(Score);
                 }
 
@@ -113,6 +113,7 @@ namespace SnakeGame.Model
             Snake.Die();
             State.Lose();
             
+            if (Score > 0)
             GotFinalScore?.Invoke(Score);
         }
         public void RestartGame()
