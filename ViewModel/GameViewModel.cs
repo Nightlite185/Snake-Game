@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.DirectoryServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -25,7 +24,7 @@ namespace SnakeGame.ViewModel
         {
             get
             {
-                if (field == null)
+                if (string.IsNullOrWhiteSpace(field))
                     return "Guest";
 
                 return field;
@@ -33,7 +32,7 @@ namespace SnakeGame.ViewModel
 
             set;
         }
-        public ObservableCollection<ScoreEntry> ScoreboardEntries = [];
+        public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; } = [];
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
