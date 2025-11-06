@@ -6,14 +6,18 @@ using System.Windows.Controls;
 using SnakeGame.Model;
 using System.Windows.Input;
 using SnakeGame;
+using System.ComponentModel;
 
 namespace SnakeGameProject
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly GameViewModel viewModel;
         private readonly Rectangle[,] rectPool;
         private readonly Coords bounds = GameViewModel.Dimensions;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private void InitializeRectPool()
         {
             double tileHeight = GameCanvas.ActualHeight / bounds.Row;
@@ -57,7 +61,9 @@ namespace SnakeGameProject
             InitializeComponent();
 
             viewModel = new();
-            DataContext = viewModel;
+
+            DataContext = viewModel; // setting "global" datacontext
+            InputTip.DataContext = this;
 
             viewModel.OnRenderRequest += RenderGameObjects;
             viewModel.OnRestartRequest += ClearVisuals;
@@ -65,6 +71,7 @@ namespace SnakeGameProject
             rectPool = new Rectangle[bounds.Row, bounds.Col];
 
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
+
         }
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
@@ -73,9 +80,34 @@ namespace SnakeGameProject
             optionsWin.ShowDialog();
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void NicknameInput_LostFocus(object sender, RoutedEventArgs e)
         {
+            if (NicknameInput.Text.Length > 9)
+                return; // later raise tooltip saying you exceeded max length.
+            
+            viewModel.NicknameEntered = NicknameInput.Text;
 
+            if (string.IsNullOrWhiteSpace(NicknameInput.Text))
+                InputTip_Visibility = Visibility.Visible;
         }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e) 
+            => Keyboard.ClearFocus(); // stealing focus from the textbox bc its clingy as fuck and won't let me unfocus.
+        public Visibility InputTip_Visibility
+        {
+            get;
+
+            private set
+            {
+                if (field != value)
+                {
+                    field = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(InputTip_Visibility)));
+                }
+            }
+        }
+
+        private void NicknameInput_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) 
+            => InputTip_Visibility = Visibility.Collapsed;
     }
 }

@@ -97,7 +97,7 @@ namespace SnakeGame.Model
                     State.Win();
 
                     if (Score > 0) 
-                    GotFinalScore?.Invoke(Score);
+                        GotFinalScore?.Invoke(Score);
                 }
 
                 if (i % FoodSpawningFrequency == 0 && FoodPool.ActiveCount < MaxActiveFoods)
@@ -112,9 +112,9 @@ namespace SnakeGame.Model
         {
             Snake.Die();
             State.Lose();
-            
+
             if (Score > 0)
-            GotFinalScore?.Invoke(Score);
+                GotFinalScore?.Invoke(Score);
         }
         public void RestartGame()
         {
