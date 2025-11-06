@@ -13,7 +13,7 @@
         MinHeight="802"
         MinWidth="884" WindowStartupLocation="CenterScreen" Background="#FF0E0056" Icon="/Snake_35967.ico">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="798" Width="1577">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="798" Width="1577" MouseDown="Grid_MouseDown">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200*"/>
@@ -44,7 +44,7 @@
         <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Click="OptionsButton_Click"/>
         <Label x:Name="ScoreboardLabel" Content="SCOREBOARD" Margin="213,28,213,684" FontSize="36" FontWeight="Bold" Foreground="#FF00FFE2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF00FFED" BorderThickness="5,5,5,5" Grid.Column="2" RenderTransformOrigin="0.444,0.565"/>
         <Border BorderBrush="#FF7CFFF0" BorderThickness="4,4,4,4" Grid.Column="2" Margin="0,10,10,10" UseLayoutRounding="True">
-            <ListView x:Name="Scoreboard" d:ItemsSource="{d:SampleData ItemCount=10}" Margin="6,115,6,6" Background="#5E030054" FontSize="44" SelectionChanged="ListView_SelectionChanged" FontFamily="Bahnschrift" BorderBrush="#00828790">
+            <ListView x:Name="Scoreboard" ItemsSource="{Binding ScoreboardEntries}" Margin="6,115,6,6" Background="#5E030054" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790">
                 <ListView.Foreground>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF00BB" Offset="0.984"/>
@@ -58,5 +58,9 @@
                 </ListView.View>
             </ListView>
         </Border>
+
+        <Label x:Name="InputTip" Content="Insert nickname here" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,226,0,0" VerticalAlignment="Top" Height="31" Width="180" FontFamily="Segoe UI" FontStyle="Italic" Foreground="#FFD2D2D2" MinWidth="70" Visibility= "{Binding InputTip_Visibility}" FontSize="18"/>
+        <TextBox x:Name="NicknameInput" GotKeyboardFocus="NicknameInput_GotKeyboardFocus" LostKeyboardFocus="NicknameInput_LostFocus" MaxLines = "1" MinLines = "1" AcceptsTab = "False" ForceCursor = "False" HorizontalAlignment = "Center" TextWrapping="NoWrap" VerticalAlignment="Top" Width="180" Height="58" FontSize="24" Margin="0,214,0,0" FontStyle="Normal" FontWeight="DemiBold" Background="#3300FF27" Foreground="#FFACFFAD" BorderBrush="#FF005F9C" TextAlignment="Center" CaretBrush="#FFEAEAEA" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
     </Grid>
 </Window>
