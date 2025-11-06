@@ -196,5 +196,8 @@ namespace SnakeGame.Model
         public int Score { get; set; } = score;
         public string Nickname { get; set; } = nick;
         public DateTime Time { get; set; } = DateTime.Now;
+
+        public override string ToString()
+            => $"{Nickname}       ||       {Score}       ||       {Time:dd.MM, hh:mm}";
     }
 }
