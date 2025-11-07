@@ -79,7 +79,7 @@ namespace SnakeGame.Model
 
             State.Start();
             int i = 0;
-            OnIteration?.Invoke(); // first canvas initialization
+            OnIteration?.Invoke(); // first canvas initialization (before game loop)
 
             while (State.CurrentState == GameStates.Running && Snake.Alive)
             {
