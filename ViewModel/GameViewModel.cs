@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -112,6 +114,46 @@ namespace SnakeGame.ViewModel
             ScoreboardEntries.Clear();
             ScoresMap.Clear();
         }
+        private static string GetScoresDir()
+            => Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "SnakeGame"
+            );
+        public void SaveOnExit(CancelEventArgs e)
+        {
+            string scoresDir = GetScoresDir();
+            string scoresPath = Path.Combine(scoresDir, "Scores.json");
+
+            Directory.CreateDirectory(scoresDir);
+
+            File.WriteAllText(scoresPath, JsonSerializer.Serialize(ScoresMap));
+        }
+        public void LoadOnInit()
+        {
+            string scoresDir = GetScoresDir();
+            string scoresPath = Path.Combine(scoresDir, "Scores.json");
+
+            Directory.CreateDirectory(scoresDir);
+
+            if (!File.Exists(scoresPath))
+                return;
+
+            string scores = File.ReadAllText(scoresPath);
+            ScoresMap = JsonSerializer.Deserialize<Dictionary<string, List<int>>>(scores) ?? [];
+
+            if (ScoresMap.Count > 0)
+                InitializeScoreboard(ScoresMap);
+        }
+        private void InitializeScoreboard(Dictionary<string, List<int>> ScoresMap) // initializing scoreboard with loaded data.
+        {
+            ScoreboardEntries = new(ScoresMap
+                .SelectMany(kvp => kvp.Value
+                .Select(score => new ScoreEntry(score, nick: kvp.Key)))
+                .OrderByDescending(x => x.Score));
+
+            // TO DO:: Add datetime support ScoreMap dict when loading from JSON.
+        }
+        #endregion
         
         #region Rendering things
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);

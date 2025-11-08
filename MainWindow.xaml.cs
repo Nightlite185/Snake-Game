@@ -71,7 +71,9 @@ namespace SnakeGameProject
             rectPool = new Rectangle[bounds.Row, bounds.Col];
 
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
-
+            
+            Closing += (_, e) => viewModel.SaveOnExit(e);
+            Loaded += (_, _) => viewModel.LoadOnInit();            
         }
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
