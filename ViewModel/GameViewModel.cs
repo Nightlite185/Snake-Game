@@ -32,6 +32,39 @@ namespace SnakeGame.ViewModel
 
             set;
         }
+        private void UpdateScoreboard(int newScore)
+        {
+            for (int i = 0; i < ScoreboardEntries.Count; i++)
+            {
+                var entry = ScoreboardEntries[i];
+
+                switch (entry.Score)
+                {
+                    case int s when newScore > s: // if the new one is higher -> we put it above the i
+                        ScoreboardEntries.Insert(i, new ScoreEntry(newScore, NicknameEntered!));
+                        return;
+
+                    case int s when newScore < s: // if its lower -> we continue checking next
+                        continue;
+
+                    default: // if its equal -> check if it already has that user: yes -> skip | no -> put it below.
+                    
+                        if (
+                            ScoreboardEntries
+                            .Where(e => e.Score == newScore)
+                            .Any(e => e.Nickname == NicknameEntered)
+                        )
+                            return;
+
+                        else
+                            ScoreboardEntries.Insert(i + 1, new ScoreEntry(newScore, NicknameEntered!));
+                            return;
+                }
+            }
+            
+            // if it got to this point -> no lower scores found -> append to the end.
+            ScoreboardEntries.Add(new ScoreEntry(newScore, NicknameEntered!));
+        }
         public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; } = [];
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
@@ -95,38 +128,7 @@ namespace SnakeGame.ViewModel
             gameManager.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
 
             gameManager.OnScoreChange += () => this.Score = gameManager.Score;
-            gameManager.GotFinalScore += newScore =>
-            {
-                for (int i = 0; i < ScoreboardEntries.Count; i++)
-                {
-                    var entry = ScoreboardEntries[i];
-
-                    switch (entry.Score)
-                    {
-                        case int s when newScore > s: // if the new one is higher -> we put it above the i
-                            ScoreboardEntries.Insert(i, new ScoreEntry(newScore, NicknameEntered!));
-                            return;
-
-                        case int s when newScore < s: // if its lower -> we continue checking next
-                            continue;
-
-                        default: // if its equal -> check if it already has that user: yes -> skip | no -> put it below.
-                            if(
-                                ScoreboardEntries
-                                .Where(e => e.Score == newScore)
-                                .Any(e => e.Nickname == NicknameEntered)
-                            ) 
-                                return;
-
-                            else
-                                ScoreboardEntries.Insert(i + 1, new ScoreEntry(newScore, NicknameEntered!));
-                                return;
-                    }
-                }
-                
-                // if it got to this point -> no lower scores found -> append to the end.
-                ScoreboardEntries.Add(new ScoreEntry(newScore, NicknameEntered!));
-            };
+            gameManager.GotFinalScore += UpdateScoreboard;
             #endregion  
         }
 
