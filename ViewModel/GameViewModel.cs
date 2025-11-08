@@ -11,6 +11,44 @@ namespace SnakeGame.ViewModel
     public class GameViewModel : INotifyPropertyChanged
     {
         private readonly GameManager gameManager;
+        public GameViewModel()
+        {
+            ScoreboardEntries = [];
+            ScoresMap = [];
+            gameManager = new();
+            StartButton_Visibility = Visibility.Visible;
+            RestartButton_Visibility = Visibility.Collapsed;
+            OptionsButton_Visibility = Visibility.Visible;
+
+            // ==== Button ICommands ====
+            StartGameCommand = new RelayCommand(
+                executeAsync: gameManager.RunGameAsync,
+                canExecute: () => gameManager.State.CurrentState == GameStates.NotStarted
+            );
+            RestartGameCommand = new RelayCommand(
+                execute: gameManager.RestartGame,
+                canExecute: () => true
+            );
+
+            #region ==== Event Subscribers ====
+            gameManager.OnIteration += () => OnRenderRequest?.Invoke();
+
+            gameManager.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
+            gameManager.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
+            gameManager.State.OnGameStarted += () => OptionsButton_Visibility = Visibility.Collapsed;
+
+            gameManager.State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
+            gameManager.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
+            gameManager.State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
+
+            gameManager.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
+
+            gameManager.OnScoreChange += () => this.Score = gameManager.Score;
+            gameManager.GotFinalScore += HandleNewScore;
+            #endregion  
+        }
+
+        #region Score things !! TO DO: ENCAPSULATE IT INTO NEW CLASS !!
         public int Score
         {
             get;
@@ -32,7 +70,9 @@ namespace SnakeGame.ViewModel
 
             set;
         }
-        private void HandleNewScore(int newScore) // maybe even make it a separate class in future??
+        private Dictionary<string, List<int> > ScoresMap;
+        public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; }
+        private void HandleNewScore(int newScore)
         {
             if (ScoresMap.TryGetValue(NameEntered!, out var scores) && scores.Any(s => s >= newScore))
                 return; // quick tactical retreat if we already have higher scores with the same name on it.
@@ -72,8 +112,8 @@ namespace SnakeGame.ViewModel
             ScoreboardEntries.Clear();
             ScoresMap.Clear();
         }
-        private Dictionary<string, List<int> > ScoresMap = [];
-        public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; } = [];
+        
+        #region Rendering things
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
@@ -85,14 +125,16 @@ namespace SnakeGame.ViewModel
             foreach (var seg in gameManager.Snake.Body.Skip(1))
                 yield return (seg.Coords, Brushes.LightSkyBlue);
         }
+        #endregion
 
         #region ICommands
         public ICommand StartGameCommand { get; }
         public ICommand RestartGameCommand { get; }
         #endregion
+        
+        #region Events and their handlers
         public void KeyDownHandler(KeyEventArgs e)
-        {
-            gameManager.QueuedDirection = e.Key switch
+            => gameManager.QueuedDirection = e.Key switch
             {
                 Key.Up or Key.W => Direction.Up,
                 Key.Down or Key.S => Direction.Down,
@@ -101,45 +143,12 @@ namespace SnakeGame.ViewModel
 
                 _ => gameManager.QueuedDirection
             };
-        }
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action? OnRenderRequest;
         public event Action? OnRestartRequest;
-        public GameViewModel()
-        {
-            gameManager = new();
-            StartButton_Visibility = Visibility.Visible;
-            RestartButton_Visibility = Visibility.Collapsed;
-            OptionsButton_Visibility = Visibility.Visible;
-
-            // ==== Button ICommands ====
-            StartGameCommand = new RelayCommand(
-                executeAsync: gameManager.RunGameAsync,
-                canExecute: () => gameManager.State.CurrentState == GameStates.NotStarted
-            );
-            RestartGameCommand = new RelayCommand(
-                execute: gameManager.RestartGame,
-                canExecute: () => true
-            );
-
-            #region ==== Event Subscribers ====
-            gameManager.OnIteration += () => OnRenderRequest?.Invoke();
-
-            gameManager.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
-            gameManager.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
-            gameManager.State.OnGameStarted += () => OptionsButton_Visibility = Visibility.Collapsed;
-
-            gameManager.State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
-            gameManager.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
-            gameManager.State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
-
-            gameManager.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
-
-            gameManager.OnScoreChange += () => this.Score = gameManager.Score;
-            gameManager.GotFinalScore += HandleNewScore;
-            #endregion  
-        }
-
+        #endregion
+        
+        #region Visibility properties
         public Visibility RestartButton_Visibility 
         {
             get;
@@ -177,5 +186,6 @@ namespace SnakeGame.ViewModel
                 }
             }
         }
+        #endregion
     }
 }
