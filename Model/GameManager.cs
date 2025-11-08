@@ -90,7 +90,10 @@ namespace SnakeGame.Model
                 EatIfHasFood();
 
                 if (SafelyMoveSnake(inputDirection) == false) // * if snake didnt make it ;(
+                {
                     LoseGame();
+                    return;
+                }
 
                 if (CheckForWin())
                 {

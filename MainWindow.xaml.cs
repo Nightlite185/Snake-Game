@@ -85,7 +85,7 @@ namespace SnakeGameProject
             if (NicknameInput.Text.Length > 9)
                 return; // later raise tooltip saying you exceeded max length.
             
-            viewModel.NicknameEntered = NicknameInput.Text;
+            viewModel.NameEntered = NicknameInput.Text;
 
             if (string.IsNullOrWhiteSpace(NicknameInput.Text))
                 InputTip_Visibility = Visibility.Visible;

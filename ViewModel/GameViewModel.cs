@@ -20,7 +20,7 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
-        public string? NicknameEntered
+        public string? NameEntered
         {
             get
             {
@@ -32,39 +32,47 @@ namespace SnakeGame.ViewModel
 
             set;
         }
-        private void UpdateScoreboard(int newScore)
+        private void HandleNewScore(int newScore) // maybe even make it a separate class in future??
         {
+            if (ScoresMap.TryGetValue(NameEntered!, out var scores) && scores.Any(s => s >= newScore))
+                return; // quick tactical retreat if we already have higher scores with the same name on it.
+
             for (int i = 0; i < ScoreboardEntries.Count; i++)
             {
-                var entry = ScoreboardEntries[i];
+                int entryScore = ScoreboardEntries[i].Score;
 
-                switch (entry.Score)
+                if (newScore >= entryScore) // if the new one is higher -> we put it above the i
                 {
-                    case int s when newScore > s: // if the new one is higher -> we put it above the i
-                        ScoreboardEntries.Insert(i, new ScoreEntry(newScore, NicknameEntered!));
-                        return;
-
-                    case int s when newScore < s: // if its lower -> we continue checking next
-                        continue;
-
-                    default: // if its equal -> check if it already has that user: yes -> skip | no -> put it below.
-                    
-                        if (
-                            ScoreboardEntries
-                            .Where(e => e.Score == newScore)
-                            .Any(e => e.Nickname == NicknameEntered)
-                        )
-                            return;
-
-                        else
-                            ScoreboardEntries.Insert(i + 1, new ScoreEntry(newScore, NicknameEntered!));
-                            return;
+                    UpdateScores(newScore, i);
+                    return;
                 }
             }
-            
+
             // if it got to this point -> no lower scores found -> append to the end.
-            ScoreboardEntries.Add(new ScoreEntry(newScore, NicknameEntered!));
+            UpdateScores(newScore);
         }
+        private void UpdateScores(int newScore, int? idx = null) // if idx not given then add the end.
+        {
+            // Updating the Visuals (ObservableCollection)
+            if (idx == null)
+                ScoreboardEntries.Add(new ScoreEntry(newScore, NameEntered!));
+
+            else
+                ScoreboardEntries.Insert((int)idx, new ScoreEntry(newScore, NameEntered!));
+
+            // Updating the ScoresMap dictionary
+            if (ScoresMap.TryAdd(NameEntered!, []))
+                ScoresMap[NameEntered!] = [newScore];
+
+            else
+                ScoresMap[NameEntered!].Add(newScore);
+        }
+        public void ResetScoreboard()
+        {
+            ScoreboardEntries.Clear();
+            ScoresMap.Clear();
+        }
+        private Dictionary<string, List<int> > ScoresMap = [];
         public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; } = [];
         public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
@@ -128,7 +136,7 @@ namespace SnakeGame.ViewModel
             gameManager.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
 
             gameManager.OnScoreChange += () => this.Score = gameManager.Score;
-            gameManager.GotFinalScore += UpdateScoreboard;
+            gameManager.GotFinalScore += HandleNewScore;
             #endregion  
         }
 
