@@ -22,6 +22,8 @@ namespace SnakeGame.ViewModel
             RestartButton_Visibility = Visibility.Collapsed;
             OptionsButton_Visibility = Visibility.Visible;
 
+            LoadOnInit();
+
             // ==== Button ICommands ====
             StartGameCommand = new RelayCommand(
                 executeAsync: gameManager.RunGameAsync,
@@ -98,7 +100,7 @@ namespace SnakeGame.ViewModel
             // Updating the Visuals (ObservableCollection)
             if (idx == null)
                 ScoreboardEntries.Add(new ScoreEntry(newScore, NameEntered!));
-
+            
             else
                 ScoreboardEntries.Insert((int)idx, new ScoreEntry(newScore, NameEntered!));
 
