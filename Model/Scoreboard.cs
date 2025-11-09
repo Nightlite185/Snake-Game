@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SnakeGame.Model
 {
@@ -15,7 +16,14 @@ namespace SnakeGame.Model
             LoadOnInit();
         }
         private Dictionary<string, List<ScoreEntry>> ScoresMap;
-        public record ScoreEntry(string Name, int Score, DateTime Time);
+        public record ScoreEntry(string Name, int Score, DateTime Time)
+        {
+            [JsonIgnore]
+            public string StrPoints => $"{this.Score} pts.";
+
+            [JsonIgnore]
+            public string StrTime => $"{this.Time: dd/MM/yyyy, hh:mm tt}";
+        }
         public ObservableCollection<ScoreEntry> VisualScores { get; set; }
         public void HandleNewScore(int newScore, string Name)
         {
@@ -90,7 +98,7 @@ namespace SnakeGame.Model
         {
             VisualScores = new(ScoresMap
                 .SelectMany(kvp => kvp.Value
-                .OrderByDescending(e => e.Score)));
+                .OrderByDescending(e => e.Score))); // IT DOESNT FUCKING ORDERRRR, WHYYYYYYYYYYYYYYYYY?????????!!!!!!! TO DO FIX MEEE
         }
     }
 }

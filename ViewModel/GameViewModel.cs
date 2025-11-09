@@ -68,7 +68,7 @@ namespace SnakeGame.ViewModel
 
                 return field;
             }
-
+    
             set;
         }
         
