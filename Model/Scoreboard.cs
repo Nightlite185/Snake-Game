@@ -9,48 +9,51 @@ namespace SnakeGame.Model
     {
         public Scoreboard()
         {
-            ScoreboardEntries = [];
+            VisualScores = [];
             ScoresMap = [];
 
             LoadOnInit();
         }
-        private Dictionary<string, List<int>> ScoresMap;
-        public ObservableCollection<ScoreEntry> ScoreboardEntries { get; private set; }
-        public void HandleNewScore(int newScore, string NameEntered)
+        private Dictionary<string, List<ScoreEntry>> ScoresMap;
+        public record ScoreEntry(string Name, int Score, DateTime Time);
+        public ObservableCollection<ScoreEntry> VisualScores { get; set; }
+        public void HandleNewScore(int newScore, string Name)
         {
-            if (ScoresMap.TryGetValue(NameEntered!, out var scores) && scores.Any(s => s >= newScore))
+            if (ScoresMap.TryGetValue(Name, out var scores) && scores.Any(s => s.Score >= newScore))
                 return; // quick tactical retreat if we already have higher scores with the same name on it.
 
-            for (int i = 0; i < ScoreboardEntries.Count; i++)
+            ScoreEntry newEntry = new(Name, newScore, DateTime.Now);
+
+            for (int i = 0; i < VisualScores.Count; i++)
             {
-                int entryScore = ScoreboardEntries[i].Score;
+                int entryScore = VisualScores[i].Score;
 
                 if (newScore >= entryScore) // if the new one is higher -> we put it above the i
                 {
-                    UpdateScores(newScore, NameEntered, i);
+                    UpdateScores(newEntry, i);
                     return;
                 }
             }
 
             // if it got to this point -> no lower scores found -> append to the end.
-            UpdateScores(newScore, NameEntered);
+            UpdateScores(newEntry);
         }
-        private void UpdateScores(int newScore, string NameEntered, int? idx = null) // if idx not given then add the end.
+        private void UpdateScores(ScoreEntry newEntry, int? idx = null) // if idx not given then add the end.
         {
             // Updating the Visuals (ObservableCollection)
             if (idx == null)
-                ScoreboardEntries.Add(new ScoreEntry(newScore, NameEntered!));
+                VisualScores.Add(newEntry);
 
             else
-                ScoreboardEntries.Insert((int)idx, new ScoreEntry(newScore, NameEntered!));
+                VisualScores.Insert((int)idx, newEntry);
 
             // Updating the ScoresMap dictionary
-            if (!ScoresMap.TryAdd(NameEntered!, [newScore]))
-                ScoresMap[NameEntered!].Add(newScore);
+            if (!ScoresMap.TryAdd(newEntry.Name, [newEntry]))
+                ScoresMap[newEntry.Name].Add(newEntry);
         }
         public void ResetScoreboard()
         {
-            ScoreboardEntries.Clear();
+            VisualScores.Clear();
             ScoresMap.Clear();
         }
         private static string GetScoresDir()
@@ -78,19 +81,16 @@ namespace SnakeGame.Model
                 return;
 
             string scores = File.ReadAllText(scoresPath);
-            ScoresMap = JsonSerializer.Deserialize<Dictionary<string, List<int>>>(scores) ?? [];
+            ScoresMap = JsonSerializer.Deserialize<Dictionary<string, List<ScoreEntry>>>(scores) ?? [];
 
             if (ScoresMap.Count > 0)
-                InitializeScoreboard(ScoresMap);
+                InitializeScoreboard(ScoresMap); 
         }
-        private void InitializeScoreboard(Dictionary<string, List<int>> ScoresMap) // initializing scoreboard with loaded data.
+        private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap) 
         {
-            ScoreboardEntries = new(ScoresMap
+            VisualScores = new(ScoresMap
                 .SelectMany(kvp => kvp.Value
-                .Select(score => new ScoreEntry(score, nick: kvp.Key)))
-                .OrderByDescending(x => x.Score));
-
-            // TO DO:: Add datetime support ScoreMap dict when loading from JSON.
+                .OrderByDescending(e => e.Score)));
         }
     }
 }

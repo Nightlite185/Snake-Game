@@ -193,14 +193,4 @@ namespace SnakeGame.Model
         }
         #endregion
     }
-
-    public class ScoreEntry(int score, string nick, DateTime? dt = null)
-    {
-        public int Score { get; set; } = score;
-        public string Nickname { get; set; } = nick;
-        public DateTime Time { get; set; } = dt ?? DateTime.Now;
-
-        public override string ToString()
-            => $"{Nickname}       ||       {Score}       ||       {Time:dd.MM, hh:mm}";
-    }
 }

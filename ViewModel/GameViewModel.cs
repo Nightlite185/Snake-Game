@@ -15,8 +15,8 @@ namespace SnakeGame.ViewModel
         public GameViewModel()
         {
             // objects init
-            gm = new();
-            sb = new();
+            gm = new GameManager();
+            sb = new Scoreboard();
             
             // Button Visibility init
             StartButton_Visibility = Visibility.Visible;
@@ -33,7 +33,7 @@ namespace SnakeGame.ViewModel
                 canExecute: () => true
             );
 
-            #region ==== Event Subscribers ====
+            #region == || == Event Subscribers == || ==
             gm.OnIteration += () => OnRenderRequest?.Invoke();
 
             gm.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
@@ -146,7 +146,5 @@ namespace SnakeGame.ViewModel
             }
         }
         #endregion
-    
-
     }
 }
