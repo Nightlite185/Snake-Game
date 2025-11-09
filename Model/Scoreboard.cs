@@ -45,10 +45,7 @@ namespace SnakeGame.Model
                 ScoreboardEntries.Insert((int)idx, new ScoreEntry(newScore, NameEntered!));
 
             // Updating the ScoresMap dictionary
-            if (ScoresMap.TryAdd(NameEntered!, []))
-                ScoresMap[NameEntered!] = [newScore];
-
-            else
+            if (!ScoresMap.TryAdd(NameEntered!, [newScore]))
                 ScoresMap[NameEntered!].Add(newScore);
         }
         public void ResetScoreboard()
