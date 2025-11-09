@@ -15,7 +15,6 @@ namespace SnakeGameProject
         private readonly GameViewModel viewModel;
         private readonly Rectangle[,] rectPool;
         private readonly Coords bounds = GameViewModel.Dimensions;
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void InitializeRectPool()
@@ -64,6 +63,7 @@ namespace SnakeGameProject
 
             DataContext = viewModel; // setting "global" datacontext
             InputTip.DataContext = this;
+            Scoreboard.DataContext = viewModel.sb;
 
             viewModel.OnRenderRequest += RenderGameObjects;
             viewModel.OnRestartRequest += ClearVisuals;
@@ -72,7 +72,7 @@ namespace SnakeGameProject
 
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
             
-            Closing += (_, e) => viewModel.SaveOnExit(e);
+            Closing += (_, e) => viewModel.SaveOnExit();
         }
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
