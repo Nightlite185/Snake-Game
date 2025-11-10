@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -96,9 +97,12 @@ namespace SnakeGame.Model
         }
         private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap) 
         {
-            VisualScores = new(ScoresMap
-                .SelectMany(kvp => kvp.Value
-                .OrderByDescending(e => e.Score))); // IT DOESNT FUCKING ORDERRRR, WHYYYYYYYYYYYYYYYYY?????????!!!!!!! TO DO FIX MEEE
+            // I had to divide the work instead of inlining it in new()
+            // bc if its squashed into one linq chain there,
+            // it just wont order for some reason
+
+            var scoresOrdered = ScoresMap.SelectMany(kvp => kvp.Value).OrderByDescending(e => e.Score);
+            VisualScores = new(scoresOrdered);
         }
     }
 }
