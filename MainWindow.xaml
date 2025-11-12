@@ -11,7 +11,7 @@
         Focusable="True"
         ResizeMode="NoResize"
         MinHeight="802"
-        MinWidth="884" WindowStartupLocation="CenterScreen" Background="#FF0E0056" Icon="/Snake_35967.ico">
+        MinWidth="884" WindowStartupLocation="CenterScreen" Background="#FF0E0056">
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="798" Width="1577" MouseDown="Grid_MouseDown">
 
