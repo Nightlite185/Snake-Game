@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Media;
 
 namespace SnakeGame.Model
 {
@@ -17,8 +17,11 @@ namespace SnakeGame.Model
             LoadOnInit();
         }
         private Dictionary<string, List<ScoreEntry>> ScoresMap;
-        public record ScoreEntry(string Name, int Score, DateTime Time)
+        public record ScoreEntry(string Name, int Score, DateTime Time, int Rank = 0)
         {
+            [JsonIgnore]
+            public int Rank { get; set; } = Rank;
+
             [JsonIgnore]
             public string StrPoints => $"{this.Score} pts.";
 
@@ -31,21 +34,19 @@ namespace SnakeGame.Model
             if (ScoresMap.TryGetValue(Name, out var scores) && scores.Any(s => s.Score >= newScore))
                 return; // quick tactical retreat if we already have higher scores with the same name on it.
 
-            ScoreEntry newEntry = new(Name, newScore, DateTime.Now);
-
             for (int i = 0; i < VisualScores.Count; i++)
             {
                 int entryScore = VisualScores[i].Score;
 
                 if (newScore >= entryScore) // if the new one is higher -> we put it above the i
                 {
-                    UpdateScores(newEntry, i);
+                    UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: i+1), i);
                     return;
                 }
             }
 
             // if it got to this point -> no lower scores found -> append to the end.
-            UpdateScores(newEntry);
+            UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: VisualScores.Count));
         }
         private void UpdateScores(ScoreEntry newEntry, int? idx = null) // if idx not given then add the end.
         {
@@ -54,7 +55,16 @@ namespace SnakeGame.Model
                 VisualScores.Add(newEntry);
 
             else
+            {
                 VisualScores.Insert((int)idx, newEntry);
+                UpdateRanksBelow(startIdx: (int)idx+1);
+
+                int i = 0;
+                
+                foreach (var entry in VisualScores)
+                    if (entry.Rank != ++i) 
+                        throw new Exception("entry's rank is wrong lol");
+            }
 
             // Updating the ScoresMap dictionary
             if (!ScoresMap.TryAdd(newEntry.Name, [newEntry]))
@@ -64,6 +74,11 @@ namespace SnakeGame.Model
         {
             VisualScores.Clear();
             ScoresMap.Clear();
+        }
+        private void UpdateRanksBelow(int startIdx)
+        {
+            for (int i = startIdx; i < VisualScores.Count; i++)
+                VisualScores[i].Rank = i + 1;
         }
         private static string GetScoresDir()
             => Path.Combine(
@@ -95,14 +110,18 @@ namespace SnakeGame.Model
             if (ScoresMap.Count > 0)
                 InitializeScoreboard(ScoresMap); 
         }
-        private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap) 
+        private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap)
         {
-            // I had to divide the work instead of inlining it in new()
-            // bc if its squashed into one linq chain there,
-            // it just wont order for some reason
+            var orderedEntries = ScoresMap.Values
+                .SelectMany(x => x)
+                .OrderByDescending(e => e.Score);
 
-            var scoresOrdered = ScoresMap.SelectMany(kvp => kvp.Value).OrderByDescending(e => e.Score);
-            VisualScores = new(scoresOrdered);
+            int newRank = 0;
+
+            foreach (var entry in orderedEntries)
+                entry.Rank = ++newRank;
+            
+            VisualScores = new(orderedEntries);
         }
     }
 }
