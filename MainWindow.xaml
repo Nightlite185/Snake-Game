@@ -34,17 +34,18 @@
             <Canvas x:Name="GameCanvas" Background="#FF010613" Width="642" Height="641"/>
         </Viewbox>
 
-        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" Margin="0,334,0,0"/>
-        <Button x:Name="RestartButton" Content="Reset" Command="{Binding RestartGameCommand}" Visibility="{Binding RestartButton_Visibility}"  HorizontalAlignment="Center" Margin="0,425,0,0" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2"/>
+        <Button x:Name="StartButton" Content="Start" Command="{Binding StartGameCommand}" Visibility="{Binding StartButton_Visibility}"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" Margin="0,334,0,0" Cursor="Hand"/>
+        <Button x:Name="RestartButton" Content="Reset" Command="{Binding RestartGameCommand}" Visibility="{Binding RestartButton_Visibility}"  HorizontalAlignment="Center" Margin="0,425,0,0" VerticalAlignment="Top" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" Cursor="Hand"/>
 
-        <Rectangle HorizontalAlignment="Center" Height="72" Margin="0,35,0,0" Stroke="#FF03F9E8" VerticalAlignment="Top" Width="152" Fill="#4C000000" StrokeThickness="2"/>
-        <Label x:Name="ScoreLabel" Content="Score: " HorizontalAlignment="Left" Margin="35,49,0,0" VerticalAlignment="Top" Height="44" Width="70" FontSize="22" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
+        <Rectangle HorizontalAlignment="Center" RadiusX="15" RadiusY="15"  Height="72" Margin="0,35,0,0" Stroke="#FF03F9E8" VerticalAlignment="Top" Width="152" Fill="#4C000000" StrokeThickness="2"/>
+        <Label x:Name="ScoreLabel"  Content="Score: " HorizontalAlignment="Left" Margin="35,49,0,0" VerticalAlignment="Top" Height="44" Width="70" FontSize="22" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
         <Label x:Name="ScoreDisplay" Content="{Binding Score}" HorizontalAlignment="Left" Margin="110,49,0,0" VerticalAlignment="Top" Height="44" Width="56" FontSize="24" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="#FFA1FFDF" RenderTransformOrigin="0.512,0.508"/>
-        <Label x:Name="Title" Content="🐍 SNAKE 🐍" Margin="194,28,230,684" FontSize="36" FontWeight="Bold" Foreground="#FF71FF00" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF00FF3E" BorderThickness="5,5,5,5" Grid.Column="1" RenderTransformOrigin="0.444,0.565"/>
-        <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Click="OptionsButton_Click"/>
-        <Label x:Name="ScoreboardLabel" Content="SCOREBOARD" Margin="213,28,213,684" FontSize="36" FontWeight="Bold" Foreground="#FF00FFE2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF00FFED" BorderThickness="5,5,5,5" Grid.Column="2" RenderTransformOrigin="0.444,0.565"/>
-        <Border BorderBrush="#FF7CFFF0" BorderThickness="4,4,4,4" Grid.Column="2" Margin="0,10,10,10" UseLayoutRounding="True">
-            <ListView x:Name="Scoreboard" ItemsSource="{Binding VisualScores}" Margin="6,115,6,6" Background="#5E030054" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790">
+        <Border BorderBrush="#FF93FFAD" BorderThickness="5,5,5,5" CornerRadius="17" Margin="194,28,230,684" Grid.Column="1" >
+            <Label x:Name="Title" Content="🐍 SNAKE 🐍" FontSize="36" FontWeight="Bold" Foreground="#FF93FFAD" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Transparent" RenderTransformOrigin="0.444,0.565"/>
+        </Border>
+        <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Click="OptionsButton_Click" Cursor="Hand"/>
+        <Border CornerRadius="30" Background="#5E030054" BorderBrush="#FF7CFFF0" BorderThickness="4,4,4,4" Grid.Column="2" Margin="0,132,10,10" UseLayoutRounding="True">
+            <ListView x:Name="Scoreboard" ItemsSource="{Binding VisualScores}" Margin="6,6,6,6" Background="Transparent" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790">
                 <ListView.Foreground>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF00BB" Offset="0.984"/>
@@ -64,9 +65,14 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Border>
+        <Border Margin="199,28,209,684" Grid.Column="2" BorderBrush="#FF00FFED" BorderThickness="5,5,5,5" CornerRadius="17">
+            <Label x:Name="ScoreboardLabel" Content="SCOREBOARD" FontSize="36" FontWeight="Bold" Foreground="#FF00FFED" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Transparent" RenderTransformOrigin="0.444,0.565"/>
+        </Border>
 
-        <Label x:Name="InputTip" Content="Insert nickname here" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,226,0,0" VerticalAlignment="Top" Height="31" Width="180" FontFamily="Segoe UI" FontStyle="Italic" Foreground="#FFD2D2D2" MinWidth="70" Visibility= "{Binding InputTip_Visibility}" FontSize="18"/>
-        <TextBox x:Name="NicknameInput" GotKeyboardFocus="NicknameInput_GotKeyboardFocus" LostKeyboardFocus="NicknameInput_LostFocus" MaxLines = "1" MinLines = "1" AcceptsTab = "False" ForceCursor = "False" HorizontalAlignment = "Center" TextWrapping="NoWrap" VerticalAlignment="Top" Width="180" Height="58" FontSize="24" Margin="0,214,0,0" FontStyle="Normal" FontWeight="DemiBold" Background="#3300FF27" Foreground="#FFACFFAD" BorderBrush="#FF005F9C" TextAlignment="Center" CaretBrush="#FFEAEAEA" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label x:Name="InputTip" Content="Insert nickname here" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,222,0,0" VerticalAlignment="Top" Height="36" Width="180" FontFamily="Segoe UI" FontStyle="Italic" Foreground="#FFD2D2D2" MinWidth="70" Visibility= "{Binding InputTip_Visibility}" FontSize="18"/>
+        <Border CornerRadius="14" Background="#3300FF27" BorderBrush="#E5ACFFAD" BorderThickness="1" HorizontalAlignment = "Center" VerticalAlignment="Top" Width="180" Height="58" Margin="0,212,0,0" >
+            <TextBox x:Name="NicknameInput" GotKeyboardFocus="NicknameInput_GotKeyboardFocus" LostKeyboardFocus="NicknameInput_LostFocus" MaxLines = "1" MinLines = "1" AcceptsTab = "False" ForceCursor = "False" TextWrapping="NoWrap" FontSize="24" FontStyle="Normal" FontWeight="DemiBold" Background="Transparent" Foreground="#FFACFFAD" TextAlignment="Center" CaretBrush="#FFEAEAEA" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="-1,-1,-1,-1" BorderBrush="#00ABADB3"/>
+        </Border>
 
     </Grid>
 </Window>
