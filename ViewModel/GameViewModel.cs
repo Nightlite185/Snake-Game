@@ -23,15 +23,37 @@ namespace SnakeGame.ViewModel
             RestartButton_Visibility = Visibility.Collapsed;
             OptionsButton_Visibility = Visibility.Visible;
 
-            // ==== Button ICommands ====
+            #region ICommands
             StartGameCommand = new RelayCommand(
                 executeAsync: gm.RunGameAsync,
                 canExecute: () => gm.State.CurrentState == GameStates.NotStarted
             );
+
             RestartGameCommand = new RelayCommand(
                 execute: gm.RestartGame,
                 canExecute: () => true
             );
+
+            ResetScoreboardCommand = new RelayCommand(
+                execute: sb.ResetScoreboard,
+                canExecute: () => sb.VisualScores.Count > 0
+            );
+
+            //SaveChangesCommand = new RelayCommand(
+            //    execute:
+            //    canExecute:
+            //);
+
+            //DiscardChangesCommand = new RelayCommand(
+            //    execute: 
+            //    canExecute:
+            //)
+
+            //ResetToDefaultCommand = new RelayCommand(
+            //    execute: 
+            //    canExecute:
+            //)
+            #endregion
 
             #region == || == Event Subscribers == || ==
             gm.OnIteration += () => OnRenderRequest?.Invoke();
@@ -59,6 +81,8 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
+        public int SnakeStartingLength { get; set; }
+        public static int MaxSnakeStartingLength => GameManager.gridRows - 2;
         public string? NameEntered
         {
             get
@@ -89,8 +113,12 @@ namespace SnakeGame.ViewModel
         #region ICommands
         public ICommand StartGameCommand { get; }
         public ICommand RestartGameCommand { get; }
+        public ICommand ResetScoreboardCommand { get; }
+        //public ICommand SaveChangesCommand { get; }
+        //public ICommand DiscardChangesCommand { get; }
+        //public ICommand ResetToDefaultCommand { get; }
         #endregion
-        
+
         #region Events and their handlers
         public void KeyDownHandler(KeyEventArgs e)
             => gm.QueuedDirection = e.Key switch
