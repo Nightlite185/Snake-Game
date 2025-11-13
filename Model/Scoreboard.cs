@@ -17,16 +17,29 @@ namespace SnakeGame.Model
             LoadOnInit();
         }
         private Dictionary<string, List<ScoreEntry>> ScoresMap;
-        public record ScoreEntry(string Name, int Score, DateTime Time, int Rank = 0)
+        public record ScoreEntry(string Name, int Score, DateTime Time, int Rank = 0) : INotifyPropertyChanged
         {
             [JsonIgnore]
-            public int Rank { get; set; } = Rank;
+            public int Rank
+            {
+                get;
+                set
+                {
+                    if (value != field)
+                    {
+                        field = value;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rank)));
+                    }
+                }
+            } = Rank;
 
             [JsonIgnore]
             public string StrPoints => $"{this.Score} pts.";
 
             [JsonIgnore]
             public string StrTime => $"{this.Time: dd/MM/yyyy, hh:mm tt}";
+
+            public event PropertyChangedEventHandler? PropertyChanged;
         }
         public ObservableCollection<ScoreEntry> VisualScores { get; set; }
         public void HandleNewScore(int newScore, string Name)
@@ -78,7 +91,7 @@ namespace SnakeGame.Model
         private void UpdateRanksBelow(int startIdx)
         {
             for (int i = startIdx; i < VisualScores.Count; i++)
-                VisualScores[i].Rank = i + 1;
+                VisualScores[i].Rank++;
         }
         private static string GetScoresDir()
             => Path.Combine(

@@ -55,7 +55,7 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Rank}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="70"/>
-                            
+
                             <TextBlock Text="{Binding Name}" Width="180" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding StrPoints}" Width="180" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding StrTime}" Width="350" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right"/>
