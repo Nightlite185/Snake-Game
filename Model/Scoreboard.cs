@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Windows.Media;
 
 namespace SnakeGame.Model
 {
@@ -59,7 +58,7 @@ namespace SnakeGame.Model
             }
 
             // if it got to this point -> no lower scores found -> append to the end.
-            UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: VisualScores.Count));
+            UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: VisualScores.Count + 1));
         }
         private void UpdateScores(ScoreEntry newEntry, int? idx = null) // if idx not given then add the end.
         {
@@ -71,12 +70,6 @@ namespace SnakeGame.Model
             {
                 VisualScores.Insert((int)idx, newEntry);
                 UpdateRanksBelow(startIdx: (int)idx+1);
-
-                int i = 0;
-                
-                foreach (var entry in VisualScores)
-                    if (entry.Rank != ++i) 
-                        throw new Exception("entry's rank is wrong lol");
             }
 
             // Updating the ScoresMap dictionary
