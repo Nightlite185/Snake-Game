@@ -1,7 +1,14 @@
 namespace SnakeGame.Model
 {
-    public class GameManager()
+    public class GameManager
     {
+        public GameManager()
+        {
+            InitGameObjects();
+            State = new();
+            cfg = new();
+            QueuedDirection = cfg.Snake.StartingDirection;
+        }
         #region ViewModel public API
         public event Action? OnScoreChange;
         public event Action? OnIteration;
@@ -42,11 +49,11 @@ namespace SnakeGame.Model
         private const int MaxActiveFoods = 7;
         #endregion
 
-        #region constructing game objects
-        public GameGrid Grid { get; private set; } = new(gridRows, gridColumns);
-        public Snake Snake { get; set; } = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
-        public GameState State { get; init; } = new();
-        public FoodPool FoodPool { get; private set; } = new(FoodPoolMaxCapacity, MaxActiveFoods);
+        #region Game Objects
+        public GameGrid Grid { get; private set; } = null!; // STFU ROSLYN ITS NEVER NULL IN .CTOR
+        public  Snake Snake { get; private set; } = null!; // same here
+        public GameState State { get; init; } 
+        public FoodPool FoodPool { get; private set; } = null!; // same here
         private static readonly Random rand = new();
         #endregion
 
@@ -126,7 +133,7 @@ namespace SnakeGame.Model
             if (Snake.Alive && State.CurrentState == GameStates.Running)
                 Snake.Die();
 
-            RestartGameObjects();
+            InitGameObjects();
 
             this.QueuedDirection = StartingDirection;
 
@@ -185,8 +192,11 @@ namespace SnakeGame.Model
                 segSquare.AddSnake(seg);
             }
         }
-        private void RestartGameObjects() // this can be reused later in a proper constructor if I wanna later switch from primary to normal one.
+        private void InitGameObjects() // this can be reused later in a proper constructor if I wanna later switch from primary to normal one.
         {
+            Coords snakeStartingCoords = new(gridRows/2, gridColumns/2);
+            int foodPoolPrefill = MaxActiveFoods+1;
+
             Grid = new(gridRows, gridColumns);
             Snake = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
             FoodPool = new(FoodPoolMaxCapacity, MaxActiveFoods);
