@@ -31,7 +31,7 @@ namespace SnakeGame.Model
         
         #region Variables
         // general 
-        private readonly Settings cfg;
+        public readonly Settings cfg;
         [Obsolete]
         public int TickLength = 300;
         private int MaxScore => MaxSnakeLength - StartingLength;

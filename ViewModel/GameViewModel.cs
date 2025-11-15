@@ -36,7 +36,7 @@ namespace SnakeGame.ViewModel
 
             ResetScoreboardCommand = new RelayCommand(
                 execute: sb.ResetScoreboard,
-                canExecute: () => sb.VisualScores.Count > 0
+                canExecute: () => true // should be sb.VisualScores.Count > 0 but I'll figure it out later bc not working as planned.
             );
 
             //SaveChangesCommand = new RelayCommand(
@@ -81,8 +81,8 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
-        public int SnakeStartingLength { get; set; }
-        public static int MaxSnakeStartingLength => GameManager.gridRows - 2;
+        // public int SnakeStartingLength { get; set; }
+        // public int MaxSnakeStartingLength => Dimensions.Row - 2;
         public string? NameEntered
         {
             get
@@ -97,7 +97,7 @@ namespace SnakeGame.ViewModel
         }
         
         #region Rendering things
-        public static Coords Dimensions => new(GameManager.gridRows, GameManager.gridColumns);
+        public Coords Dimensions => new(gm.cfg.Grid.Rows, gm.cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
             foreach (var food in gm.FoodPool.ActiveFoods)
