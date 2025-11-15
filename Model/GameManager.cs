@@ -26,27 +26,34 @@ namespace SnakeGame.Model
                 OnScoreChange?.Invoke();
             }
         }
-        public Direction QueuedDirection { get; set; } = StartingDirection;
+        public Direction QueuedDirection { get; set; }
         #endregion
         
-        #region const definitions
-        public const int TickLength = 300;
-        private const int MaxScore = MaxSnakeLength - StartingLength;
+        #region Variables
+        // general 
+        private readonly Settings cfg;
+        [Obsolete]
+        public int TickLength = 300;
+        private int MaxScore => MaxSnakeLength - StartingLength;
+
         // grid
-        public const int gridRows = 15;
-        public const int gridColumns = 15;
+        [Obsolete]
+        public int gridRows = 15;
+        [Obsolete]
+        public int gridColumns = 15;
 
         // snake
-        private const int StartingLength = 3; // snake throws if this is greater than MaxLength const
-        private const int MaxSnakeLength = gridRows * gridColumns;
-
-        private const Direction StartingDirection = Direction.Up;
-        private static readonly Coords startingCoords = new(gridRows/2, gridColumns/2); // exactly in the middle
+        [Obsolete]
+        private int StartingLength = 3;
+        private int MaxSnakeLength => gridRows * gridColumns;
+        [Obsolete]
+        private Direction StartingDirection = Direction.Up;
 
         //Food
-        private const int FoodPoolMaxCapacity = 8;
-        private const int FoodSpawningFrequency = 3;
-        private const int MaxActiveFoods = 7;
+        [Obsolete]
+        private int FoodSpawningFrequency = 3;
+        [Obsolete]
+        private int MaxActiveFoods = 7;
         #endregion
 
         #region Game Objects
@@ -177,8 +184,8 @@ namespace SnakeGame.Model
         private bool CheckForWin()
             => Score switch
             {
-                > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.CurrentState}, score = {Score}, snake's length = {Snake.CurrentLength}"),
-                MaxScore when State.CurrentState == GameStates.Running => true,
+                int when Score > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.CurrentState}, score = {Score}, snake's length = {Snake.CurrentLength}"),
+                int when Score == MaxScore && State.CurrentState == GameStates.Running => true,
 
                 _ => false
             };
@@ -198,8 +205,8 @@ namespace SnakeGame.Model
             int foodPoolPrefill = MaxActiveFoods+1;
 
             Grid = new(gridRows, gridColumns);
-            Snake = new(StartingLength, StartingDirection, startingCoords, MaxSnakeLength);
-            FoodPool = new(FoodPoolMaxCapacity, MaxActiveFoods);
+            Snake = new(StartingLength, StartingDirection, snakeStartingCoords);
+            FoodPool = new(foodPoolPrefill, MaxActiveFoods);
         }
         #endregion
     }

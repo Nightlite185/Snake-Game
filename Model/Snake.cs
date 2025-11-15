@@ -3,10 +3,9 @@
     public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4 }
     public class Snake
     {
-        public Snake(int startingLength, Direction direction, Coords startingCoords, int maxLength)
+        public Snake(int startingLength, Direction direction, Coords startingCoords)
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(startingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(startingLength, maxLength);
 
             Alive = true;
             Body.AddFirst(new SnakeSegment(startingCoords, direction)); // adding head first
