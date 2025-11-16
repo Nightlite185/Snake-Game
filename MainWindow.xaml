@@ -43,7 +43,7 @@
         <Border BorderBrush="#FF93FFAD" BorderThickness="5,5,5,5" CornerRadius="17" Margin="194,28,230,684" Grid.Column="1" >
             <Label x:Name="Title" Content="🐍 SNAKE 🐍" FontSize="36" FontWeight="Bold" Foreground="#FF93FFAD" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Transparent" RenderTransformOrigin="0.444,0.565"/>
         </Border>
-        <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Click="OptionsButton_Click" Cursor="Hand"/>
+        <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Command="{Binding OpenOptionsCommand}" Cursor="Hand"/>
         <Border CornerRadius="30" Background="#5E030054" BorderBrush="#FF7CFFF0" BorderThickness="4,4,4,4" Grid.Column="1" Margin="690,132,27,25" UseLayoutRounding="True" Grid.ColumnSpan="2">
             <ListView x:Name="Scoreboard" ItemsSource="{Binding VisualScores}" Margin="6,6,6,6" Background="Transparent" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790">
                 <ListView.Foreground>
