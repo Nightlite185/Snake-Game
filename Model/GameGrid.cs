@@ -4,11 +4,13 @@ namespace SnakeGame.Model
 {
     public class GameGrid : IEnumerable<GameGrid.Square>
     {
-        public GameGrid(int rows, int cols)
+        public GameGrid(Settings.GridSettings cfg)
         {
-            RowCount = rows;
-            ColCount = cols;
-            grid = new Square[rows, cols];
+            RowCount = cfg.Rows;
+            ColCount = cfg.Columns;
+
+            grid = new Square[RowCount, ColCount];
+            
             InitializeGrid();
         }
         private readonly int RowCount;

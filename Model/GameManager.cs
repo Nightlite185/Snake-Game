@@ -2,12 +2,12 @@ namespace SnakeGame.Model
 {
     public class GameManager
     {
-        public GameManager()
+        public GameManager(Settings cfg)
         {
-            InitGameObjects();
+            InitGameObjects(cfg);
+            UpdateOptions(cfg);
+
             State = new();
-            cfg = new();
-            QueuedDirection = cfg.Snake.StartingDirection;
         }
         #region ViewModel public API
         public event Action? OnScoreChange;
@@ -29,36 +29,22 @@ namespace SnakeGame.Model
         public Direction QueuedDirection { get; set; }
         #endregion
         
-        #region Variables
-        // general 
-        public readonly Settings cfg;
-        [Obsolete]
-        public int TickLength = 300;
-        private int MaxScore => MaxSnakeLength - StartingLength;
-
-        // grid
-        [Obsolete]
-        public int gridRows = 15;
-        [Obsolete]
-        public int gridColumns = 15;
+        #region private fields
+        // general
+        private int TickLength;
+        private int MaxScore;
 
         // snake
-        [Obsolete]
-        private int StartingLength = 3;
-        private int MaxSnakeLength => gridRows * gridColumns;
-        [Obsolete]
-        private Direction StartingDirection = Direction.Up;
+        private int MaxSnakeLength;
 
         //Food
-        [Obsolete]
-        private int FoodSpawningFrequency = 3;
-        [Obsolete]
-        private int MaxActiveFoods = 7;
+        private int FoodSpawningFrequency;
+        private int MaxActiveFoods;
         #endregion
 
         #region Game Objects
         public GameGrid Grid { get; private set; } = null!; // STFU ROSLYN ITS NEVER NULL IN .CTOR
-        public  Snake Snake { get; private set; } = null!; // same here
+        public Snake Snake { get; private set; } = null!; // same here
         public GameState State { get; init; } 
         public FoodPool FoodPool { get; private set; } = null!; // same here
         private static readonly Random rand = new();
@@ -133,17 +119,17 @@ namespace SnakeGame.Model
             if (Score > 0)
                 GotFinalScore?.Invoke(Score);
         }
-        public void RestartGame()
+        public void RestartGame(Settings cfg)
         {
             State.Restart();
 
             if (Snake.Alive && State.CurrentState == GameStates.Running)
                 Snake.Die();
 
-            InitGameObjects();
+            InitGameObjects(cfg);
 
-            this.QueuedDirection = StartingDirection;
-
+            this.QueuedDirection = cfg.Snake.StartingDirection;
+            
             Score = 0;
         }
         private void SpawnRandomFood()
@@ -163,7 +149,7 @@ namespace SnakeGame.Model
         {
             Food food;
             var here = Grid[Snake.HeadPos]
-                ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall, fix me. Current HeadPos: {Snake.HeadPos}");
+                ?? throw new IndexOutOfRangeException($"snake's head cannot be inside a wall. Current HeadPos: {Snake.HeadPos}");
             
             if (!here.HasFood) return;
 
@@ -199,14 +185,26 @@ namespace SnakeGame.Model
                 segSquare.AddSnake(seg);
             }
         }
-        private void InitGameObjects() // this can be reused later in a proper constructor if I wanna later switch from primary to normal one.
+        private void UpdateOptions(Settings cfg)
         {
-            Coords snakeStartingCoords = new(gridRows/2, gridColumns/2);
-            int foodPoolPrefill = MaxActiveFoods+1;
+            QueuedDirection = cfg.Snake.StartingDirection;
+            MaxSnakeLength = cfg.Grid.Rows * cfg.Grid.Columns;
+            MaxScore = MaxSnakeLength - cfg.Snake.StartingLength;
 
-            Grid = new(gridRows, gridColumns);
-            Snake = new(StartingLength, StartingDirection, snakeStartingCoords);
-            FoodPool = new(foodPoolPrefill, MaxActiveFoods);
+            FoodSpawningFrequency = cfg.General.FoodSpawningFrequency;
+            
+            MaxActiveFoods = cfg.General.MaxActiveFoods;
+            TickLength = cfg.General.TickLength;
+        }
+        private void InitGameObjects(Settings cfg)
+        {
+            UpdateOptions(cfg);
+
+            Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
+            
+            Grid = new(cfg.Grid);
+            Snake = new(cfg.Snake, snakeStartingCoords);
+            FoodPool = new(cfg.General);
         }
         #endregion
     }

@@ -3,14 +3,14 @@
     public enum Direction { Up = 1, Right = 2, Down = 3, Left = 4 }
     public class Snake
     {
-        public Snake(int startingLength, Direction direction, Coords startingCoords)
+        public Snake(Settings.SnakeSettings cfg, Coords startingCoords)
         {
-            ArgumentOutOfRangeException.ThrowIfLessThan(startingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
+            ArgumentOutOfRangeException.ThrowIfLessThan(cfg.StartingLength, 2); // cannot be less than two bc we are adding head first, outside of the loop.
 
             Alive = true;
-            Body.AddFirst(new SnakeSegment(startingCoords, direction)); // adding head first
+            Body.AddFirst(new SnakeSegment(startingCoords, cfg.StartingDirection)); // adding head first
 
-            GrowBy(times: startingLength - 1);
+            GrowBy(times: cfg.StartingLength - 1);
         }
         public int CurrentLength { get => Body.Count; init {} }
         public SnakeSegment Head => Body.First!.Value;

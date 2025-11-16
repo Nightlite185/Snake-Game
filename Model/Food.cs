@@ -17,12 +17,15 @@ namespace SnakeGame.Model
                 field = value;
             }
         } = 0;
-        public FoodPool(int maxPoolCapacity, int maxActiveFoods)
+        public FoodPool(Settings.GeneralSettings cfg)
         {
-            foodStack = new Stack<Food>(maxPoolCapacity);
-            this.Fill(maxPoolCapacity);
+            int maxPoolCap = cfg.MaxActiveFoods + 1;
+
+            foodStack = new Stack<Food>(maxPoolCap);
+            this.Fill(maxPoolCap);
+            
             this.AllFoods = [.. foodStack];
-            this.maxActiveFoods = maxActiveFoods;
+            this.maxActiveFoods = cfg.MaxActiveFoods;
         }
         private readonly List<Food> AllFoods = [];
         public IEnumerable<Food> ActiveFoods // API for the ViewModel

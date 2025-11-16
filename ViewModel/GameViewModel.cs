@@ -11,11 +11,13 @@ namespace SnakeGame.ViewModel
     {
         private readonly GameManager gm;
         public readonly Scoreboard sb;
+        private Settings Cfg { get; set; }
         public void SaveOnExit() => sb.SaveOnExit();
         public GameViewModel()
         {
             // objects init
-            gm = new GameManager();
+            Cfg = new();
+            gm = new GameManager(Cfg);
             sb = new Scoreboard();
             
             // Button Visibility init
@@ -30,13 +32,13 @@ namespace SnakeGame.ViewModel
             );
 
             RestartGameCommand = new RelayCommand(
-                execute: gm.RestartGame,
+                execute: () => gm.RestartGame(Cfg),
                 canExecute: () => true
             );
 
             ResetScoreboardCommand = new RelayCommand(
                 execute: sb.ResetScoreboard,
-                canExecute: () => true // should be sb.VisualScores.Count > 0 but I'll figure it out later bc not working as planned.
+                canExecute: () => sb.VisualScores.Count > 0
             );
 
             //SaveChangesCommand = new RelayCommand(
@@ -81,8 +83,7 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
-        // public int SnakeStartingLength { get; set; }
-        // public int MaxSnakeStartingLength => Dimensions.Row - 2;
+
         public string? NameEntered
         {
             get
@@ -97,7 +98,7 @@ namespace SnakeGame.ViewModel
         }
         
         #region Rendering things
-        public Coords Dimensions => new(gm.cfg.Grid.Rows, gm.cfg.Grid.Columns);
+        public Coords Dimensions => new(Cfg.Grid.Rows, Cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
             foreach (var food in gm.FoodPool.ActiveFoods)
