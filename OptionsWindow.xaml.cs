@@ -1,15 +1,19 @@
-﻿using SnakeGame.ViewModel;
+﻿using SnakeGame.Model;
+using SnakeGame.ViewModel;
 using System.Windows;
 
 namespace SnakeGame
 {
     public partial class OptionsWindow : Window
     {
-        private readonly GameViewModel viewModel;
-        public OptionsWindow(GameViewModel viewModel)
+        private readonly SettingsViewModel SetVM;
+        private readonly Settings settingsCopy;
+        public OptionsWindow(Settings settingsCopy)
         {
-            this.viewModel = viewModel;
-            DataContext = viewModel;
+            this.DataContext = SetVM;
+            this.settingsCopy = settingsCopy;
+            
+            SetVM = new SettingsViewModel(settingsCopy);
 
             InitializeComponent();
         }
