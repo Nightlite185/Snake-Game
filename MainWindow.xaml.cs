@@ -5,16 +5,15 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using SnakeGame.Model;
 using System.Windows.Input;
-using SnakeGame;
 using System.ComponentModel;
 
 namespace SnakeGameProject
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private readonly GameViewModel viewModel;
+        private readonly GameViewModel GameVM;
         private readonly Rectangle[,] rectPool;
-        private readonly Coords bounds = GameViewModel.Dimensions;
+        private readonly Coords bounds;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void InitializeRectPool()
@@ -41,7 +40,7 @@ namespace SnakeGameProject
                 }
             }
         }
-        public void Window_KeyDown(object sender, KeyEventArgs e) => viewModel.KeyDownHandler(e);
+        public void Window_KeyDown(object sender, KeyEventArgs e) => GameVM.KeyDownHandler(e);
         private void ClearVisuals()
         {
             foreach (var rect in rectPool)
@@ -49,9 +48,9 @@ namespace SnakeGameProject
         }
         private void RenderGameObjects()
         {
-            ClearVisuals(); // could use hashset and only go through it once, instead of clearing everything and rendering again.
-                             // This is simple but works. Idk which would be faster tho. Hashset also takes time to build from 0 every time so..
-            foreach (var (coords, color) in viewModel.GetRenderable())
+            ClearVisuals(); 
+
+            foreach (var (coords, color) in GameVM.GetRenderable())
                 rectPool[coords.Row, coords.Col].Fill = color;
         }
         
@@ -59,26 +58,21 @@ namespace SnakeGameProject
         {
             InitializeComponent();
 
-            viewModel = new();
+            GameVM = new();
+            bounds = GameVM.Dimensions;
 
-            DataContext = viewModel; // setting "global" datacontext
+            DataContext = GameVM;
             InputTip.DataContext = this;
-            Scoreboard.DataContext = viewModel.sb;
+            Scoreboard.DataContext = GameVM.sb;
 
-            viewModel.OnRenderRequest += RenderGameObjects;
-            viewModel.OnRestartRequest += ClearVisuals;
+            GameVM.OnRenderRequest += RenderGameObjects;
+            GameVM.OnRestartRequest += ClearVisuals;
 
             rectPool = new Rectangle[bounds.Row, bounds.Col];
 
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
             
-            Closing += (_, e) => viewModel.SaveOnExit();
-        }
-
-        private void OptionsButton_Click(object sender, RoutedEventArgs e)
-        {
-            var optionsWin = new OptionsWindow(viewModel);
-            optionsWin.ShowDialog();
+            Closing += (_, e) => GameVM.SaveOnExit();
         }
 
         private void NicknameInput_LostFocus(object sender, RoutedEventArgs e)
@@ -86,7 +80,7 @@ namespace SnakeGameProject
             if (NicknameInput.Text.Length > 9)
                 return; // later raise tooltip saying you exceeded max length.
             
-            viewModel.NameEntered = NicknameInput.Text;
+            GameVM.NameEntered = NicknameInput.Text;
 
             if (string.IsNullOrWhiteSpace(NicknameInput.Text))
                 InputTip_Visibility = Visibility.Visible;
