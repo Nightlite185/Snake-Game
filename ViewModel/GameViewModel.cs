@@ -41,23 +41,20 @@ namespace SnakeGame.ViewModel
                 canExecute: () => sb.VisualScores.Count > 0
             );
 
-            //SaveChangesCommand = new RelayCommand(
-            //    execute:
-            //    canExecute:
-            //);
+            OpenOptionsCommand = new RelayCommand(
+                execute: () =>
+                {
+                    Settings settingsCopy = Cfg.DeepClone();
+                    var optionsWin = new OptionsWindow(settingsCopy);
 
-            //DiscardChangesCommand = new RelayCommand(
-            //    execute: 
-            //    canExecute:
-            //)
+                    optionsWin.ShowDialog();
+                },
+                canExecute: () => gm.State.CurrentState != GameStates.NotStarted
+            );
 
-            //ResetToDefaultCommand = new RelayCommand(
-            //    execute: 
-            //    canExecute:
-            //)
             #endregion
 
-            #region == || == Event Subscribers == || ==
+            #region Event Subscribers
             gm.OnIteration += () => OnRenderRequest?.Invoke();
 
             gm.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
@@ -115,9 +112,7 @@ namespace SnakeGame.ViewModel
         public ICommand StartGameCommand { get; }
         public ICommand RestartGameCommand { get; }
         public ICommand ResetScoreboardCommand { get; }
-        //public ICommand SaveChangesCommand { get; }
-        //public ICommand DiscardChangesCommand { get; }
-        //public ICommand ResetToDefaultCommand { get; }
+        public ICommand OpenOptionsCommand { get; }
         #endregion
 
         #region Events and their handlers
