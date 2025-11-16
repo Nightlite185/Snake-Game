@@ -6,6 +6,16 @@ namespace SnakeGame.Model
     }
     public class Settings: IDefaultable
     {
+        public Settings DeepClone()
+        {
+            return new Settings
+            {
+                Snake = this.Snake,
+                Grid = this.Grid,
+                General = this.General,
+                Theme = this.Theme
+            };
+        }
         public Settings()
         {
             if (InitializeFromJson() == false) // if json init failed
