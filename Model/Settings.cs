@@ -28,15 +28,22 @@ namespace SnakeGame.Model
         }
         public void ToDefault()
         {
-            IDefaultable[] settings = [Snake, Grid, General, Theme];
-            
-            foreach (var def in settings)
-                def.ToDefault();
+            Snake.ToDefault();
+            Grid.ToDefault();
+            General.ToDefault();
+            Theme.ToDefault();
         }
-        public SnakeSettings Snake { get; init; }
-        public GridSettings Grid { get; init; }
-        public GeneralSettings General { get; init; }
-        public ThemeSettings Theme { get; init; }
+        public void ImportFrom(Settings other)
+        {
+            this.Snake = other.Snake;
+            this.Grid = other.Grid;
+            this.General = other.General;
+            this.Theme = other.Theme;
+        }
+        public SnakeSettings Snake { get; set; }
+        public GridSettings Grid { get; set; }
+        public GeneralSettings General { get; set; }
+        public ThemeSettings Theme { get; set; }
         public struct SnakeSettings: IDefaultable
         {
             #region defaults
