@@ -42,13 +42,7 @@ namespace SnakeGame.ViewModel
             );
 
             OpenOptionsCommand = new RelayCommand(
-                execute: () =>
-                {
-                    Settings settingsCopy = Cfg.DeepClone();
-                    var optionsWin = new OptionsWindow(settingsCopy);
-
-                    optionsWin.ShowDialog();
-                },
+                execute: () => new OptionsWindow(Cfg).ShowDialog(),
                 canExecute: () => gm.State.CurrentState != GameStates.NotStarted
             );
 
@@ -71,6 +65,7 @@ namespace SnakeGame.ViewModel
             gm.GotFinalScore += score => sb.HandleNewScore(score, NameEntered!);
             #endregion  
         }
+        
         public int Score
         {
             get;
@@ -109,10 +104,10 @@ namespace SnakeGame.ViewModel
         #endregion
 
         #region ICommands
-        public ICommand StartGameCommand { get; }
-        public ICommand RestartGameCommand { get; }
-        public ICommand ResetScoreboardCommand { get; }
-        public ICommand OpenOptionsCommand { get; }
+        public RelayCommand StartGameCommand { get; }
+        public RelayCommand RestartGameCommand { get; }
+        public RelayCommand ResetScoreboardCommand { get; }
+        public RelayCommand OpenOptionsCommand { get; }
         #endregion
 
         #region Events and their handlers

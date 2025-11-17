@@ -7,13 +7,11 @@ namespace SnakeGame
     public partial class OptionsWindow : Window
     {
         private readonly SettingsViewModel SetVM;
-        private readonly Settings settingsCopy;
-        public OptionsWindow(Settings settingsCopy)
+        public OptionsWindow(Settings OGSettingsRef)
         {
             this.DataContext = SetVM;
-            this.settingsCopy = settingsCopy;
             
-            SetVM = new SettingsViewModel(settingsCopy);
+            SetVM = new SettingsViewModel(OGSettingsRef);
 
             InitializeComponent();
         }
