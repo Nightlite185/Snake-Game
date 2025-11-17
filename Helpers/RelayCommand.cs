@@ -18,6 +18,7 @@ namespace SnakeGame.Helpers
         private readonly Func<Task>? executeAsync;
         private readonly Action? execute;
         private readonly Func<bool> canExecute;
+        public event EventHandler? CanExecuteChanged;
         public async void Execute(object? parameter = null)
         {
             if (executeAsync != null)
@@ -27,7 +28,6 @@ namespace SnakeGame.Helpers
                 execute!();
         }
         public bool CanExecute(object? parameter = null) => canExecute();
-
-        public event EventHandler? CanExecuteChanged;
+        public void ScreamCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }
