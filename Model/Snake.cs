@@ -15,7 +15,7 @@
         public int CurrentLength { get => Body.Count; init {} }
         public SnakeSegment Head => Body.First!.Value;
         public Coords HeadPos => Head.Coords;
-        public SnakeSegment Tail => Body.Last!.Value; // TO DO:: fix me: this is null if I turn in opposite side than I was going before, for some reason lol. 
+        public SnakeSegment Tail => Body.Last!.Value;
         public Coords TailPos => Tail.Coords;
         public LinkedList<SnakeSegment> Body { get; set; } = [];
         public bool Alive { get; private set; }
