@@ -2,12 +2,11 @@ namespace SnakeGame.Model
 {
     public class GameManager
     {
-        public GameManager(Settings cfg)
+        public GameManager(Settings cfg, GameState GS)
         {
             InitGameObjects(cfg);
             UpdateOptions(cfg);
-
-            State = new();
+            this.State = GS;
         }
         #region ViewModel public API
         public event Action? OnScoreChange;

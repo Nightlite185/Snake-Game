@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:GameViewModel}"
+        xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingsViewModel}"
         mc:Ignorable="d"
         Title="Options window" Height="538" Width="434" Background="#FF00DEFF" Foreground="Red" OpacityMask="Red" BorderBrush="Red" MinWidth="434" MinHeight="538" MaxWidth="434" MaxHeight="538" ShowInTaskbar="False" SizeToContent="WidthAndHeight" Topmost="True" WindowState="Maximized">
     <Grid x:Name="OptionsGrid" RenderTransformOrigin="0.504,0.49" MaxWidth="434" MaxHeight="538">
@@ -18,14 +18,28 @@
                 <GradientStop Color="#FFE6FF00" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
+
+        <!-- Management buttons -->
         <Button x:Name="SaveButton" Content="Save changes" Command="{Binding SaveChangesCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="140" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="284,468,0,0" Cursor="Hand"/>
         <Button x:Name="DiscardButton" Content="Discard" Command="{Binding DiscardChangesCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="109" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="170,468,0,0" Cursor="Hand"/>
         <Button x:Name="ToDefaultButton" Content="Reset to default" Command="{Binding ResetToDefaultCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="155" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="10,468,0,0" Cursor="Hand"/>
+        
+        <!-- SNAKE STARTING LENGTH OPTION -->
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="386" Margin="0,19,0,0" BorderBrush="#E54CFFD2" BorderThickness="1,1,1,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="164*"/>
+                    <ColumnDefinition Width="41*"/>
+                    <ColumnDefinition Width="179*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="StartingLength" Content="Snake's starting length:" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="160" FontSize="14" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
+                <Label x:Name="StartingLengthMirror" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Value, ElementName=SnakeLengthSlider}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="41" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2"/>
+                <Slider x:Name="SnakeLengthSlider" HorizontalAlignment="Left" Margin="14,0,0,0" VerticalAlignment="Center" Width="161" Minimum="2" Maximum="{Binding MaxSnakeStartLength}" Value="{Binding DraftSettings.Snake.StartingLength}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+            </Grid>
+        </Border>
 
 
-        <Label x:Name="StartingLength" Content="Snake's starting length:" HorizontalAlignment="Left" Margin="21,85,0,0" VerticalAlignment="Top" Height="38" Width="208" FontSize="18" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
-        <Slider x:Name="SnakeLengthSlider" HorizontalAlignment="Left" Margin="247,95,0,0" VerticalAlignment="Top" Width="161" Minimum="2" Maximum="{Binding MaxSnakeStartingLength}" Value="{Binding SnakeStartingLength}"/>
-        <Label x:Name="StartingLength_Copy" Content="!! WORK IN PROGRESS !!" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="38" Width="218" FontSize="18" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70"/>
+
 
     </Grid>
 </Window>

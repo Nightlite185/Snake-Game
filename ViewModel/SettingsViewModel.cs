@@ -1,9 +1,10 @@
 using SnakeGame.Helpers;
 using SnakeGame.Model;
+using System.ComponentModel;
 
 namespace SnakeGame.ViewModel
 {
-    public class SettingsViewModel
+    public class SettingsViewModel : INotifyPropertyChanged
     {
         private bool IsChanged
         { 
@@ -26,8 +27,15 @@ namespace SnakeGame.ViewModel
             } 
         }
         private bool isOGDefault;
-        private readonly Settings draftSettings;
+
+        public Settings DraftSettings { get; }
         private readonly Settings OGSettingsRef;
+
+        public int MaxSnakeStartLength => Math.Max(DraftSettings.Grid.Rows, DraftSettings.Grid.Columns) - 2;
+        // REMEMBER TO CALL PROP_CHANGED ON THIS WHEN CHANGING ROWS OR COLS!!!!
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public SettingsViewModel(Settings settings)
         {
             this.draftSettings = settings.DeepClone();
@@ -37,7 +45,7 @@ namespace SnakeGame.ViewModel
             SaveChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    OGSettingsRef.ImportFrom(draftSettings);
+                    OGSettingsRef.ImportFrom(DraftSettings); // this is wrong, have to clone instead probably idk im too tired rn
                     IsChanged = false;
                     
                     if (IsDraftDefault)
@@ -54,7 +62,7 @@ namespace SnakeGame.ViewModel
                 execute: () =>
                 {
                     // TO DO:: maybe open some pop-up like "you sure u wanna reset???"
-                    draftSettings.ToDefault();
+                    DraftSettings.ToDefault();
                     
                     IsChanged = true;
                     IsDraftDefault = true;
@@ -65,7 +73,7 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    draftSettings.ImportFrom(OGSettingsRef);
+                    DraftSettings.ImportFrom(OGSettingsRef);
                     IsChanged = false;
 
                     if (IsDraftDefault)          // if it was default and we're reverting those changes now
