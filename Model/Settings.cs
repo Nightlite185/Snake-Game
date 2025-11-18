@@ -23,13 +23,6 @@ namespace SnakeGame.Model
             General.ToDefault();
             Theme.ToDefault();
         }
-        public void ImportFrom(Settings other)
-        {
-            this.Snake = other.Snake;
-            this.Grid = other.Grid;
-            this.General = other.General;
-            this.Theme = other.Theme;
-        }
         public SnakeSettings Snake { get; set; }
         public GridSettings Grid { get; set; }
         public GeneralSettings General { get; set; }

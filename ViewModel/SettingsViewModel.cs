@@ -45,7 +45,7 @@ namespace SnakeGame.ViewModel
             SaveChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    OGSettingsRef.ImportFrom(DraftSettings); // this is wrong, have to clone instead probably idk im too tired rn
+                    DraftSettings.DeepCloneTo(OGSettingsRef);
                     IsChanged = false;
                     
                     if (IsDraftDefault)
@@ -73,7 +73,7 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    DraftSettings.ImportFrom(OGSettingsRef);
+                    OGSettingsRef.DeepCloneTo(DraftSettings);
                     IsChanged = false;
 
                     if (IsDraftDefault)          // if it was default and we're reverting those changes now
