@@ -16,7 +16,7 @@ namespace SnakeGame.ViewModel
                 DiscardChangesCommand.ScreamCanExecuteChanged();
             } 
         }
-        private bool IsDefault
+        private bool IsDraftDefault
         { 
             get; 
             set
@@ -25,8 +25,9 @@ namespace SnakeGame.ViewModel
                 ResetToDefaultCommand.ScreamCanExecuteChanged();    
             } 
         }
-        private Settings draftSettings;
-        private Settings OGSettingsRef;
+        private bool isOGDefault;
+        private readonly Settings draftSettings;
+        private readonly Settings OGSettingsRef;
         public SettingsViewModel(Settings settings)
         {
             this.draftSettings = settings.DeepClone();
@@ -39,8 +40,12 @@ namespace SnakeGame.ViewModel
                     OGSettingsRef.ImportFrom(draftSettings);
                     IsChanged = false;
                     
-                    if (IsDefault)
-                        IsDefault = false; // FIX THIS AAAAHJUFIOLWEHUIG
+                    if (IsDraftDefault)
+                        isOGDefault = true;
+
+                    else if(isOGDefault && !IsDraftDefault)
+                        isOGDefault = false;
+
                 },
                 canExecute: () => IsChanged
             );
@@ -52,9 +57,9 @@ namespace SnakeGame.ViewModel
                     draftSettings.ToDefault();
                     
                     IsChanged = true;
-                    IsDefault = true; // FIX THIS, ITS NOT CONSISTENT WITH SAVE COMMAND
+                    IsDraftDefault = true;
                 },
-                canExecute: () => !IsDefault
+                canExecute: () => !IsDraftDefault
             );
 
             DiscardChangesCommand = new RelayCommand(
@@ -62,6 +67,12 @@ namespace SnakeGame.ViewModel
                 {
                     draftSettings.ImportFrom(OGSettingsRef);
                     IsChanged = false;
+
+                    if (IsDraftDefault)          // if it was default and we're reverting those changes now
+                        IsDraftDefault = false; // we turn it back to false.
+
+                    else if (isOGDefault || !IsDraftDefault) // if og is default, and we are discarding any changes made
+                        IsDraftDefault = true;              // -> we're actually reverting draft to default as well
                 },
                 canExecute: () => IsChanged
             );
