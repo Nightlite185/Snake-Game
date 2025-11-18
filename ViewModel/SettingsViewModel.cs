@@ -36,11 +36,11 @@ namespace SnakeGame.ViewModel
             SaveChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    this.OGSettingsRef = draftSettings;
+                    OGSettingsRef.ImportFrom(draftSettings);
                     IsChanged = false;
                     
                     if (IsDefault)
-                        IsDefault = false;
+                        IsDefault = false; // FIX THIS AAAAHJUFIOLWEHUIG
                 },
                 canExecute: () => IsChanged
             );
@@ -50,10 +50,9 @@ namespace SnakeGame.ViewModel
                 {
                     // TO DO:: maybe open some pop-up like "you sure u wanna reset???"
                     draftSettings.ToDefault();
-                    this.OGSettingsRef = draftSettings;
-
-                    IsChanged = false;
-                    IsDefault = true;
+                    
+                    IsChanged = true;
+                    IsDefault = true; // FIX THIS, ITS NOT CONSISTENT WITH SAVE COMMAND
                 },
                 canExecute: () => !IsDefault
             );
@@ -61,7 +60,7 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    draftSettings = OGSettingsRef;
+                    draftSettings.ImportFrom(OGSettingsRef);
                     IsChanged = false;
                 },
                 canExecute: () => IsChanged

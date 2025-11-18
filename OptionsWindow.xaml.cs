@@ -9,9 +9,9 @@ namespace SnakeGame
         private readonly SettingsViewModel SetVM;
         public OptionsWindow(Settings OGSettingsRef)
         {
-            this.DataContext = SetVM;
-            
             SetVM = new SettingsViewModel(OGSettingsRef);
+            
+            this.DataContext = SetVM;
 
             InitializeComponent();
         }
