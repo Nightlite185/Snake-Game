@@ -6,16 +6,6 @@ namespace SnakeGame.Model
     }
     public class Settings: IDefaultable
     {
-        public Settings DeepClone()
-        {
-            return new Settings
-            {
-                Snake = this.Snake,
-                Grid = this.Grid,
-                General = this.General,
-                Theme = this.Theme
-            };
-        }
         public Settings()
         {
             if (InitializeFromJson() == false) // if json init failed
@@ -44,7 +34,7 @@ namespace SnakeGame.Model
         public GridSettings Grid { get; set; }
         public GeneralSettings General { get; set; }
         public ThemeSettings Theme { get; set; }
-        public struct SnakeSettings: IDefaultable
+        public class SnakeSettings: IDefaultable
         {
             #region defaults
             public const int DefStartingLength = 3;
@@ -58,7 +48,7 @@ namespace SnakeGame.Model
             public int StartingLength { get; set; }
             public Direction StartingDirection { get; set; }
         }
-        public struct GridSettings: IDefaultable
+        public class GridSettings: IDefaultable
         {
             #region Defaults
             public const int DefRows = 15;
@@ -72,7 +62,7 @@ namespace SnakeGame.Model
             public int Rows { get; set; }
             public int Columns { get; set; }
         }
-        public struct GeneralSettings: IDefaultable
+        public class GeneralSettings: IDefaultable
         {
             #region defaults
             public const int DefTickLength = 330;
@@ -89,7 +79,7 @@ namespace SnakeGame.Model
             public int MaxActiveFoods { get; set; }
             public int FoodSpawningFrequency { get; set; }
         }
-        public struct ThemeSettings: IDefaultable
+        public class ThemeSettings: IDefaultable
         {
             public void ToDefault()
             {
