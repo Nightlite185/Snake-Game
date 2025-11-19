@@ -1,3 +1,4 @@
+using Force.DeepCloner;
 using SnakeGame.Helpers;
 using SnakeGame.Model;
 using System.ComponentModel;

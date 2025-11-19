@@ -1,3 +1,6 @@
+using System.IO;
+using System.Text.Json;
+
 namespace SnakeGame.Model
 {
     public interface IDefaultable
@@ -6,15 +9,33 @@ namespace SnakeGame.Model
     }
     public class Settings: IDefaultable
     {
-        public Settings()
+        public Settings(bool GetDefault = false)
         {
-            if (InitializeFromJson() == false) // if json init failed
-                ToDefault(); // just build default settings
-        }
-        private bool InitializeFromJson()
-        {
+            Snake = new();
+            Grid = new();
+            General = new();
+            Theme = new();
 
-            return false;
+            if (GetDefault) 
+                ToDefault();
+        }
+
+        public static Settings? TryInitFromJson()
+        {
+            string dir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "SnakeGame"
+            );
+            string path = Path.Combine(dir, "Settings.json");
+
+            Directory.CreateDirectory(dir);
+
+            if (!File.Exists(path))
+                return null;
+
+            string json = File.ReadAllText(path);
+
+            return JsonSerializer.Deserialize<Settings>(json);
         }
         public void ToDefault()
         {
@@ -23,10 +44,11 @@ namespace SnakeGame.Model
             General.ToDefault();
             Theme.ToDefault();
         }
-        public SnakeSettings Snake { get; set; }
-        public GridSettings Grid { get; set; }
-        public GeneralSettings General { get; set; }
-        public ThemeSettings Theme { get; set; }
+
+        public SnakeSettings Snake { get; set; } = null!; // just for roslyn to shut tf up ab nulls in ctor
+        public GridSettings Grid { get; set; } = null!;
+        public GeneralSettings General { get; set; } = null!;
+        public ThemeSettings Theme { get; set; } = null!;
         public class SnakeSettings: IDefaultable
         {
             #region defaults

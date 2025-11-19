@@ -9,16 +9,18 @@ namespace SnakeGame.ViewModel
 {
     public class GameViewModel : INotifyPropertyChanged
     {
-        private readonly GameManager gm;
+        private readonly GameManager? gm;
         public readonly Scoreboard sb;
+        private GameState State { get; init; }
         private Settings Cfg { get; set; }
         public void SaveOnExit() => sb.SaveOnExit();
         public GameViewModel()
         {
-            // objects init
-            Cfg = new();
-            gm = new GameManager(Cfg);
+            // Objects init
+            Cfg = Settings.TryInitFromJson() ?? new Settings(GetDefault: true);
             sb = new Scoreboard();
+            State = new();
+            
             
             // Button Visibility init
             StartButton_Visibility = Visibility.Visible;

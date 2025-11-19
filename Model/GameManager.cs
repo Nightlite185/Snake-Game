@@ -5,7 +5,7 @@ namespace SnakeGame.Model
         public GameManager(Settings cfg, GameState GS)
         {
             InitGameObjects(cfg);
-            UpdateOptions(cfg);
+            InitFields(cfg);
             this.State = GS;
         }
         #region ViewModel public API
@@ -184,7 +184,7 @@ namespace SnakeGame.Model
                 segSquare.AddSnake(seg);
             }
         }
-        private void UpdateOptions(Settings cfg)
+        private void InitFields(Settings cfg)
         {
             QueuedDirection = cfg.Snake.StartingDirection;
             MaxSnakeLength = cfg.Grid.Rows * cfg.Grid.Columns;
@@ -197,7 +197,7 @@ namespace SnakeGame.Model
         }
         private void InitGameObjects(Settings cfg)
         {
-            UpdateOptions(cfg);
+            InitFields(cfg);
 
             Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
             
