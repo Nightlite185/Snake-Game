@@ -9,7 +9,7 @@ namespace SnakeGame.ViewModel
 {
     public class GameViewModel : INotifyPropertyChanged
     {
-        private readonly GameManager? gm;
+        private GameManager? gm;
         public readonly Scoreboard sb;
         private GameState State { get; init; }
         private Settings Cfg { get; set; }
@@ -21,7 +21,6 @@ namespace SnakeGame.ViewModel
             sb = new Scoreboard();
             State = new();
             
-            
             // Button Visibility init
             StartButton_Visibility = Visibility.Visible;
             RestartButton_Visibility = Visibility.Collapsed;
@@ -29,12 +28,24 @@ namespace SnakeGame.ViewModel
 
             #region ICommands
             StartGameCommand = new RelayCommand(
-                executeAsync: gm.RunGameAsync,
+                executeAsync: async () =>
+                {
+                    gm = new(Cfg, State);
+                    await gm!.RunGameAsync();
+                },
                 canExecute: () => gm!.State.Current == GameStates.NotStarted
             );
 
             RestartGameCommand = new RelayCommand(
-                execute: () => gm.RestartGame(Cfg),
+                execute: () =>
+                {
+                    State.Restart();
+                    gm = null;
+                    Score = 0;
+
+                    RestartGameCommand!.ScreamCanExecuteChanged();
+                    OnRestartRequest?.Invoke(); // request for view to clear canva visuals.
+                },
                 canExecute: () => State.Current is GameStates.Running or GameStates.Paused
             );
 
@@ -50,7 +61,7 @@ namespace SnakeGame.ViewModel
             #endregion
 
             #region Event Subscribers
-            gm.OnIteration += () => OnRenderRequest?.Invoke();
+            gm!.OnIteration += () => OnRenderRequest?.Invoke();
 
             gm.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
             gm.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
@@ -60,11 +71,9 @@ namespace SnakeGame.ViewModel
             gm.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
             gm.State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
 
-            gm.State.OnGameRestarted += () => OnRestartRequest?.Invoke();
-
             gm.OnScoreChange += () => this.Score = gm.Score;
             gm.GotFinalScore += score => sb.HandleNewScore(score, NameEntered!);
-            #endregion  
+            #endregion
         }
         
         public int Score
@@ -76,7 +85,6 @@ namespace SnakeGame.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
             }
         }
-
         public string? NameEntered
         {
             get
@@ -94,7 +102,7 @@ namespace SnakeGame.ViewModel
         public Coords Dimensions => new(Cfg.Grid.Rows, Cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
-            foreach (var food in gm.FoodPool.ActiveFoods)
+            foreach (var food in gm!.FoodPool.ActiveFoods)
                 yield return (food.Coords, Brushes.Red);
 
             yield return (gm.Snake.HeadPos, Brushes.RoyalBlue);
@@ -113,7 +121,7 @@ namespace SnakeGame.ViewModel
 
         #region Events and their handlers
         public void KeyDownHandler(KeyEventArgs e)
-            => gm.QueuedDirection = e.Key switch
+            => gm!.QueuedDirection = e.Key switch
             {
                 Key.Up or Key.W => Direction.Up,
                 Key.Down or Key.S => Direction.Down,

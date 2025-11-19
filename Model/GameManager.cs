@@ -4,9 +4,8 @@ namespace SnakeGame.Model
     {
         public GameManager(Settings cfg, GameState GS)
         {
-            InitGameObjects(cfg);
+            InitGameObjects(cfg, GS);
             InitFields(cfg);
-            this.State = GS;
         }
         #region ViewModel public API
         public event Action? OnScoreChange;
@@ -44,7 +43,7 @@ namespace SnakeGame.Model
         #region Game Objects
         public GameGrid Grid { get; private set; } = null!; // STFU ROSLYN ITS NEVER NULL IN .CTOR
         public Snake Snake { get; private set; } = null!; // same here
-        public GameState State { get; init; } 
+        public GameState State { get; private set; } = null!;
         public FoodPool FoodPool { get; private set; } = null!; // same here
         private static readonly Random rand = new();
         #endregion
@@ -118,19 +117,6 @@ namespace SnakeGame.Model
             if (Score > 0)
                 GotFinalScore?.Invoke(Score);
         }
-        public void RestartGame(Settings cfg)
-        {
-            State.Restart();
-
-            if (Snake.Alive && State.CurrentState == GameStates.Running)
-                Snake.Die();
-
-            InitGameObjects(cfg);
-
-            this.QueuedDirection = cfg.Snake.StartingDirection;
-            
-            Score = 0;
-        }
         private void SpawnRandomFood()
         {
             var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood).ToArray();
@@ -195,12 +181,11 @@ namespace SnakeGame.Model
             MaxActiveFoods = cfg.General.MaxActiveFoods;
             TickLength = cfg.General.TickLength;
         }
-        private void InitGameObjects(Settings cfg)
+        private void InitGameObjects(Settings cfg, GameState gs)
         {
-            InitFields(cfg);
-
             Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
-            
+
+            State = gs;
             Grid = new(cfg.Grid);
             Snake = new(cfg.Snake, snakeStartingCoords);
             FoodPool = new(cfg.General);

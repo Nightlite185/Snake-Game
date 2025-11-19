@@ -9,7 +9,7 @@ namespace SnakeGame.ViewModel
     {
         private bool IsChanged
         { 
-            get; 
+            get;
             set
             {
                 field = value;
@@ -39,7 +39,7 @@ namespace SnakeGame.ViewModel
 
         public SettingsViewModel(Settings settings)
         {
-            this.draftSettings = settings.DeepClone();
+            DraftSettings = settings.DeepClone();
             this.OGSettingsRef = settings;
 
             #region ICommands
