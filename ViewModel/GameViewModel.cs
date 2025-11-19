@@ -16,10 +16,18 @@ namespace SnakeGame.ViewModel
         public void SaveOnExit() => sb.SaveOnExit();
         private void HookGMEvents()
         {
-            gm!.OnScoreChange += () => this.Score = gm.Score;
-            gm!.GotFinalScore += score => sb.HandleNewScore(score, NameEntered!);
-            gm!.OnIteration += () => OnRenderRequest?.Invoke();
+            gm!.OnScoreChange += ScoreChangeHandler;
+            gm!.GotFinalScore += FinalScoreHandler;
+            gm!.OnIteration += OnRenderRequest;
         }
+        private void UnhookGMEvents()
+        {
+            gm!.OnScoreChange -= ScoreChangeHandler;
+            gm!.GotFinalScore -= FinalScoreHandler;
+            gm!.OnIteration -= OnRenderRequest;
+        }
+        private void ScoreChangeHandler() => this.Score = gm!.Score;
+        private void FinalScoreHandler(int score) => sb.HandleNewScore(score, NameEntered!);
         public GameViewModel()
         {
             // Objects init
@@ -47,6 +55,8 @@ namespace SnakeGame.ViewModel
                 execute: () =>
                 {
                     State.Restart();
+                    UnhookGMEvents();
+
                     gm = null;
                     Score = 0;
 
@@ -80,7 +90,6 @@ namespace SnakeGame.ViewModel
             State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
             #endregion
         }
-        
         public int Score
         {
             get;
