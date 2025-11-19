@@ -6,26 +6,26 @@
         public event Action? OnGameStarted;
         public event Action? OnGameEnded;
         public event Action? OnGameRestarted;
-        public GameStates CurrentState { get; private set; } = GameStates.NotStarted;
+        public GameStates Current { get; private set; } = GameStates.NotStarted;
 
         public void Pause()
         {
-            CurrentState = (CurrentState != GameStates.Running)
-                ? throw new InvalidOperationException($"cannot pause a game that is {CurrentState}.")
+            Current = (Current != GameStates.Running)
+                ? throw new InvalidOperationException($"cannot pause a game that is {Current}.")
                 : GameStates.Paused;
         }
 
         public void Resume()
         {
-            CurrentState = (CurrentState != GameStates.Paused)
-                ? throw new InvalidOperationException($"cannot resume a game that is {CurrentState}.")
+            Current = (Current != GameStates.Paused)
+                ? throw new InvalidOperationException($"cannot resume a game that is {Current}.")
                 : GameStates.Running;
         }
 
         public void Start()
         {
-            CurrentState = (CurrentState != GameStates.NotStarted)
-                ? throw new InvalidOperationException($"cannot start a game that is {CurrentState}.")
+            Current = (Current != GameStates.NotStarted)
+                ? throw new InvalidOperationException($"cannot start a game that is {Current}.")
                 : GameStates.Running;
 
             OnGameStarted?.Invoke();
@@ -33,8 +33,8 @@
 
         public void Lose()
         {
-            CurrentState = (CurrentState != GameStates.Running)
-                ? throw new InvalidOperationException($"cannot lose a game that is {CurrentState}.")
+            Current = (Current != GameStates.Running)
+                ? throw new InvalidOperationException($"cannot lose a game that is {Current}.")
                 : GameStates.Lost;
 
             OnGameEnded?.Invoke();
@@ -42,8 +42,8 @@
 
         public void Win()
         {
-            CurrentState = (CurrentState != GameStates.Running)
-                ? throw new InvalidOperationException($"cannot win a game that is {CurrentState}.")
+            Current = (Current != GameStates.Running)
+                ? throw new InvalidOperationException($"cannot win a game that is {Current}.")
                 : GameStates.Won;
             
             OnGameEnded?.Invoke();
@@ -51,8 +51,8 @@
 
         public void Restart()
         {
-            CurrentState = (CurrentState == GameStates.NotStarted)
-                ? throw new InvalidOperationException($"cannot restart a game that is {CurrentState}.")
+            Current = (Current == GameStates.NotStarted)
+                ? throw new InvalidOperationException($"cannot restart a game that is {Current}.")
                 : GameStates.NotStarted;
 
             OnGameRestarted?.Invoke();

@@ -80,7 +80,7 @@ namespace SnakeGame.Model
             int i = 0;
             OnIteration?.Invoke(); // first canvas initialization (before game loop)
 
-            while (State.CurrentState == GameStates.Running && Snake.Alive)
+            while (State.Current == GameStates.Running && Snake.Alive)
             {
                 i++;
 
@@ -136,7 +136,7 @@ namespace SnakeGame.Model
             var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood).ToArray();
 
             if (emptySquares.Length == 0)
-                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {State.CurrentState}");
+                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {State.Current}");
 
             GameGrid.Square randomSquare = emptySquares[rand.Next(emptySquares.Length)];
             
@@ -169,8 +169,8 @@ namespace SnakeGame.Model
         private bool CheckForWin()
             => Score switch
             {
-                int when Score > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.CurrentState}, score = {Score}, snake's length = {Snake.CurrentLength}"),
-                int when Score == MaxScore && State.CurrentState == GameStates.Running => true,
+                int when Score > MaxSnakeLength => throw new Exception($"snake's length cannot exceed grid's size. current state - {State.Current}, score = {Score}, snake's length = {Snake.CurrentLength}"),
+                int when Score == MaxScore && State.Current == GameStates.Running => true,
 
                 _ => false
             };

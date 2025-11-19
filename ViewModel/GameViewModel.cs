@@ -30,12 +30,12 @@ namespace SnakeGame.ViewModel
             #region ICommands
             StartGameCommand = new RelayCommand(
                 executeAsync: gm.RunGameAsync,
-                canExecute: () => gm.State.CurrentState == GameStates.NotStarted
+                canExecute: () => gm!.State.Current == GameStates.NotStarted
             );
 
             RestartGameCommand = new RelayCommand(
                 execute: () => gm.RestartGame(Cfg),
-                canExecute: () => true
+                canExecute: () => State.Current is GameStates.Running or GameStates.Paused
             );
 
             ResetScoreboardCommand = new RelayCommand(
@@ -45,9 +45,8 @@ namespace SnakeGame.ViewModel
 
             OpenOptionsCommand = new RelayCommand(
                 execute: () => new OptionsWindow(Cfg).ShowDialog(),
-                canExecute: () => gm.State.CurrentState != GameStates.NotStarted
+                canExecute: () => gm!.State.Current != GameStates.NotStarted
             );
-
             #endregion
 
             #region Event Subscribers
