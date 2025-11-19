@@ -14,6 +14,12 @@ namespace SnakeGame.ViewModel
         private GameState State { get; init; }
         private Settings Cfg { get; set; }
         public void SaveOnExit() => sb.SaveOnExit();
+        private void HookGMEvents()
+        {
+            gm!.OnScoreChange += () => this.Score = gm.Score;
+            gm!.GotFinalScore += score => sb.HandleNewScore(score, NameEntered!);
+            gm!.OnIteration += () => OnRenderRequest?.Invoke();
+        }
         public GameViewModel()
         {
             // Objects init
@@ -31,6 +37,7 @@ namespace SnakeGame.ViewModel
                 executeAsync: async () =>
                 {
                     gm = new(Cfg, State);
+                    HookGMEvents();
                     await gm!.RunGameAsync();
                 },
                 canExecute: () => gm!.State.Current == GameStates.NotStarted
@@ -61,18 +68,16 @@ namespace SnakeGame.ViewModel
             #endregion
 
             #region Event Subscribers
-            gm!.OnIteration += () => OnRenderRequest?.Invoke();
 
-            gm.State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
-            gm.State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
-            gm.State.OnGameStarted += () => OptionsButton_Visibility = Visibility.Collapsed;
+            // BUTTONS ON START 
+            State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
+            State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
+            State.OnGameStarted += () => OptionsButton_Visibility = Visibility.Collapsed;
 
-            gm.State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
-            gm.State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
-            gm.State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
-
-            gm.OnScoreChange += () => this.Score = gm.Score;
-            gm.GotFinalScore += score => sb.HandleNewScore(score, NameEntered!);
+            // BUTTONS ON RESTART
+            State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
+            State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
+            State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
             #endregion
         }
         
