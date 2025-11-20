@@ -90,26 +90,22 @@ namespace SnakeGame.Model
             for (int i = startIdx; i < VisualScores.Count; i++)
                 VisualScores[i].Rank++;
         }
-        private static string GetScoresDir()
+        private static string GetScoresDir
             => Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "SnakeGame"
-            );
+               Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+               "SnakeGame");
         public void SaveOnExit(CancelEventArgs? e = null)
         {
-            string scoresDir = GetScoresDir();
-            string scoresPath = Path.Combine(scoresDir, "Scores.json");
+            string scoresPath = Path.Combine(GetScoresDir, "Scores.json");
 
-            Directory.CreateDirectory(scoresDir);
-
+            Directory.CreateDirectory(GetScoresDir);
             File.WriteAllText(scoresPath, JsonSerializer.Serialize(ScoresMap));
         }
         private void LoadOnInit()
         {
-            string scoresDir = GetScoresDir();
-            string scoresPath = Path.Combine(scoresDir, "Scores.json");
+            string scoresPath = Path.Combine(GetScoresDir, "Scores.json");
 
-            Directory.CreateDirectory(scoresDir);
+            Directory.CreateDirectory(GetScoresDir);
 
             if (!File.Exists(scoresPath))
                 return;
@@ -118,7 +114,7 @@ namespace SnakeGame.Model
             ScoresMap = JsonSerializer.Deserialize<Dictionary<string, List<ScoreEntry>>>(scores) ?? [];
 
             if (ScoresMap.Count > 0)
-                InitializeScoreboard(ScoresMap); 
+                InitializeScoreboard(ScoresMap);
         }
         private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap)
         {
