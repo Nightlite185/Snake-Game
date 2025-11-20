@@ -20,6 +20,15 @@ namespace SnakeGame.Model
             if (GetDefault) 
                 ToDefault();
         }
+        
+        [JsonConstructor]
+        public Settings()
+        {
+            Snake = new();
+            Grid = new();
+            General = new();
+            Theme = new();
+        }
         public static Settings? TryInitFromJson()
         {
             string path = Path.Combine(GetDirectory, "Settings.json");
