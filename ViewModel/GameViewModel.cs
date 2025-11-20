@@ -64,7 +64,7 @@ namespace SnakeGame.ViewModel
 
                     await gm!.RunGameAsync();
                 },
-                canExecute: () => gm!.State.Current == GameStates.NotStarted
+                canExecute: () => State.Current == GameStates.NotStarted
             );
 
             RestartGameCommand = new RelayCommand(
@@ -79,7 +79,7 @@ namespace SnakeGame.ViewModel
                     RestartGameCommand!.ScreamCanExecuteChanged();
                     OnRestartRequest?.Invoke(); // request for view to clear canva visuals.
                 },
-                canExecute: () => State.Current is GameStates.Running or GameStates.Paused
+                canExecute: () => State.Current != GameStates.NotStarted
             );
 
             ResetScoreboardCommand = new RelayCommand(
@@ -93,7 +93,7 @@ namespace SnakeGame.ViewModel
             
             OpenOptionsCommand = new RelayCommand(
                 execute: () => new OptionsWindow(Cfg).ShowDialog(),
-                canExecute: () => gm!.State.Current != GameStates.NotStarted
+                canExecute: () => State.Current == GameStates.NotStarted
             );
             #endregion
 
@@ -157,7 +157,7 @@ namespace SnakeGame.ViewModel
 
         #region Events and their handlers
         public void KeyDownHandler(KeyEventArgs e)
-            => gm!.QueuedDirection = e.Key switch
+            => gm!.QueuedDirection = e.Key switch // only do this when the game is running and when we're not currently focused on the textbox
             {
                 Key.Up or Key.W => Direction.Up,
                 Key.Down or Key.S => Direction.Down,

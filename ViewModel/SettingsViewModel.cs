@@ -8,18 +8,17 @@ namespace SnakeGame.ViewModel
     public class SettingsViewModel : INotifyPropertyChanged
     {
         #region Private fields
-        private bool IsChanged
+        public bool IsChanged
         { 
             get;
             set
             {
                 field = value;
-
                 SaveChangesCommand.ScreamCanExecuteChanged();
                 DiscardChangesCommand.ScreamCanExecuteChanged();
             } 
         }
-        private bool IsDraftDefault
+        public bool IsDraftDefault
         { 
             get; 
             set
@@ -29,8 +28,8 @@ namespace SnakeGame.ViewModel
             } 
         }
         private bool isOGDefault;
-        private readonly Settings OGSettingsRef;
-        private Settings DraftSettings { get; }
+        private Settings OGSettingsRef { get; set; }
+        public Settings DraftSettings { get; set; }
         #endregion
         
         #region Public UI properties
@@ -51,7 +50,7 @@ namespace SnakeGame.ViewModel
             SaveChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    DraftSettings.DeepCloneTo(OGSettingsRef);
+                    OGSettingsRef = DraftSettings.DeepClone();
                     OGSettingsRef.Serialize();
 
                     IsChanged = false;
@@ -81,7 +80,7 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    OGSettingsRef.DeepCloneTo(DraftSettings);
+                    DraftSettings = OGSettingsRef.DeepClone();
                     IsChanged = false;
 
                     if (IsDraftDefault)          // if it was default and we're reverting those changes now
