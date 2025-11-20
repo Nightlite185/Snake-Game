@@ -8,6 +8,7 @@ namespace SnakeGame.Model
 {
     public class Scoreboard
     {
+        public int CurrentCount => VisualScores.Count;
         public Scoreboard()
         {
             VisualScores = [];
@@ -41,10 +42,12 @@ namespace SnakeGame.Model
             public event PropertyChangedEventHandler? PropertyChanged;
         }
         public ObservableCollection<ScoreEntry> VisualScores { get; set; }
-        public void HandleNewScore(int newScore, string Name)
+        
+        ///<returns><strong>bool</strong> whether it added a new entry </returns>
+        public bool HandleNewScore(int newScore, string Name)
         {
             if (ScoresMap.TryGetValue(Name, out var scores) && scores.Any(s => s.Score >= newScore))
-                return; // quick tactical retreat if we already have higher scores with the same name on it.
+                return false; // quick tactical retreat if we already have higher scores with the same name on it.
 
             for (int i = 0; i < VisualScores.Count; i++)
             {
@@ -53,12 +56,13 @@ namespace SnakeGame.Model
                 if (newScore >= entryScore) // if the new one is higher -> we put it above the i
                 {
                     UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: i+1), i);
-                    return;
+                    return true;
                 }
             }
 
             // if it got to this point -> no lower scores found -> append to the end.
             UpdateScores(new ScoreEntry(Name, newScore, DateTime.Now, Rank: VisualScores.Count + 1));
+            return true;
         }
         private void UpdateScores(ScoreEntry newEntry, int? idx = null) // if idx not given then add the end.
         {

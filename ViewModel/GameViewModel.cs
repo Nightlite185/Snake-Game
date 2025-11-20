@@ -14,6 +14,8 @@ namespace SnakeGame.ViewModel
         private GameState State { get; init; }
         private Settings Cfg { get; set; }
         public void SaveOnExit() => sb.SaveOnExit();
+        
+        #region Event things
         private void HookGMEvents()
         {
             gm!.OnScoreChange += ScoreChangeHandler;
@@ -26,8 +28,21 @@ namespace SnakeGame.ViewModel
             gm!.GotFinalScore -= FinalScoreHandler;
             gm!.OnIteration -= OnRenderRequest;
         }
+        private void NotifyStateDepButtons()
+        {
+            StartGameCommand.ScreamCanExecuteChanged();
+            RestartGameCommand.ScreamCanExecuteChanged();
+            OpenOptionsCommand.ScreamCanExecuteChanged();
+        }
         private void ScoreChangeHandler() => this.Score = gm!.Score;
-        private void FinalScoreHandler(int score) => sb.HandleNewScore(score, NameEntered!);
+        private void FinalScoreHandler(int score)
+        {
+            bool added = sb.HandleNewScore(score, NameEntered!);
+            
+            if (sb.CurrentCount == 1 && added)
+                ResetScoreboardCommand.ScreamCanExecuteChanged();
+        }
+        #endregion
         public GameViewModel()
         {
             // Objects init
@@ -46,6 +61,7 @@ namespace SnakeGame.ViewModel
                 {
                     gm = new(Cfg, State);
                     HookGMEvents();
+
                     await gm!.RunGameAsync();
                 },
                 canExecute: () => gm!.State.Current == GameStates.NotStarted
@@ -67,10 +83,14 @@ namespace SnakeGame.ViewModel
             );
 
             ResetScoreboardCommand = new RelayCommand(
-                execute: sb.ResetScoreboard,
+                execute: () => 
+                {
+                    sb.ResetScoreboard();
+                    ResetScoreboardCommand!.ScreamCanExecuteChanged();
+                },
                 canExecute: () => sb.VisualScores.Count > 0
             );
-
+            
             OpenOptionsCommand = new RelayCommand(
                 execute: () => new OptionsWindow(Cfg).ShowDialog(),
                 canExecute: () => gm!.State.Current != GameStates.NotStarted
@@ -80,11 +100,13 @@ namespace SnakeGame.ViewModel
             #region Event Subscribers
 
             // BUTTONS ON START 
+            State.OnGameStarted += NotifyStateDepButtons;
             State.OnGameStarted += () => StartButton_Visibility = Visibility.Collapsed;
             State.OnGameStarted += () => RestartButton_Visibility = Visibility.Visible;
             State.OnGameStarted += () => OptionsButton_Visibility = Visibility.Collapsed;
 
             // BUTTONS ON RESTART
+            State.OnGameRestarted += NotifyStateDepButtons;
             State.OnGameRestarted += () => StartButton_Visibility = Visibility.Visible;
             State.OnGameRestarted += () => RestartButton_Visibility = Visibility.Collapsed;
             State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;

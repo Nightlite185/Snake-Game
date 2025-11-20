@@ -87,11 +87,10 @@ namespace SnakeGameProject
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e) 
-            => Keyboard.ClearFocus(); // stealing focus from the textbox bc its clingy as fuck and won't let me unfocus.
+            => Keyboard.ClearFocus(); // stealing focus from the textbox bc its clingy af and won't let me unfocus.
         public Visibility InputTip_Visibility
         {
             get;
-
             private set
             {
                 if (field != value)
