@@ -7,6 +7,7 @@ namespace SnakeGame.ViewModel
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
+        #region Private fields
         private bool IsChanged
         { 
             get;
@@ -28,15 +29,19 @@ namespace SnakeGame.ViewModel
             } 
         }
         private bool isOGDefault;
-
-        public Settings DraftSettings { get; }
         private readonly Settings OGSettingsRef;
-
+        private Settings DraftSettings { get; }
+        #endregion
+        
+        #region Public UI properties
         public int MaxSnakeStartLength => Math.Max(DraftSettings.Grid.Rows, DraftSettings.Grid.Columns) - 2;
-        // REMEMBER TO CALL PROP_CHANGED ON THIS WHEN CHANGING ROWS OR COLS!!!!
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+        /* REMEMBER TO CALL PROP_CHANGED ON THIS WHEN CHANGING ROWS OR COLS!!!!
+        this one is tricky bc it also depends (both ways) on the snake's startDirection
+        I could block those options (fallback to default) IF the snake's direction is chosen customly.
+        And a bool checkbox that tells me if the user chose custom snake's dir. (yes -> lock this, to default.) */
+        
+        #endregion
+        
         public SettingsViewModel(Settings settings)
         {
             DraftSettings = settings.DeepClone();
@@ -47,6 +52,8 @@ namespace SnakeGame.ViewModel
                 execute: () =>
                 {
                     DraftSettings.DeepCloneTo(OGSettingsRef);
+                    OGSettingsRef.Serialize();
+
                     IsChanged = false;
                     
                     if (IsDraftDefault)
@@ -87,11 +94,13 @@ namespace SnakeGame.ViewModel
             );
             #endregion
         }
-        
+
         #region ICommands
         public RelayCommand SaveChangesCommand { get; }
         public RelayCommand DiscardChangesCommand { get; }
         public RelayCommand ResetToDefaultCommand { get; }
         #endregion
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

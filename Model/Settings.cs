@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SnakeGame.Model
 {
@@ -19,16 +20,11 @@ namespace SnakeGame.Model
             if (GetDefault) 
                 ToDefault();
         }
-
         public static Settings? TryInitFromJson()
         {
-            string dir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "SnakeGame"
-            );
-            string path = Path.Combine(dir, "Settings.json");
+            string path = Path.Combine(GetDirectory, "Settings.json");
 
-            Directory.CreateDirectory(dir);
+            Directory.CreateDirectory(GetDirectory);
 
             if (!File.Exists(path))
                 return null;
@@ -37,6 +33,20 @@ namespace SnakeGame.Model
 
             return JsonSerializer.Deserialize<Settings>(json);
         }
+        public void Serialize()
+        {
+            string path = Path.Combine(GetDirectory, FileName);
+
+            Directory.CreateDirectory(GetDirectory);
+            File.WriteAllText(path, JsonSerializer.Serialize(this));
+        }
+        [JsonIgnore]
+        private static string GetDirectory => 
+            Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "SnakeGame");
+        [JsonIgnore]
+        private readonly string FileName = "Settings.json";
         public void ToDefault()
         {
             Snake.ToDefault();
@@ -44,11 +54,15 @@ namespace SnakeGame.Model
             General.ToDefault();
             Theme.ToDefault();
         }
-
+        
+        #region Section properties
         public SnakeSettings Snake { get; set; } = null!; // just for roslyn to shut tf up ab nulls in ctor
         public GridSettings Grid { get; set; } = null!;
         public GeneralSettings General { get; set; } = null!;
         public ThemeSettings Theme { get; set; } = null!;
+        #endregion
+        
+        #region Section subclasses
         public class SnakeSettings: IDefaultable
         {
             #region defaults
@@ -101,5 +115,6 @@ namespace SnakeGame.Model
                 
             }
         }
+        #endregion
     }
 }
