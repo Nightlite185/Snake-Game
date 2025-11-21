@@ -3,6 +3,7 @@ using SnakeGame.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace SnakeGame
 {
@@ -17,9 +18,6 @@ namespace SnakeGame
 
             InitializeComponent();
 
-            SnakeLengthSlider.ManipulationCompleted += (_, _) => SetVM.IsChanged = true;
-            SnakeLengthSlider.DragOver += (_, _) => SetVM.IsChanged = true;
-
             HookEventsToThumb(SnakeLengthSlider);
         }
         private void HookEventsToThumb(Slider s)
@@ -29,7 +27,19 @@ namespace SnakeGame
             var thumb = ((s.Template.FindName("PART_Track", s) as Track)?.Thumb) 
                 ?? throw new Exception("thumb not found");
 
-            thumb.DragCompleted += (_, _) => SetVM.IsChanged = true;
+            thumb.DragCompleted += (_, _) =>
+            {
+                SetVM.IsChanged = true;
+
+                if (SetVM.IsDraftDefault)
+                    SetVM.IsDraftDefault = false;
+            };
+        }
+
+        private void OptionsGrid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus(); // steal focus from the slider and textboxes
+            //Focus();
         }
     }
 }
