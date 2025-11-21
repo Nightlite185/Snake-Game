@@ -55,7 +55,7 @@ namespace SnakeGame.Model
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "SnakeGame");
         [JsonIgnore]
-        private readonly string FileName = "Settings.json";
+        private const string FileName = "Settings.json";
         public void ToDefault()
         {
             Snake.ToDefault();
@@ -65,10 +65,10 @@ namespace SnakeGame.Model
         }
         
         #region Section properties
-        public SnakeSettings Snake { get; set; } = null!; // just for roslyn to shut tf up ab nulls in ctor
-        public GridSettings Grid { get; set; } = null!;
-        public GeneralSettings General { get; set; } = null!;
-        public ThemeSettings Theme { get; set; } = null!;
+        public SnakeSettings Snake { get; set; }
+        public GridSettings Grid { get; set; }
+        public GeneralSettings General { get; set; }
+        public ThemeSettings Theme { get; set; }
         #endregion
         
         #region Section subclasses
