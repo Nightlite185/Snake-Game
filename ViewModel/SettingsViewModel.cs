@@ -49,18 +49,17 @@ namespace SnakeGame.ViewModel
             #region ICommands
             SaveChangesCommand = new RelayCommand(
                 execute: () =>
-                {
-                    OGSettingsRef = DraftSettings.DeepClone();
+                {     
+                    DraftSettings.DeepCloneTo(OGSettingsRef);
                     OGSettingsRef.Serialize();
 
                     IsChanged = false;
-                    
+
                     if (IsDraftDefault)
                         isOGDefault = true;
 
-                    else if(isOGDefault && !IsDraftDefault)
+                    else if (isOGDefault && !IsDraftDefault)
                         isOGDefault = false;
-
                 },
                 canExecute: () => IsChanged
             );
@@ -70,6 +69,7 @@ namespace SnakeGame.ViewModel
                 {
                     // TO DO:: maybe open some pop-up like "you sure u wanna reset???"
                     DraftSettings.ToDefault();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DraftSettings)));
                     
                     IsChanged = true;
                     IsDraftDefault = true;
@@ -80,8 +80,9 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new RelayCommand(
                 execute: () =>
                 {
-                    DraftSettings = OGSettingsRef.DeepClone();
+                    OGSettingsRef.DeepCloneTo(DraftSettings);
                     IsChanged = false;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DraftSettings)));
 
                     if (IsDraftDefault)          // if it was default and we're reverting those changes now
                         IsDraftDefault = false; // we turn it back to false.
@@ -99,7 +100,7 @@ namespace SnakeGame.ViewModel
         public RelayCommand DiscardChangesCommand { get; }
         public RelayCommand ResetToDefaultCommand { get; }
         #endregion
-
+        
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
