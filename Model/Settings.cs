@@ -1,15 +1,36 @@
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 namespace SnakeGame.Model
 {
     public interface IDefaultable
     {
         public void ToDefault();
     }
+    public class NotifyBase : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void Notify<T>(ref T field, T value, object caller, string name)
+        {
+            if (!EqualityComparer<T>.Default.Equals(field, value))
+            {
+                field = value;
+                PropertyChanged?.Invoke(caller, new PropertyChangedEventArgs(name));
+            }
+        }
+    }
     public class Settings: IDefaultable
     {
+        public void ToDefault()
+        {
+            Snake.ToDefault();
+            Grid.ToDefault();
+            General.ToDefault();
+            Theme.ToDefault();
+        }
+        
+        #region Init things
         public Settings(bool GetDefault = false)
         {
             Snake = new();
@@ -49,20 +70,16 @@ namespace SnakeGame.Model
             Directory.CreateDirectory(GetDirectory);
             File.WriteAllText(path, JsonSerializer.Serialize(this));
         }
+
         [JsonIgnore]
         private static string GetDirectory => 
             Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "SnakeGame");
+
         [JsonIgnore]
         private const string FileName = "Settings.json";
-        public void ToDefault()
-        {
-            Snake.ToDefault();
-            Grid.ToDefault();
-            General.ToDefault();
-            Theme.ToDefault();
-        }
+        #endregion
         
         #region Section properties
         public SnakeSettings Snake { get; set; }
@@ -72,7 +89,7 @@ namespace SnakeGame.Model
         #endregion
         
         #region Section subclasses
-        public class SnakeSettings: IDefaultable
+        public class SnakeSettings: NotifyBase, IDefaultable
         {
             #region defaults
             public const int DefStartingLength = 3;
@@ -83,10 +100,18 @@ namespace SnakeGame.Model
                 this.StartingLength = DefStartingLength;
                 this.StartingDirection = DefStartDirection;
             }
-            public int StartingLength { get; set; }
-            public Direction StartingDirection { get; set; }
+            public int StartingLength
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(StartingLength));
+            }
+            public Direction StartingDirection
+            { 
+                get;
+                set => Notify(ref field, value, this, nameof(StartingDirection));
+            }
         }
-        public class GridSettings: IDefaultable
+        public class GridSettings: NotifyBase, IDefaultable
         {
             #region Defaults
             public const int DefRows = 15;
@@ -97,10 +122,18 @@ namespace SnakeGame.Model
                 this.Rows = DefRows;
                 this.Columns = DefColumns;
             }
-            public int Rows { get; set; }
-            public int Columns { get; set; }
+            public int Rows
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(Rows));
+            }
+            public int Columns
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(Columns));
+            }
         }
-        public class GeneralSettings: IDefaultable
+        public class GeneralSettings: NotifyBase, IDefaultable
         {
             #region defaults
             public const int DefTickLength = 330;
@@ -113,11 +146,23 @@ namespace SnakeGame.Model
                 MaxActiveFoods = DefMaxFoods;
                 FoodSpawningFrequency = DefSpawningFreq;
             }
-            public int TickLength { get; set; }
-            public int MaxActiveFoods { get; set; }
-            public int FoodSpawningFrequency { get; set; }
+            public int TickLength
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(TickLength));
+            }
+            public int MaxActiveFoods
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(MaxActiveFoods));
+            }
+            public int FoodSpawningFrequency
+            { 
+                get; 
+                set => Notify(ref field, value, this, nameof(FoodSpawningFrequency));
+            }
         }
-        public class ThemeSettings: IDefaultable
+        public class ThemeSettings: NotifyBase, IDefaultable
         {
             public void ToDefault()
             {
