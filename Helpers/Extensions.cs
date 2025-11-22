@@ -4,7 +4,7 @@ namespace SnakeGame.Helpers
 {
     public static class Helpers
     {
-        public static string GetBindingPath(this FrameworkElement el, DependencyProperty dp)
+        public static string GetBindingProperty(this FrameworkElement el, DependencyProperty dp)
         {
             var binding = el.GetBindingExpression(dp);
             
