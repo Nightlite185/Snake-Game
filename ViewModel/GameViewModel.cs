@@ -92,7 +92,15 @@ namespace SnakeGame.ViewModel
             );
             
             OpenOptionsCommand = new RelayCommand(
-                execute: () => new OptionsWindow(Cfg).ShowDialog(),
+                execute: () => 
+                {
+                    SettingsViewModel setVM = new(Cfg);
+                    var win = new OptionsWindow(setVM);
+                    
+                    win.OnOptionChanged += setVM.HandleOptionChanged;
+
+                    win.ShowDialog();
+                },
                 canExecute: () => State.Current == GameStates.NotStarted
             );
             #endregion
