@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Text.Json;
+using SnakeGame.Helpers;
 using System.Text.Json.Serialization;
 
 namespace SnakeGame.Model
@@ -14,9 +13,10 @@ namespace SnakeGame.Model
             VisualScores = [];
             ScoresMap = [];
 
-            LoadOnInit();
+            if (SerializeHelper.Deserialize(ref ScoresMap, SerializeOption.Scoreboard))
+                InitializeScoreboard();
         }
-        private Dictionary<string, List<ScoreEntry>> ScoresMap;
+        private readonly Dictionary<string, List<ScoreEntry>> ScoresMap;
         public record ScoreEntry(string Name, int Score, DateTime Time, int Rank = 0) : INotifyPropertyChanged
         {
             [JsonIgnore]
@@ -82,6 +82,8 @@ namespace SnakeGame.Model
         }
         public void ResetScoreboard()
         {
+            // this method should only be called after user clicked "yes Im sure" when pop up shows.
+
             VisualScores.Clear();
             ScoresMap.Clear();
         }
@@ -90,33 +92,15 @@ namespace SnakeGame.Model
             for (int i = startIdx; i < VisualScores.Count; i++)
                 VisualScores[i].Rank++;
         }
-        private static string GetScoresDir
-            => Path.Combine(
-               Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-               "SnakeGame");
         public void SaveOnExit(CancelEventArgs? e = null)
         {
-            string scoresPath = Path.Combine(GetScoresDir, "Scores.json");
+            // saving this method bc of the possible cancellation in the future, if I wanna add "are you sure??" window.
+            // but the cancellation should happen before this method is called anyway, it depends on the new pop-up that I'll make.
+            // so I'll just keep it for now till its done.
 
-            Directory.CreateDirectory(GetScoresDir);
-            File.WriteAllText(scoresPath, JsonSerializer.Serialize(ScoresMap));
+            SerializeHelper.Serialize(ScoresMap, SerializeOption.Scoreboard);
         }
-        private void LoadOnInit()
-        {
-            string scoresPath = Path.Combine(GetScoresDir, "Scores.json");
-
-            Directory.CreateDirectory(GetScoresDir);
-
-            if (!File.Exists(scoresPath))
-                return;
-
-            string scores = File.ReadAllText(scoresPath);
-            ScoresMap = JsonSerializer.Deserialize<Dictionary<string, List<ScoreEntry>>>(scores) ?? [];
-
-            if (ScoresMap.Count > 0)
-                InitializeScoreboard(ScoresMap);
-        }
-        private void InitializeScoreboard(Dictionary<string, List<ScoreEntry>> ScoresMap)
+        private void InitializeScoreboard()
         {
             var orderedEntries = ScoresMap.Values
                 .SelectMany(x => x)

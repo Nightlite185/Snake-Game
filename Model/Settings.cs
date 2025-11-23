@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.IO;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 namespace SnakeGame.Model
 {
@@ -50,35 +47,7 @@ namespace SnakeGame.Model
             General = new();
             Theme = new();
         }
-        public static Settings? TryInitFromJson()
-        {
-            string path = Path.Combine(GetDirectory, "Settings.json");
 
-            Directory.CreateDirectory(GetDirectory);
-
-            if (!File.Exists(path))
-                return null;
-
-            string json = File.ReadAllText(path);
-
-            return JsonSerializer.Deserialize<Settings>(json);
-        }
-        public void Serialize()
-        {
-            string path = Path.Combine(GetDirectory, FileName);
-
-            Directory.CreateDirectory(GetDirectory);
-            File.WriteAllText(path, JsonSerializer.Serialize(this));
-        }
-
-        [JsonIgnore]
-        private static string GetDirectory => 
-            Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "SnakeGame");
-
-        [JsonIgnore]
-        private const string FileName = "Settings.json";
         #endregion
         
         #region Section properties
