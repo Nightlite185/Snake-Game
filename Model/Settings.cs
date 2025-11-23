@@ -5,18 +5,7 @@ namespace SnakeGame.Model
     {
         public void ToDefault();
     }
-    public class NotifyBase : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void Notify<T>(ref T field, T value, object caller, string name)
-        {
-            if (!EqualityComparer<T>.Default.Equals(field, value))
-            {
-                field = value;
-                PropertyChanged?.Invoke(caller, new PropertyChangedEventArgs(name));
-            }
-        }
-    }
+    
     public class Settings: IDefaultable
     {
         public void ToDefault()
@@ -58,7 +47,7 @@ namespace SnakeGame.Model
         #endregion
         
         #region Section subclasses
-        public class SnakeSettings: NotifyBase, IDefaultable
+        public class SnakeSettings: IDefaultable
         {
             #region defaults
             public const int DefStartingLength = 3;
@@ -69,18 +58,10 @@ namespace SnakeGame.Model
                 this.StartingLength = DefStartingLength;
                 this.StartingDirection = DefStartDirection;
             }
-            public int StartingLength
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(StartingLength));
-            }
-            public Direction StartingDirection
-            { 
-                get;
-                set => Notify(ref field, value, this, nameof(StartingDirection));
-            }
+            public int StartingLength { get; set; }
+            public Direction StartingDirection { get; set; }
         }
-        public class GridSettings: NotifyBase, IDefaultable
+        public class GridSettings: IDefaultable
         {
             #region Defaults
             public const int DefRows = 15;
@@ -91,18 +72,10 @@ namespace SnakeGame.Model
                 this.Rows = DefRows;
                 this.Columns = DefColumns;
             }
-            public int Rows
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(Rows));
-            }
-            public int Columns
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(Columns));
-            }
+            public int Rows { get; set; }
+            public int Columns { get; set; }
         }
-        public class GeneralSettings: NotifyBase, IDefaultable
+        public class GeneralSettings: IDefaultable
         {
             #region defaults
             public const int DefTickLength = 330;
@@ -115,23 +88,11 @@ namespace SnakeGame.Model
                 MaxActiveFoods = DefMaxFoods;
                 FoodSpawningFrequency = DefSpawningFreq;
             }
-            public int TickLength
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(TickLength));
-            }
-            public int MaxActiveFoods
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(MaxActiveFoods));
-            }
-            public int FoodSpawningFrequency
-            { 
-                get; 
-                set => Notify(ref field, value, this, nameof(FoodSpawningFrequency));
-            }
+            public int TickLength { get; set; }
+            public int MaxActiveFoods { get; set; }
+            public int FoodSpawningFrequency { get; set; }
         }
-        public class ThemeSettings: NotifyBase, IDefaultable
+        public class ThemeSettings: IDefaultable
         {
             public void ToDefault()
             {
