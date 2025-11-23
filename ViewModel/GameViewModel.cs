@@ -165,15 +165,19 @@ namespace SnakeGame.ViewModel
 
         #region Events and their handlers
         public void KeyDownHandler(KeyEventArgs e)
-            => gm!.QueuedDirection = e.Key switch // only do this when the game is running and when we're not currently focused on the textbox
-            {
-                Key.Up or Key.W => Direction.Up,
-                Key.Down or Key.S => Direction.Down,
-                Key.Left or Key.A => Direction.Left,
-                Key.Right or Key.D => Direction.Right,
+        {
+            if (State.Current == GameStates.Running)
+                gm!.QueuedDirection = e.Key switch // only do this when the game is running and when we're not currently focused on the textbox
+                {
+                    Key.Up or Key.W => Direction.Up,
+                    Key.Down or Key.S => Direction.Down,
+                    Key.Left or Key.A => Direction.Left,
+                    Key.Right or Key.D => Direction.Right,
 
-                _ => gm.QueuedDirection
-            };
+                    _ => gm.QueuedDirection
+                };
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action? OnRenderRequest;
         public event Action? OnRestartRequest;
