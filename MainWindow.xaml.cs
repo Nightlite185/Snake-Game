@@ -72,7 +72,7 @@ namespace SnakeGameProject
 
             Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
             
-            Closing += (_, e) => GameVM.SaveOnExit();
+            Closing += (_, e) => GameVM.CleanupOnExit();
         }
 
         private void NicknameInput_LostFocus(object sender, RoutedEventArgs e)
