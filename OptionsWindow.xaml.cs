@@ -1,5 +1,4 @@
-﻿using SnakeGame.Model;
-using SnakeGame.ViewModel;
+﻿using SnakeGame.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -10,16 +9,17 @@ namespace SnakeGame
     public partial class OptionsWindow : Window
     {
         private readonly SettingsViewModel SetVM;
-        public OptionsWindow(Settings OGSettingsRef)
+        public OptionsWindow(SettingsViewModel setVM)
         {
-            SetVM = new SettingsViewModel(OGSettingsRef);
-
+            SetVM = setVM;
             this.DataContext = SetVM;
 
             InitializeComponent();
 
             HookEventsToThumb(SnakeLengthSlider);
+            HookEventsToThumb(TickSpeedSlider);
         }
+
         private void HookEventsToThumb(Slider s)
         {
             s.ApplyTemplate();
@@ -27,19 +27,10 @@ namespace SnakeGame
             var thumb = ((s.Template.FindName("PART_Track", s) as Track)?.Thumb) 
                 ?? throw new Exception("thumb not found");
 
-            thumb.DragCompleted += (_, _) =>
-            {
-                SetVM.IsChanged = true;
-
-                if (SetVM.IsDraftDefault)
-                    SetVM.IsDraftDefault = false;
-            };
+            thumb.DragCompleted += (_,_) => SetVM.UpdateChangedState();
         }
 
         private void OptionsGrid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Keyboard.ClearFocus(); // steal focus from the slider and textboxes
-            //Focus();
-        }
+            => Keyboard.ClearFocus(); // steal focus from the slider and textboxes
     }
 }

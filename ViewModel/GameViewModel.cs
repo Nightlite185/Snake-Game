@@ -7,13 +7,22 @@ using SnakeGame.Model;
 
 namespace SnakeGame.ViewModel
 {
-    public class GameViewModel : INotifyPropertyChanged
+    public class GameViewModel : INotifyPropertyChanged, IDisposable
     {
         private GameManager? gm;
         public readonly Scoreboard sb;
         private GameState State { get; init; }
-        private Settings Cfg { get; set; }
-        public void SaveOnExit() => sb.SaveOnExit();
+        private Settings cfg = null!;
+        public void CleanupOnExit()
+        {
+            
+            // Dispose(); // commenting it out bc for now it doesnt do anything yet.
+            sb.SaveOnExit(); 
+        }
+        public void Dispose()
+        {
+            // TODO:: dispose of any cts in the future HERE IN THIS METHOD
+        }
         
         #region Event things
         private void HookGMEvents()
@@ -46,7 +55,9 @@ namespace SnakeGame.ViewModel
         public GameViewModel()
         {
             // Objects init
-            Cfg = Settings.TryInitFromJson() ?? new Settings(GetDefault: true);
+            if (!SerializeHelper.Deserialize(ref cfg, SerializeOption.Settings))
+                cfg = new Settings(GetDefault: true);
+
             sb = new Scoreboard();
             State = new();
             
@@ -59,7 +70,7 @@ namespace SnakeGame.ViewModel
             StartGameCommand = new RelayCommand(
                 executeAsync: async () =>
                 {
-                    gm = new(Cfg, State);
+                    gm = new(cfg, State);
                     HookGMEvents();
 
                     await gm!.RunGameAsync();
@@ -94,11 +105,9 @@ namespace SnakeGame.ViewModel
             OpenOptionsCommand = new RelayCommand(
                 execute: () => 
                 {
-                    SettingsViewModel setVM = new(Cfg);
+                    SettingsViewModel setVM = new(cfg);
                     var win = new OptionsWindow(setVM);
                     
-                    win.OnOptionChanged += setVM.HandleOptionChanged;
-
                     win.ShowDialog();
                 },
                 canExecute: () => State.Current == GameStates.NotStarted
@@ -143,7 +152,7 @@ namespace SnakeGame.ViewModel
         }
         
         #region Rendering things
-        public Coords Dimensions => new(Cfg.Grid.Rows, Cfg.Grid.Columns);
+        public Coords Dimensions => new(cfg.Grid.Rows, cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
             foreach (var food in gm!.FoodPool.ActiveFoods)
