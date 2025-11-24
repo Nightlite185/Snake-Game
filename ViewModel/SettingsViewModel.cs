@@ -10,14 +10,16 @@ namespace SnakeGame.ViewModel
         protected bool notifyUI = false;
         
         /// <returns>a bool whether the method called INPC (PropertyChanged)</returns>
-        protected void TryNotify<T>(ref T field, T value, object caller, string name)
+        protected void TryNotify<T>(ref T field, T value, object caller, params string[] ToNotifyList)
         {
             if (notifyUI)
             {
                 if (!EqualityComparer<T>.Default.Equals(field, value))
                 {
                     field = value;
-                    PropertyChanged?.Invoke(caller, new PropertyChangedEventArgs(name));
+
+                    foreach (string target in ToNotifyList)
+                        PropertyChanged?.Invoke(caller, new PropertyChangedEventArgs(target));
                 }
             }
 
@@ -89,7 +91,9 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                TryNotify(ref field, value, this, nameof(Rows));
+                string[] ToNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
+
+                TryNotify(ref field, value, this, ToNotify);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -99,7 +103,9 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                TryNotify(ref field, value, this, nameof(Columns));
+                string[] ToNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
+                
+                TryNotify(ref field, value, this, ToNotify);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -125,12 +131,14 @@ namespace SnakeGame.ViewModel
             }
         }
 
+        public int MaxChoosableMaxActiveFoods => Rows * Columns;
+
         public int FoodSpawnFreq
         {
             get;
             set
             {
-                TryNotify(ref field, value, this, nameof(FoodSpawningFrequency));
+                TryNotify(ref field, value, this, nameof(FoodSpawnFreq));
                 if (updateStates) UpdateChangedState();
             }
         }
