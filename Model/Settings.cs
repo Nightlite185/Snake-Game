@@ -78,19 +78,19 @@ namespace SnakeGame.Model
         public class GeneralSettings: IDefaultable
         {
             #region defaults
-            public const int DefTickLength = 330;
+            public const int DefSnakeSpeed = 330;
             public const int DefMaxFoods = 7;
-            public const int DefSpawningFreq = 3;
+            public const int DefFoodSpawnFreq = 3;
             #endregion
             public void ToDefault()
             {
-                TickLength = DefTickLength;
+                SnakeSpeed = DefSnakeSpeed;
                 MaxActiveFoods = DefMaxFoods;
-                FoodSpawningFrequency = DefSpawningFreq;
+                FoodSpawnFreq = DefFoodSpawnFreq;
             }
-            public int TickLength { get; set; }
+            public int SnakeSpeed { get; set; }
             public int MaxActiveFoods { get; set; }
-            public int FoodSpawningFrequency { get; set; }
+            public int FoodSpawnFreq { get; set; }
         }
         public class ThemeSettings: IDefaultable
         {

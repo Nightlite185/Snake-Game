@@ -178,7 +178,7 @@ namespace SnakeGame.Model
             FoodSpawningFrequency = InvertFoodFreq(cfg.General.FoodSpawnFreq);
             
             MaxActiveFoods = cfg.General.MaxActiveFoods;
-            TickLength = SpeedToTick(cfg.General.InvertedTickLength);
+            TickLength = SpeedToTick(cfg.General.SnakeSpeed);
         }
         private int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
         private int SpeedToTick(int speed) => 550 - (speed * 5);

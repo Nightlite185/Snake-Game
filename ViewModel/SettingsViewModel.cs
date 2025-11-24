@@ -105,12 +105,12 @@ namespace SnakeGame.ViewModel
         }
 
         // GENERAL
-        public int TickLength
+        public int SnakeSpeed
         {
             get;
             set
             {
-                TryNotify(ref field, value, this, nameof(TickLength));
+                TryNotify(ref field, value, this, nameof(SnakeSpeed));
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -125,7 +125,7 @@ namespace SnakeGame.ViewModel
             }
         }
 
-        public int FoodSpawningFrequency
+        public int FoodSpawnFreq
         {
             get;
             set
@@ -153,9 +153,9 @@ namespace SnakeGame.ViewModel
             this.Columns = OGSettings.Grid.Columns;
 
             // GENERAL
-            this.TickLength = OGSettings.General.TickLength;
+            this.SnakeSpeed = OGSettings.General.SnakeSpeed;
             this.MaxActiveFoods = OGSettings.General.MaxActiveFoods;
-            this.FoodSpawningFrequency = OGSettings.General.FoodSpawningFrequency;
+            this.FoodSpawnFreq = OGSettings.General.FoodSpawnFreq;
 
             updateStates = true;
         }
@@ -170,9 +170,9 @@ namespace SnakeGame.ViewModel
             OGSettings.Grid.Columns = this.Columns;
 
             // GENERAL
-            OGSettings.General.TickLength = this.TickLength;
+            OGSettings.General.SnakeSpeed = this.SnakeSpeed;
             OGSettings.General.MaxActiveFoods = this.MaxActiveFoods;
-            OGSettings.General.FoodSpawningFrequency = this.FoodSpawningFrequency;
+            OGSettings.General.FoodSpawnFreq = this.FoodSpawnFreq;
         }
         private void DraftToDefault()
         {
@@ -187,9 +187,9 @@ namespace SnakeGame.ViewModel
             this.Columns = Settings.GridSettings.DefColumns;
 
             // GENERAL
-            this.TickLength = Settings.GeneralSettings.DefTickLength;
+            this.SnakeSpeed = Settings.GeneralSettings.DefSnakeSpeed;
             this.MaxActiveFoods = Settings.GeneralSettings.DefMaxFoods;
-            this.FoodSpawningFrequency = Settings.GeneralSettings.DefSpawningFreq;
+            this.FoodSpawnFreq = Settings.GeneralSettings.DefFoodSpawnFreq;
 
             updateStates = true;
         }
