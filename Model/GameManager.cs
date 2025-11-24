@@ -121,8 +121,7 @@ namespace SnakeGame.Model
         {
             var emptySquares = Grid.Where(x => !x.HasSnake && !x.HasFood).ToArray();
 
-            if (emptySquares.Length == 0)
-                throw new InvalidOperationException($"Cannot spawn food when grid is full. Current state - {State.Current}");
+            if (emptySquares.Length == 0) return; // quick return if the grid is already full.
 
             GameGrid.Square randomSquare = emptySquares[rand.Next(emptySquares.Length)];
             
@@ -176,11 +175,13 @@ namespace SnakeGame.Model
             MaxSnakeLength = cfg.Grid.Rows * cfg.Grid.Columns;
             MaxScore = MaxSnakeLength - cfg.Snake.StartingLength;
 
-            FoodSpawningFrequency = cfg.General.FoodSpawningFrequency;
+            FoodSpawningFrequency = InvertFoodFreq(cfg.General.FoodSpawnFreq);
             
             MaxActiveFoods = cfg.General.MaxActiveFoods;
-            TickLength = cfg.General.TickLength;
+            TickLength = SpeedToTick(cfg.General.InvertedTickLength);
         }
+        private int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
+        private int SpeedToTick(int speed) => 550 - (speed * 5);
         private void InitGameObjects(Settings cfg, GameState gs)
         {
             Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
