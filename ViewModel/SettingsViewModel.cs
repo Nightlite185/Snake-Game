@@ -7,26 +7,22 @@ namespace SnakeGame.ViewModel
     public abstract class NotifyBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected bool liveBinding;
+        protected bool notifyUI = false;
         
-        /// <returns>a bool whether the method called INPC (PropertyChanged) </returns>
-        protected bool TryNotify<T>(ref T field, T value, object caller, string name)
+        /// <returns>a bool whether the method called INPC (PropertyChanged)</returns>
+        protected void TryNotify<T>(ref T field, T value, object caller, string name)
         {
-            if (liveBinding)
+            if (notifyUI)
             {
                 if (!EqualityComparer<T>.Default.Equals(field, value))
                 {
                     field = value;
                     PropertyChanged?.Invoke(caller, new PropertyChangedEventArgs(name));
-                    return true;
                 }
-
-                return false;
             }
 
             else 
                 field = value;
-                return false;
         }
     }
     public class SettingsViewModel : NotifyBase
@@ -55,6 +51,7 @@ namespace SnakeGame.ViewModel
             }
         }
         private bool isOGDefault;
+        private bool updateStates;
         private Settings OGSettings { get; set; }
         #endregion
 
@@ -71,8 +68,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(StartingLength)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(StartingLength));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -81,8 +78,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(StartingDirection)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(StartingDirection));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -92,8 +89,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(Rows)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(Rows));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -102,8 +99,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(Columns)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(Columns));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -113,8 +110,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(TickLength)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(TickLength));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -123,8 +120,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(MaxActiveFoods)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(MaxActiveFoods));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -133,8 +130,8 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                if (TryNotify(ref field, value, this, nameof(FoodSpawningFrequency)))
-                    UpdateChangedState();
+                TryNotify(ref field, value, this, nameof(FoodSpawningFrequency));
+                if (updateStates) UpdateChangedState();
             }
         }
 
@@ -145,7 +142,7 @@ namespace SnakeGame.ViewModel
         #region LOAD / SAVE METHODS
         private void LoadFromOG()
         {
-            liveBinding = false;
+            updateStates = false;
 
             // SNAKE
             this.StartingLength = OGSettings.Snake.StartingLength;
@@ -160,7 +157,7 @@ namespace SnakeGame.ViewModel
             this.MaxActiveFoods = OGSettings.General.MaxActiveFoods;
             this.FoodSpawningFrequency = OGSettings.General.FoodSpawningFrequency;
 
-            liveBinding = true;
+            updateStates = true;
         }
         private void SaveToOG()
         {
@@ -179,7 +176,7 @@ namespace SnakeGame.ViewModel
         }
         private void DraftToDefault()
         {
-            liveBinding = false;
+            updateStates = false;
 
             // SNAKE
             this.StartingLength = Settings.SnakeSettings.DefStartingLength;
@@ -194,13 +191,14 @@ namespace SnakeGame.ViewModel
             this.MaxActiveFoods = Settings.GeneralSettings.DefMaxFoods;
             this.FoodSpawningFrequency = Settings.GeneralSettings.DefSpawningFreq;
 
-            liveBinding = true;
+            updateStates = true;
         }
         #endregion
         public SettingsViewModel(Settings settings)
         {
             this.OGSettings = settings;
             LoadFromOG();
+            notifyUI = true;
 
             #region ICommands
             SaveChangesCommand = new RelayCommand(
@@ -254,7 +252,7 @@ namespace SnakeGame.ViewModel
         public RelayCommand DiscardChangesCommand { get; }
         public RelayCommand ResetToDefaultCommand { get; }
         #endregion
-        public void UpdateChangedState() // MOVE THIS TO THE UI SETTERS THIS IS GENIUS ARCHITECTURE SHIT
+        public void UpdateChangedState()
         {
             IsChanged = true;
 
