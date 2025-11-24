@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SnakeGameProject
+namespace SnakeGame
 {
     public partial class App : Application
     { 

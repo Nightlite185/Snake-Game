@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace SnakeGame
+namespace SnakeGame.View
 {
     public partial class OptionsWindow : Window
     {
@@ -24,10 +24,10 @@ namespace SnakeGame
         {
             s.ApplyTemplate();
 
-            var thumb = ((s.Template.FindName("PART_Track", s) as Track)?.Thumb) 
+            var thumb = ((s.Template.FindName("PART_Track", s) as Track)?.Thumb)
                 ?? throw new Exception("thumb not found");
 
-            thumb.DragCompleted += (_,_) => SetVM.UpdateChangedState();
+            thumb.DragCompleted += (_, _) => SetVM.UpdateChangedState();
         }
 
         private void OptionsGrid_MouseDown(object sender, MouseButtonEventArgs e)

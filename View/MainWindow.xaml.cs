@@ -7,7 +7,7 @@ using SnakeGame.Model;
 using System.Windows.Input;
 using System.ComponentModel;
 
-namespace SnakeGameProject
+namespace SnakeGame.View
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {

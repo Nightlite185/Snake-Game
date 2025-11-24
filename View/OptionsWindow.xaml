@@ -1,9 +1,9 @@
-﻿<Window x:Class="SnakeGame.OptionsWindow"
+﻿<Window x:Class="SnakeGame.View.OptionsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnakeGameProject" xmlns:viewmodel="clr-namespace:SnakeGame.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingsViewModel}"
+        xmlns:local="clr-namespace:SnakeGame.View"
         mc:Ignorable="d"
         Title="Options window" Height="538" Width="434" Background="#FF00DEFF" ResizeMode="NoResize" Foreground="Red" OpacityMask="Red" BorderBrush="Red" MinWidth="450" MinHeight="560" ShowInTaskbar="False" Topmost="True" WindowState="Normal">
     <Grid x:Name="OptionsGrid" RenderTransformOrigin="0.504,0.49" MouseDown="OptionsGrid_MouseDown">

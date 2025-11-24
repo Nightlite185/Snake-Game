@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using SnakeGame.Helpers;
 using SnakeGame.Model;
+using SnakeGame.View;
 
 namespace SnakeGame.ViewModel
 {
