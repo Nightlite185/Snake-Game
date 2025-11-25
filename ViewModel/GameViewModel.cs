@@ -12,6 +12,27 @@ namespace SnakeGame.ViewModel
     {
         private GameManager? gm;
         public readonly Scoreboard sb;
+        public int Score
+        {
+            get;
+            private set
+            {
+                field = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
+            }
+        }
+        public string? NameEntered
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(field))
+                    return "Guest";
+
+                return field;
+            }
+    
+            set;
+        }
         private GameState State { get; init; }
         private Settings cfg = null!;
         public void CleanupOnExit()
@@ -24,35 +45,6 @@ namespace SnakeGame.ViewModel
         {
             // TODO:: dispose of any cts in the future HERE IN THIS METHOD
         }
-        
-        #region Event things
-        private void HookGMEvents()
-        {
-            gm!.OnScoreChange += ScoreChangeHandler;
-            gm!.GotFinalScore += FinalScoreHandler;
-            gm!.OnIteration += OnRenderRequest;
-        }
-        private void UnhookGMEvents()
-        {
-            gm!.OnScoreChange -= ScoreChangeHandler;
-            gm!.GotFinalScore -= FinalScoreHandler;
-            gm!.OnIteration -= OnRenderRequest;
-        }
-        private void NotifyStateDepButtons()
-        {
-            StartGameCommand.ScreamCanExecuteChanged();
-            RestartGameCommand.ScreamCanExecuteChanged();
-            OpenOptionsCommand.ScreamCanExecuteChanged();
-        }
-        private void ScoreChangeHandler() => this.Score = gm!.Score;
-        private void FinalScoreHandler(int score)
-        {
-            bool added = sb.HandleNewScore(score, NameEntered!);
-            
-            if (sb.CurrentCount == 1 && added)
-                ResetScoreboardCommand.ScreamCanExecuteChanged();
-        }
-        #endregion
         public GameViewModel()
         {
             // Objects init
@@ -130,28 +122,36 @@ namespace SnakeGame.ViewModel
             State.OnGameRestarted += () => OptionsButton_Visibility = Visibility.Visible;
             #endregion
         }
-        public int Score
-        {
-            get;
-            private set
-            {
-                field = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Score)));
-            }
-        }
-        public string? NameEntered
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(field))
-                    return "Guest";
-
-                return field;
-            }
-    
-            set;
-        }
         
+        #region Event things
+        private void HookGMEvents()
+        {
+            gm!.OnScoreChange += ScoreChangeHandler;
+            gm!.GotFinalScore += FinalScoreHandler;
+            gm!.OnIteration += OnRenderRequest;
+        }
+        private void UnhookGMEvents()
+        {
+            gm!.OnScoreChange -= ScoreChangeHandler;
+            gm!.GotFinalScore -= FinalScoreHandler;
+            gm!.OnIteration -= OnRenderRequest;
+        }
+        private void NotifyStateDepButtons()
+        {
+            StartGameCommand.ScreamCanExecuteChanged();
+            RestartGameCommand.ScreamCanExecuteChanged();
+            OpenOptionsCommand.ScreamCanExecuteChanged();
+        }
+        private void ScoreChangeHandler() => this.Score = gm!.Score;
+        private void FinalScoreHandler(int score)
+        {
+            bool added = sb.HandleNewScore(score, NameEntered!);
+            
+            if (sb.CurrentCount == 1 && added)
+                ResetScoreboardCommand.ScreamCanExecuteChanged();
+        }
+        #endregion
+
         #region Rendering things
         public Coords Dimensions => new(cfg.Grid.Rows, cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
