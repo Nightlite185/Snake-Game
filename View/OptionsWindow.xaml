@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpf="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:SnakeGame.View"
         mc:Ignorable="d"
         Title="Options window" Height="538" Width="434" Background="#FF00DEFF" ResizeMode="NoResize" Foreground="Red" OpacityMask="Red" BorderBrush="Red" MinWidth="450" MinHeight="560" ShowInTaskbar="False" Topmost="True" WindowState="Normal">
@@ -14,100 +15,148 @@
                 <GradientStop Color="#FFB92D0A"/>
                 <GradientStop Color="#FF52193B"/>
                 <GradientStop Color="#FFDCCEBB"/>
-                <GradientStop Color="#FFFF00EF"/>
-                <GradientStop Color="#FFE6FF00" Offset="1"/>
+                <GradientStop Color="#FF00D6FF"/>
+                <GradientStop Color="#FF1300FF" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
 
         <!-- Management buttons -->
-        <Button x:Name="SaveButton" Content="Save changes" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="140" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="284,468,0,0" Cursor="Hand" Command="{Binding SaveChangesCommand}"/>
-        <Button x:Name="DiscardButton" Content="Discard" Command="{Binding DiscardChangesCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="109" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="170,468,0,0" Cursor="Hand"/>
-        <Button x:Name="ToDefaultButton" Content="Reset to default" Command="{Binding ResetToDefaultCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="155" FontSize="19" Background="#66000000" BorderBrush="Black" Foreground="#FF00FFBF" BorderThickness="2,2,2,2" Margin="10,468,0,0" Cursor="Hand"/>
+        <Button x:Name="SaveButton" Content="Save changes" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="140" FontSize="19" Background="#93000000" BorderThickness="2,2,2,2" Margin="284,468,0,0" Command="{Binding SaveChangesCommand}"/>
+        <Button x:Name="DiscardButton" Content="Discard" Command="{Binding DiscardChangesCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="109" FontSize="19" Background="#95000000"   BorderThickness="2,2,2,2" Margin="170,468,0,0"/>
+        <Button x:Name="ToDefaultButton" Content="Reset to default" Command="{Binding ResetToDefaultCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="44" Width="155" FontSize="19" Background="#93000000"   BorderThickness="2,2,2,2" Margin="10,468,0,0"/>
 
         <!-- SNAKE STARTING LENGTH OPTION -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,19,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,19,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="93*"/>
                     <ColumnDefinition Width="21*"/>
                     <ColumnDefinition Width="100*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="StartingLength" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake's starting length" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="StartingLengthInput" Background="Transparent" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding StartingLength}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="StartingLength" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake's starting length" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="StartingLengthInput" Background="Transparent" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding StartingLength}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="SnakeLengthSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="2" Maximum="{Binding MaxSnakeStartLength}" Value="{Binding StartingLength}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
         <!-- Snake speed -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,49,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,49,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="185*"/>
                     <ColumnDefinition Width="42*"/>
                     <ColumnDefinition Width="199*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="SnakeSpeedLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake speed" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="SnakeSpeedInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="SnakeSpeedLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake speed" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="SnakeSpeedInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="SnakeSpeedSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="100" Value="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
         <!-- Food Spawning Frequency -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,111,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
-            <Grid>
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,111,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#00000000">
+            <Grid Background="#33000000">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="185*"/>
                     <ColumnDefinition Width="42*"/>
                     <ColumnDefinition Width="199*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="FoodFreqLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Food spawn frequency" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="FoodFreqInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="FoodFreqLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Food spawn frequency" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="FoodFreqInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="FoodFreqSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="10" Value="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
         <!-- Max active foods -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,141,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,141,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="185*"/>
                     <ColumnDefinition Width="42*"/>
                     <ColumnDefinition Width="199*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="MaxActiveFoodLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Max active food count" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="MaxActiveFoodInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="MaxActiveFoodLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Max active food count" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="MaxActiveFoodInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="MaxActiveFoodSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="{Binding MaxChoosableMaxActiveFoods}" Value="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
         <!-- Grid rows -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,205,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
-            <Grid>
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,205,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2">
+            <Grid Background="#33000000">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="185*"/>
                     <ColumnDefinition Width="42*"/>
                     <ColumnDefinition Width="199*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="RowsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid rows" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="RowsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="RowsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid rows" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="RowsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="RowsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="50" Value="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
         <!-- Grid columns -->
-        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,235,0,0" BorderBrush="#E54CFFD2" BorderThickness="2,2,2,2">
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,235,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="185*"/>
                     <ColumnDefinition Width="42*"/>
                     <ColumnDefinition Width="199*"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="ColsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid columns" FontSize="16" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
-                <TextBox x:Name="ColsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E54CFFD2" Padding="0,0,0,0"/>
+                <Label x:Name="ColsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid columns" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <TextBox x:Name="ColsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
                 <Slider x:Name="ColsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="50" Value="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
             </Grid>
         </Border>
 
+        <!-- Color pickers -->
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,293,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="89*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="114*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="SnakeHeadColorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake's head color" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <wpf:ColorPicker Margin="7,-2,0,-2" SelectedColor="{Binding SnakeHeadColor}" BorderThickness="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#00ABADB3"/>
+            </Grid>
+        </Border>
 
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,323,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="89*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="114*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="SnakeBodyColorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake's body color" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <wpf:ColorPicker Margin="7,-2,0,-2" SelectedColor="{Binding SnakeBodyColor}" BorderThickness="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#00ABADB3"/>
+            </Grid>
+        </Border>
+
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,353,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="89*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="114*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="BackgroundColorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Background color" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <wpf:ColorPicker Margin="7,-2,0,-2" SelectedColor="{Binding BackgroundColor}" BorderThickness="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#00ABADB3"/>
+            </Grid>
+        </Border>
+
+        <Border HorizontalAlignment="Center" Height="32" VerticalAlignment="Top" Width="430" Margin="0,383,0,0" BorderBrush="#E500FFBF" BorderThickness="2,2,2,2" Background="#33000000">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="89*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="114*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="FoodColorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Food color" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
+                <wpf:ColorPicker Margin="7,-2,0,-2" SelectedColor="{Binding FoodColor}" BorderThickness="2" Grid.Column="1" Grid.ColumnSpan="2" BorderBrush="#00ABADB3"/>
+            </Grid>
+        </Border>
+        <Rectangle HorizontalAlignment="Left" Height="122" Margin="189,293,0,0" Stroke="#E500FFBF" VerticalAlignment="Top" Width="2" StrokeThickness="2"/>
     </Grid>
 </Window>

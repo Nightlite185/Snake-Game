@@ -1,3 +1,4 @@
+using System.Windows.Media;
 using System.Text.Json.Serialization;
 namespace SnakeGame.Model
 {
@@ -94,10 +95,21 @@ namespace SnakeGame.Model
         }
         public class ThemeSettings: IDefaultable
         {
+            public static readonly Color? DefSnakeHeadColor;
+            public static readonly Color? DefSnakeBodyColor;
+            public static readonly Color? DefFoodColor;
+            public static readonly Color? DefBackgroundColor;
             public void ToDefault()
             {
-                
+                SnakeHeadColor = DefSnakeHeadColor;
+                SnakeBodyColor = DefSnakeBodyColor;
+                BackgroundColor = DefBackgroundColor;
+                FoodColor = DefFoodColor;
             }
+            public Color? SnakeHeadColor { get; set; }
+            public Color? SnakeBodyColor { get; set; }
+            public Color? BackgroundColor { get; set; }
+            public Color? FoodColor { get; set; }
         }
         #endregion
     }

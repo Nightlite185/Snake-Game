@@ -1,6 +1,7 @@
 using SnakeGame.Helpers;
 using SnakeGame.Model;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace SnakeGame.ViewModel
 {
@@ -60,11 +61,7 @@ namespace SnakeGame.ViewModel
         #region UI SETTINGS BINDING PROPERTIES
 
         // SNAKE 
-        public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2; /* 
-        REMEMBER TO CALL PROP_CHANGED ON THIS WHEN CHANGING ROWS OR COLS!!!!
-        this one is tricky bc it also depends (both ways) on the snake's startDirection
-        I could block those options (fallback to default) IF the snake's direction is chosen customly.
-        And a bool checkbox that tells me if the user chose custom snake's dir. (yes -> lock this, to default.) */
+        public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2;
         public int StartingLength
         {
             get;
@@ -74,7 +71,6 @@ namespace SnakeGame.ViewModel
                 if (updateStates) UpdateChangedState();
             }
         }
-
         public Direction StartingDirection
         {
             get;
@@ -97,7 +93,6 @@ namespace SnakeGame.ViewModel
                 if (updateStates) UpdateChangedState();
             }
         }
-
         public int Columns
         {
             get;
@@ -120,7 +115,6 @@ namespace SnakeGame.ViewModel
                 if (updateStates) UpdateChangedState();
             }
         }
-
         public int MaxActiveFoods
         {
             get;
@@ -130,9 +124,7 @@ namespace SnakeGame.ViewModel
                 if (updateStates) UpdateChangedState();
             }
         }
-
         public int MaxChoosableMaxActiveFoods => Rows * Columns;
-
         public int FoodSpawnFreq
         {
             get;
@@ -144,7 +136,42 @@ namespace SnakeGame.ViewModel
         }
 
         // THEME
-
+        public Color? SnakeHeadColor
+        {
+            get;
+            set
+            {
+                TryNotify(ref field, value, this, nameof(SnakeHeadColor));
+                if (updateStates) UpdateChangedState();
+            }
+        } 
+        public Color? SnakeBodyColor
+        {
+            get;
+            set
+            {
+                TryNotify(ref field, value, this, nameof(SnakeBodyColor));
+                if (updateStates) UpdateChangedState();
+            }
+        }
+        public Color? BackgroundColor
+        {
+            get;
+            set
+            {
+                TryNotify(ref field, value, this, nameof(BackgroundColor));
+                if (updateStates) UpdateChangedState();
+            }
+        }
+        public Color? FoodColor
+        {
+            get;
+            set
+            {
+                TryNotify(ref field, value, this, nameof(FoodColor));
+                if (updateStates) UpdateChangedState();
+            }
+        }
         #endregion
 
         #region LOAD / SAVE METHODS
@@ -165,6 +192,11 @@ namespace SnakeGame.ViewModel
             this.MaxActiveFoods = OGSettings.General.MaxActiveFoods;
             this.FoodSpawnFreq = OGSettings.General.FoodSpawnFreq;
 
+            // THEME
+            this.SnakeHeadColor = OGSettings.Theme.SnakeHeadColor;
+            this.SnakeBodyColor = OGSettings.Theme.SnakeBodyColor;
+            this.BackgroundColor = OGSettings.Theme.BackgroundColor;
+            this.FoodColor = OGSettings.Theme.FoodColor;
             updateStates = true;
         }
         private void SaveToOG()
@@ -181,6 +213,12 @@ namespace SnakeGame.ViewModel
             OGSettings.General.SnakeSpeed = this.SnakeSpeed;
             OGSettings.General.MaxActiveFoods = this.MaxActiveFoods;
             OGSettings.General.FoodSpawnFreq = this.FoodSpawnFreq;
+
+            // THEME
+            OGSettings.Theme.SnakeHeadColor = SnakeHeadColor;
+            OGSettings.Theme.SnakeBodyColor = SnakeBodyColor;
+            OGSettings.Theme.BackgroundColor = BackgroundColor;
+            OGSettings.Theme.FoodColor = FoodColor;
         }
         private void DraftToDefault()
         {
@@ -198,6 +236,12 @@ namespace SnakeGame.ViewModel
             this.SnakeSpeed = Settings.GeneralSettings.DefSnakeSpeed;
             this.MaxActiveFoods = Settings.GeneralSettings.DefMaxFoods;
             this.FoodSpawnFreq = Settings.GeneralSettings.DefFoodSpawnFreq;
+
+            // THEME
+            this.SnakeBodyColor = Settings.ThemeSettings.DefSnakeBodyColor;
+            this.SnakeHeadColor = Settings.ThemeSettings.DefSnakeHeadColor;
+            this.BackgroundColor = Settings.ThemeSettings.DefBackgroundColor;
+            this.FoodColor = Settings.ThemeSettings.DefFoodColor;
 
             updateStates = true;
         }

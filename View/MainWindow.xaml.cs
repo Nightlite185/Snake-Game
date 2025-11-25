@@ -5,24 +5,32 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.ComponentModel;
+using SnakeGame.Model;
 
 namespace SnakeGame.View
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly GameViewModel GameVM;
+        private Settings.ThemeSettings theme = null!;
         private Rectangle[,]? rectPool;
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void PrepareCanvas()
+        private void PrepareCanvas(Settings.ThemeSettings theme, Coords bounds)
         {
-            var bounds = GameVM.Dimensions;
-            
+            this.theme = theme;
+
             if (
                 rectPool != null
                 && rectPool.GetLength(0) == bounds.Row 
                 && rectPool.GetLength(1) == bounds.Col
-            ) return;
+            ) 
+            { 
+                ClearVisuals(); // clear visuals call here to set the background color to the correct one
+                return;  // yes ik its lazy but it would make the guard clause more complicated if I wanted to set it below. 
+            }            // why fuck up this beautiful logic ;(
+
+            GameCanvas.Children.Clear();
 
             rectPool = new Rectangle[bounds.Row, bounds.Col];
             double tileHeight = GameCanvas.ActualHeight / bounds.Row;
@@ -37,7 +45,7 @@ namespace SnakeGame.View
                     {
                         Width = tileWidth,
                         Height = tileHeight,
-                        Fill = Brushes.Transparent,
+                        Fill = new SolidColorBrush(theme.BackgroundColor ?? Colors.Transparent)
                     };
 
                     Canvas.SetTop(rect, row * tileHeight);
@@ -52,11 +60,11 @@ namespace SnakeGame.View
         private void ClearVisuals()
         {
             foreach (var rect in rectPool!)
-                rect.Fill = Brushes.Transparent;
+                rect.Fill = new SolidColorBrush(theme.BackgroundColor ?? Colors.Transparent);
         }
-        private void RenderGameObjects()
+        private void RenderFrame()
         {
-            ClearVisuals(); 
+            ClearVisuals();
 
             foreach (var (coords, color) in GameVM.GetRenderable())
                 rectPool![coords.Row, coords.Col].Fill = color;
@@ -74,7 +82,7 @@ namespace SnakeGame.View
             rectPool = null;
 
             GameVM.OnGameStarting += PrepareCanvas;
-            GameVM.OnRenderRequest += RenderGameObjects;
+            GameVM.OnRenderRequest += RenderFrame;
             GameVM.OnRestartRequest += ClearVisuals;
 
             

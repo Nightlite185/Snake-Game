@@ -26,6 +26,7 @@
                             
                             <!-- Focus Visual -->
                             <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#80FFFF00"/>
                                 <!-- subtle yellow glow -->
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
@@ -33,11 +34,22 @@
 
                             <!-- Disabled -->
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#333"/>
-                                <Setter Property="Foreground" Value="#888"/>
-                                <Setter Property="BorderBrush" Value="#555"/>
+                                <Setter TargetName="border" Property="Background" Value="#8f8f8f"/>
+                                <Setter Property="Foreground" Value="#1c1c1c"/>
+                                <Setter Property="BorderBrush" Value="#a636bf"/>
                             </Trigger>
-                            
+
+                            <!-- Disabled + MouseOver -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsEnabled" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </MultiTrigger>
+
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>

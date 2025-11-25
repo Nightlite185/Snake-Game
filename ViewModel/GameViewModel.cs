@@ -63,7 +63,7 @@ namespace SnakeGame.ViewModel
             StartGameCommand = new RelayCommand(
                 executeAsync: async () =>
                 {
-                    OnGameStarting?.Invoke();
+                    OnGameStarting?.Invoke(cfg.Theme, Dimensions);
                     gm = new(cfg, State);
                     HookGMEvents();
 
@@ -157,13 +157,14 @@ namespace SnakeGame.ViewModel
         public Coords Dimensions => new(cfg.Grid.Rows, cfg.Grid.Columns);
         public IEnumerable<(Coords coords, SolidColorBrush)> GetRenderable()
         {
+            var t = cfg.Theme;
             foreach (var food in gm!.FoodPool.ActiveFoods)
-                yield return (food.Coords, Brushes.Red);
+                yield return (food.Coords, new SolidColorBrush(t.FoodColor ?? Colors.Violet));
 
-            yield return (gm.Snake.HeadPos, Brushes.RoyalBlue);
+            yield return (gm.Snake.HeadPos, new SolidColorBrush(t.SnakeHeadColor?? Colors.RoyalBlue));
 
             foreach (var seg in gm.Snake.Body.Skip(1))
-                yield return (seg.Coords, Brushes.LightSkyBlue);
+                yield return (seg.Coords, new SolidColorBrush(t.SnakeBodyColor?? Colors.LightSkyBlue));
         }
         #endregion
 
@@ -192,7 +193,7 @@ namespace SnakeGame.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action? OnRenderRequest;
         public event Action? OnRestartRequest;
-        public event Action? OnGameStarting;
+        public event Action<Settings.ThemeSettings, Coords>? OnGameStarting;
         #endregion
         
         #region Visibility properties
