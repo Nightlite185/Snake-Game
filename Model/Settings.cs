@@ -78,9 +78,9 @@ namespace SnakeGame.Model
         public class GeneralSettings: IDefaultable
         {
             #region defaults
-            public const int DefSnakeSpeed = 330;
+            public const int DefSnakeSpeed = 50;
             public const int DefMaxFoods = 7;
-            public const int DefFoodSpawnFreq = 3;
+            public const int DefFoodSpawnFreq = 7;
             #endregion
             public void ToDefault()
             {
