@@ -3,7 +3,6 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
-using SnakeGame.Model;
 using System.Windows.Input;
 using System.ComponentModel;
 
@@ -12,14 +11,23 @@ namespace SnakeGame.View
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly GameViewModel GameVM;
-        private readonly Rectangle[,] rectPool;
-        private readonly Coords bounds;
+        private Rectangle[,]? rectPool;
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void InitializeRectPool()
+        private void PrepareCanvas()
         {
+            var bounds = GameVM.Dimensions;
+            
+            if (
+                rectPool != null
+                && rectPool.GetLength(0) == bounds.Row 
+                && rectPool.GetLength(1) == bounds.Col
+            ) return;
+
+            rectPool = new Rectangle[bounds.Row, bounds.Col];
             double tileHeight = GameCanvas.ActualHeight / bounds.Row;
             double tileWidth = GameCanvas.ActualWidth / bounds.Col;
+
 
             for (int row = 0; row < bounds.Row; row++)
             {
@@ -43,7 +51,7 @@ namespace SnakeGame.View
         public void Window_KeyDown(object sender, KeyEventArgs e) => GameVM.KeyDownHandler(e);
         private void ClearVisuals()
         {
-            foreach (var rect in rectPool)
+            foreach (var rect in rectPool!)
                 rect.Fill = Brushes.Transparent;
         }
         private void RenderGameObjects()
@@ -51,7 +59,7 @@ namespace SnakeGame.View
             ClearVisuals(); 
 
             foreach (var (coords, color) in GameVM.GetRenderable())
-                rectPool[coords.Row, coords.Col].Fill = color;
+                rectPool![coords.Row, coords.Col].Fill = color;
         }
         
         public MainWindow()
@@ -59,18 +67,16 @@ namespace SnakeGame.View
             InitializeComponent();
 
             GameVM = new();
-            bounds = GameVM.Dimensions;
-
             DataContext = GameVM;
             InputTip.DataContext = this;
             Scoreboard.DataContext = GameVM.sb;
+            
+            rectPool = null;
 
+            GameVM.OnGameStarting += PrepareCanvas;
             GameVM.OnRenderRequest += RenderGameObjects;
             GameVM.OnRestartRequest += ClearVisuals;
 
-            rectPool = new Rectangle[bounds.Row, bounds.Col];
-
-            Loaded += (_, _) => InitializeRectPool(); // initialization after loading UI element bc it needs to know actual sizes.
             
             Closing += (_, e) => GameVM.CleanupOnExit();
         }

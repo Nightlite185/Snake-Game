@@ -10,7 +10,6 @@ namespace SnakeGame.ViewModel
 {
     public class GameViewModel : INotifyPropertyChanged, IDisposable
     {
-        private GameManager? gm;
         public readonly Scoreboard sb;
         public int Score
         {
@@ -34,6 +33,7 @@ namespace SnakeGame.ViewModel
             set;
         }
         private GameState State { get; init; }
+        private GameManager? gm;
         private Settings cfg = null!;
         public void CleanupOnExit()
         {
@@ -63,6 +63,7 @@ namespace SnakeGame.ViewModel
             StartGameCommand = new RelayCommand(
                 executeAsync: async () =>
                 {
+                    OnGameStarting?.Invoke();
                     gm = new(cfg, State);
                     HookGMEvents();
 
@@ -191,6 +192,7 @@ namespace SnakeGame.ViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
         public event Action? OnRenderRequest;
         public event Action? OnRestartRequest;
+        public event Action? OnGameStarting;
         #endregion
         
         #region Visibility properties
