@@ -95,10 +95,10 @@ namespace SnakeGame.Model
         }
         public class ThemeSettings: IDefaultable
         {
-            public static readonly Color? DefSnakeHeadColor;
-            public static readonly Color? DefSnakeBodyColor;
-            public static readonly Color? DefFoodColor;
-            public static readonly Color? DefBackgroundColor;
+            public static readonly Color DefSnakeHeadColor = Colors.RoyalBlue;
+            public static readonly Color DefSnakeBodyColor = Colors.LightSkyBlue;
+            public static readonly Color DefFoodColor = Colors.Violet;
+            public static readonly Color DefBackgroundColor = Colors.Transparent;
             public void ToDefault()
             {
                 SnakeHeadColor = DefSnakeHeadColor;

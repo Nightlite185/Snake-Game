@@ -23,7 +23,7 @@
                         </Border>
 
                         <ControlTemplate.Triggers>
-                            
+
                             <!-- Focus Visual -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Cursor" Value="Hand"/>

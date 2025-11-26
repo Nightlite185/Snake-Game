@@ -159,12 +159,12 @@ namespace SnakeGame.ViewModel
         {
             var t = cfg.Theme;
             foreach (var food in gm!.FoodPool.ActiveFoods)
-                yield return (food.Coords, new SolidColorBrush(t.FoodColor ?? Colors.Violet));
+                yield return (food.Coords, new SolidColorBrush(t.FoodColor ?? Settings.ThemeSettings.DefFoodColor));
 
-            yield return (gm.Snake.HeadPos, new SolidColorBrush(t.SnakeHeadColor?? Colors.RoyalBlue));
+            yield return (gm.Snake.HeadPos, new SolidColorBrush(t.SnakeHeadColor?? Settings.ThemeSettings.DefSnakeHeadColor));
 
             foreach (var seg in gm.Snake.Body.Skip(1))
-                yield return (seg.Coords, new SolidColorBrush(t.SnakeBodyColor?? Colors.LightSkyBlue));
+                yield return (seg.Coords, new SolidColorBrush(t.SnakeBodyColor?? Settings.ThemeSettings.DefSnakeBodyColor));
         }
         #endregion
 

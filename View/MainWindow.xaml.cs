@@ -15,7 +15,7 @@ namespace SnakeGame.View
         private Settings.ThemeSettings theme = null!;
         private Rectangle[,]? rectPool;
         public event PropertyChangedEventHandler? PropertyChanged;
-
+        
         private void PrepareCanvas(Settings.ThemeSettings theme, Coords bounds)
         {
             this.theme = theme;
@@ -45,7 +45,7 @@ namespace SnakeGame.View
                     {
                         Width = tileWidth,
                         Height = tileHeight,
-                        Fill = new SolidColorBrush(theme.BackgroundColor ?? Colors.Transparent)
+                        Fill = new SolidColorBrush(theme.BackgroundColor ?? Settings.ThemeSettings.DefBackgroundColor)
                     };
 
                     Canvas.SetTop(rect, row * tileHeight);
@@ -60,7 +60,7 @@ namespace SnakeGame.View
         private void ClearVisuals()
         {
             foreach (var rect in rectPool!)
-                rect.Fill = new SolidColorBrush(theme.BackgroundColor ?? Colors.Transparent);
+                rect.Fill = new SolidColorBrush(theme.BackgroundColor ?? Settings.ThemeSettings.DefBackgroundColor);
         }
         private void RenderFrame()
         {
@@ -92,7 +92,10 @@ namespace SnakeGame.View
         private void NicknameInput_LostFocus(object sender, RoutedEventArgs e)
         {
             if (NicknameInput.Text.Length > 9)
-                return; // later raise tooltip saying you exceeded max length.
+            {
+                NicknameInput.ToolTip = "Max length (9 characters) exceeded.";
+                return;
+            }
             
             GameVM.NameEntered = NicknameInput.Text;
 
