@@ -1,6 +1,7 @@
 using SnakeGame.Helpers;
 using SnakeGame.Model;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
 
 namespace SnakeGame.ViewModel
@@ -30,20 +31,22 @@ namespace SnakeGame.ViewModel
     }
     public class SettingsViewModel : NotifyBase
     {
-        #region PRIVATE PROPERTIES
-        private bool IsChanged
+        public Visibility PopUp_Visibility { get; set; } = Visibility.Collapsed;
+        public bool IsChanged
         {
             get;
             set
             {
                 if (field != value)
-                {
+                {   
                     field = value;
                     SaveChangesCommand.ScreamCanExecuteChanged();
                     DiscardChangesCommand.ScreamCanExecuteChanged();
                 }
             }
         }
+        
+        #region PRIVATE PROPERTIES
         private bool IsDraftDefault
         {
             get;
@@ -53,7 +56,7 @@ namespace SnakeGame.ViewModel
                 ResetToDefaultCommand.ScreamCanExecuteChanged();
             }
         }
-        private bool isOGDefault;
+        private bool isOGDefault = false;
         private bool updateStates;
         private Settings OGSettings { get; set; }
         #endregion
@@ -253,7 +256,9 @@ namespace SnakeGame.ViewModel
             notifyUI = true;
 
             #region ICommands
-            SaveChangesCommand = new RelayCommand(
+
+            // Regular options ICommands 
+            SaveChangesCommand = new(
                 execute: () =>
                 {
                     SaveToOG();
@@ -269,8 +274,8 @@ namespace SnakeGame.ViewModel
                 },
                 canExecute: () => IsChanged
             );
-
-            ResetToDefaultCommand = new RelayCommand(
+            
+            ResetToDefaultCommand = new(
                 execute: () =>
                 {
                     // TO DO:: maybe open some pop-up like "you sure u wanna reset???"
@@ -281,8 +286,8 @@ namespace SnakeGame.ViewModel
                 },
                 canExecute: () => !IsDraftDefault
             );
-
-            DiscardChangesCommand = new RelayCommand(
+            
+            DiscardChangesCommand = new(
                 execute: () =>
                 {
                     LoadFromOG();
@@ -291,18 +296,48 @@ namespace SnakeGame.ViewModel
                     if (IsDraftDefault)          // if it was default and we're reverting those changes now
                         IsDraftDefault = false; // we turn it back to false.
 
-                    else if (isOGDefault || !IsDraftDefault) // if og is default, and we are discarding any changes made
+                    else if (isOGDefault && !IsDraftDefault) // if og is default, and we are discarding any changes made
                         IsDraftDefault = true;              // -> we're actually reverting draft to default as well
                 },
                 canExecute: () => IsChanged
             );
+            
+            // Pop-up buttons ICommands
+            SaveInPopUpCommand = new(
+                execute: () =>
+                {
+                    SaveChangesCommand.Execute();
+                    CloseWinRequest?.Invoke();
+                },
+                canExecute:() => true
+            );
+            
+            DiscardInPopUpCommand = new(
+                execute: () =>
+                {
+                    DiscardChangesCommand.Execute();
+                    CloseWinRequest?.Invoke();
+                },
+                canExecute:() => true
+            );
+
+            CancelInPopUpCommand = new(
+                execute: () => ClosePopUpRequest?.Invoke(),
+                canExecute: () => true
+            );
+
             #endregion
         }
 
         #region ICommands
+        // regular Commands
         public RelayCommand SaveChangesCommand { get; }
         public RelayCommand DiscardChangesCommand { get; }
         public RelayCommand ResetToDefaultCommand { get; }
+        // pop-up Commands
+        public RelayCommand DiscardInPopUpCommand { get; }
+        public RelayCommand SaveInPopUpCommand { get; }
+        public RelayCommand CancelInPopUpCommand { get; }
         #endregion
         public void UpdateChangedState()
         {
@@ -311,5 +346,7 @@ namespace SnakeGame.ViewModel
             if (IsDraftDefault)
                 IsDraftDefault = false;
         }
+        public event Action? CloseWinRequest;
+        public event Action? ClosePopUpRequest;
     }
 }

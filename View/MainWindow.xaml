@@ -45,7 +45,7 @@
         </Border>
         <Button x:Name="OptionsButton" Visibility="{Binding OptionsButton_Visibility}" Content="Options" Height="65" Width="140" FontSize="30" Background="#66000000" BorderBrush="#FFF1FF00" Foreground="#FFFFD200" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,708,0,0" RenderTransformOrigin="0.5,0.5" Command="{Binding OpenOptionsCommand}" Cursor="Hand"/>
         <Border CornerRadius="30" Background="#5E030054" BorderBrush="#FF7CFFF0" BorderThickness="4,4,4,4" Grid.Column="1" Margin="690,132,27,25" UseLayoutRounding="True" Grid.ColumnSpan="2">
-            <ListView x:Name="Scoreboard" ItemsSource="{Binding VisualScores}" Margin="6,6,6,6" Background="Transparent" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790">
+            <ListView x:Name="Scoreboard" ItemsSource="{Binding VisualScores}" Margin="6,6,6,6" Background="Transparent" FontSize="35" FontFamily="Bahnschrift" BorderBrush="#00828790" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ListView.Foreground>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF00BB" Offset="0.984"/>
@@ -55,11 +55,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Rank}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="70"/>
-
-                            <TextBlock Text="{Binding Name}" Width="180" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding StrPoints}" Width="180" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding StrTime}" Width="350" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                            <TextBlock Text="{Binding Rank}" VerticalAlignment="Center" Width="84"/>
+                            <TextBlock Text="{Binding Name}" Width="149" FontSize="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding StrPoints}" Width="170"/>
+                            <TextBlock Text="{Binding StrTime}" Width="227" FontSize="25" VerticalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

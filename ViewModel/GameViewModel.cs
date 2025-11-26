@@ -60,7 +60,7 @@ namespace SnakeGame.ViewModel
             OptionsButton_Visibility = Visibility.Visible;
 
             #region ICommands
-            StartGameCommand = new RelayCommand(
+            StartGameCommand = new(
                 executeAsync: async () =>
                 {
                     OnGameStarting?.Invoke(cfg.Theme, Dimensions);
@@ -72,7 +72,7 @@ namespace SnakeGame.ViewModel
                 canExecute: () => State.Current == GameStates.NotStarted
             );
 
-            RestartGameCommand = new RelayCommand(
+            RestartGameCommand = new(
                 execute: () =>
                 {
                     State.Restart();
@@ -87,7 +87,7 @@ namespace SnakeGame.ViewModel
                 canExecute: () => State.Current != GameStates.NotStarted
             );
 
-            ResetScoreboardCommand = new RelayCommand(
+            ResetScoreboardCommand = new(
                 execute: () => 
                 {
                     sb.ResetScoreboard();
@@ -96,7 +96,7 @@ namespace SnakeGame.ViewModel
                 canExecute: () => sb.VisualScores.Count > 0
             );
             
-            OpenOptionsCommand = new RelayCommand(
+            OpenOptionsCommand = new(
                 execute: () => 
                 {
                     SettingsViewModel setVM = new(cfg);
