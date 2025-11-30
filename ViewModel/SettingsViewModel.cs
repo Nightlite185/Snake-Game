@@ -31,7 +31,10 @@ namespace SnakeGame.ViewModel
     }
     public class SettingsViewModel : NotifyBase
     {
-        public Visibility PopUp_Visibility { get; set; } = Visibility.Collapsed;
+        public Visibility PopUp_Visibility
+        {
+            get; private set => TryNotify(ref field, value, this, nameof(PopUp_Visibility));
+        } = Visibility.Collapsed;
         public bool IsChanged
         {
             get;
