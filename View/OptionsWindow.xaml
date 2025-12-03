@@ -112,7 +112,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="RowsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid rows" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="RowsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="RowsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="50" Value="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="RowsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="3" Maximum="100" Value="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -126,7 +126,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="ColsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid columns" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="ColsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="ColsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="50" Value="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="ColsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="3" Maximum="100" Value="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 

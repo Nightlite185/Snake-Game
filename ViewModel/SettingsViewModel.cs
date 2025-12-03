@@ -53,6 +53,7 @@ namespace SnakeGame.ViewModel
             {
                 list.Add(message);
                 ErrorsChanged?.Invoke(this, new(propertyName));
+                
             }
 
             else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
@@ -108,11 +109,19 @@ namespace SnakeGame.ViewModel
 
         // SNAKE 
         public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2;
+        private const int MinSnakeStartLength = 2;
         public int StartingLength
         {
             get;
             set
             {
+                ClearErrors(nameof(StartingLength));
+
+                var result = Validation.Int(value, MinSnakeStartLength, MaxSnakeStartLength);
+
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(StartingLength), GetErrorMessage(result, nameof(StartingLength), "2"));
+
                 TryNotify(ref field, value, this, nameof(StartingLength));
                 if (updateStates) UpdateChangedState();
             }
@@ -133,6 +142,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
+                ClearErrors(nameof(Rows));
+                
+                var result = Validation.Int(value, 3, 100);
+                
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(Rows), GetErrorMessage(result, nameof(Rows), "3"));
+                
                 string[] ToNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
 
                 TryNotify(ref field, value, this, ToNotify);
@@ -144,6 +160,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
+                ClearErrors(nameof(Columns));
+                
+                var result = Validation.Int(value, 3, 100);
+                
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(Columns), GetErrorMessage(result, nameof(Columns), "3"));
+                
                 string[] ToNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
                 
                 TryNotify(ref field, value, this, ToNotify);
@@ -157,6 +180,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
+                ClearErrors(nameof(SnakeSpeed));
+                
+                var result = Validation.Int(value, 1, 100); // TO DO:: name magic numbers later
+                
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(SnakeSpeed), GetErrorMessage(result, nameof(SnakeSpeed), "1")); // TO DO:: fix this, it only works one way
+                
                 TryNotify(ref field, value, this, nameof(SnakeSpeed));
                 if (updateStates) UpdateChangedState();
             }
@@ -166,6 +196,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
+                ClearErrors(nameof(MaxActiveFoods));
+                
+                var result = Validation.Int(value, 1, MaxChoosableMaxActiveFoods);
+                
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(MaxActiveFoods), GetErrorMessage(result, nameof(MaxActiveFoods), "1"));
+                
                 TryNotify(ref field, value, this, nameof(MaxActiveFoods));
                 if (updateStates) UpdateChangedState();
             }
@@ -176,6 +213,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
+                ClearErrors(nameof(FoodSpawnFreq));
+                
+                var result = Validation.Int(value, 1, 10);
+                
+                if (result != ValidationResult.Valid)
+                    AddError(nameof(FoodSpawnFreq), GetErrorMessage(result, nameof(FoodSpawnFreq), "1"));
+                
                 TryNotify(ref field, value, this, nameof(FoodSpawnFreq));
                 if (updateStates) UpdateChangedState();
             }
@@ -317,7 +361,7 @@ namespace SnakeGame.ViewModel
                     else if (isOGDefault && !IsDraftDefault)
                         isOGDefault = false;
                 },
-                canExecute: () => IsChanged
+                canExecute: () => IsChanged && !HasErrors
             );
             
             ResetToDefaultCommand = new(
@@ -413,6 +457,16 @@ namespace SnakeGame.ViewModel
             if (IsDraftDefault)
                 IsDraftDefault = false;
         }
+        private const string ForgotOtherParamMessage = "you didn't add string for 'other' arg";
+        private static string GetErrorMessage(ValidationResult vr, string propName, string? other = null) 
+        => vr switch
+        {
+            ValidationResult.ValueTooLow => $"{propName} cannot be lower than {other ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}.",
+            ValidationResult.ValueTooHigh => $"{propName} cannot be higher than {other ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}.",
+            ValidationResult.NullOrEmpty => $"{propName} cannot be empty or whitespace",
+            
+            _ => throw new InvalidOperationException("cannot get error message for valid result")
+        };
         public event Action? CloseWinRequest;
         public event Action? ClosePopUpRequest;
     }
