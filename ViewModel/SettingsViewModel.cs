@@ -120,7 +120,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, MinSnakeStartLength, MaxSnakeStartLength);
 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(StartingLength), GetErrorMessage(result, nameof(StartingLength), "2"));
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
 
                 TryNotify(ref field, value, this, nameof(StartingLength));
                 if (updateStates) UpdateChangedState();
@@ -147,7 +150,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, 3, 100);
                 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(Rows), GetErrorMessage(result, nameof(Rows), "3"));
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
                 
                 string[] ToNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
 
@@ -165,7 +171,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, 3, 100);
                 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(Columns), GetErrorMessage(result, nameof(Columns), "3"));
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
                 
                 string[] ToNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
                 
@@ -185,7 +194,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, 1, 100); // TO DO:: name magic numbers later
                 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(SnakeSpeed), GetErrorMessage(result, nameof(SnakeSpeed), "1")); // TO DO:: fix this, it only works one way
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
                 
                 TryNotify(ref field, value, this, nameof(SnakeSpeed));
                 if (updateStates) UpdateChangedState();
@@ -201,7 +213,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, 1, MaxChoosableMaxActiveFoods);
                 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(MaxActiveFoods), GetErrorMessage(result, nameof(MaxActiveFoods), "1"));
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
                 
                 TryNotify(ref field, value, this, nameof(MaxActiveFoods));
                 if (updateStates) UpdateChangedState();
@@ -218,7 +233,10 @@ namespace SnakeGame.ViewModel
                 var result = Validation.Int(value, 1, 10);
                 
                 if (result != ValidationResult.Valid)
+                {
                     AddError(nameof(FoodSpawnFreq), GetErrorMessage(result, nameof(FoodSpawnFreq), "1"));
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
                 
                 TryNotify(ref field, value, this, nameof(FoodSpawnFreq));
                 if (updateStates) UpdateChangedState();
