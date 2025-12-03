@@ -1,13 +1,15 @@
 using SnakeGame.Helpers;
 using SnakeGame.Model;
+using System.Collections;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 
 namespace SnakeGame.ViewModel
 {
-    public abstract class NotifyBase : INotifyPropertyChanged
+    public abstract class NotifyBase : INotifyPropertyChanged, INotifyDataErrorInfo
     {
+        #region INPC implementation
         public event PropertyChangedEventHandler? PropertyChanged;
         protected bool notifyUI = false;
         
@@ -28,6 +30,44 @@ namespace SnakeGame.ViewModel
             else 
                 field = value;
         }
+        #endregion
+        
+        #region INDEI implementation
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+        private const string PropNotFoundMess = "No such property found in VM";
+        public bool HasErrors => activeErrors.Any(kvp => kvp.Value.Count > 0);
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(propertyName))
+                return Array.Empty<string>();
+            
+            if (activeErrors.TryGetValue(propertyName, out var result))
+                return result;
+
+            else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
+        }
+        protected Dictionary<string, List<string>> activeErrors = null!;
+        protected void AddError(string propertyName, string message)
+        {
+            if (activeErrors.TryGetValue(propertyName, out var list) && !list.Contains(message))
+            {
+                list.Add(message);
+                ErrorsChanged?.Invoke(this, new(propertyName));
+            }
+
+            else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
+        }
+        protected void ClearErrors(string propertyName)
+        {
+            if (activeErrors.TryGetValue(propertyName, out var list))
+            {
+                list.Clear();
+                ErrorsChanged?.Invoke(this, new(propertyName));
+            }
+            
+            else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
+        }
+        #endregion
     }
     public class SettingsViewModel : NotifyBase
     {
@@ -255,8 +295,10 @@ namespace SnakeGame.ViewModel
         public SettingsViewModel(Settings settings)
         {
             this.OGSettings = settings;
+            InitializeErrorsDict();
             LoadFromOG();
             notifyUI = true;
+
 
             #region ICommands
 
@@ -331,6 +373,28 @@ namespace SnakeGame.ViewModel
 
             #endregion
         }
+
+        private void InitializeErrorsDict() => activeErrors = new()
+        {
+            // SNAKE
+            [nameof(StartingLength)] = [],
+            [nameof(StartingDirection)] = [],
+
+            // GRID
+            [nameof(Rows)] = [],
+            [nameof(Columns)] = [],
+
+            // GENERAL
+            [nameof(SnakeSpeed)] = [],
+            [nameof(MaxActiveFoods)] = [],
+            [nameof(FoodSpawnFreq)] = [],
+
+            // THEME
+            [nameof(SnakeBodyColor)] = [],
+            [nameof(SnakeHeadColor)] = [],
+            [nameof(BackgroundColor)] = [],
+            [nameof(FoodColor)] = []
+        };
 
         #region ICommands
         // regular Commands
