@@ -59,6 +59,11 @@ namespace SnakeGame.Model
                 this.StartingLength = DefStartingLength;
             }
             #endregion
+            #region bounds
+            public const int MinStartLength = 2;
+            public const int MinSpeed = 1;
+            public const int MaxSpeed = 100;
+            #endregion
             public int StartingLength { get; set; }
             public int Speed { get; set; }
         }
@@ -72,6 +77,10 @@ namespace SnakeGame.Model
                 this.Rows = DefRows;
                 this.Columns = DefColumns;
             }
+            #endregion
+            #region bounds
+            public const int MinGridAny = 3;
+            public const int MaxGridAny = 100;
             #endregion
             public int Rows { get; set; }
             public int Columns { get; set; }
@@ -87,6 +96,11 @@ namespace SnakeGame.Model
                 MaxActiveFoods = DefMaxFoods;
                 FoodSpawnFreq = DefFoodSpawnFreq;
             }
+            #endregion
+            #region bounds
+            public const int MinFoodFreq = 1;
+            public const int MaxFoodFreq = 10;
+            public const int MinActiveFoodsLimit = 1;
             #endregion
             public int MaxActiveFoods { get; set; }
             public int FoodSpawnFreq { get; set; }

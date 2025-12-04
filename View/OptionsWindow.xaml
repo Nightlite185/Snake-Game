@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpf="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:SnakeGame.View"
+        xmlns:model="clr-namespace:SnakeGame.Model"
         mc:Ignorable="d"
         Title="Options window" Height="538" Width="434" Background="#FF00DEFF" ResizeMode="NoResize" Foreground="Red" OpacityMask="Red" BorderBrush="Red" MinWidth="450" MinHeight="560" ShowInTaskbar="False" Topmost="True" WindowState="Normal">
 
@@ -56,7 +57,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="StartingLength" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake's starting length" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="StartingLengthInput" Background="Transparent" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding StartingLength}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="SnakeLengthSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="2" Maximum="{Binding MaxSnakeStartLength}" Value="{Binding StartingLength}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="SnakeLengthSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+SnakeSettings.MinStartLength}" Maximum="{Binding MaxSnakeStartLength}" Value="{Binding StartingLength}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -70,7 +71,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="SnakeSpeedLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Snake speed" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="SnakeSpeedInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="SnakeSpeedSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="100" Value="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="SnakeSpeedSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+SnakeSettings.MinSpeed}" Maximum="{x:Static model:Settings+SnakeSettings.MaxSpeed}" Value="{Binding SnakeSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -84,7 +85,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="FoodFreqLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Food spawn frequency" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="FoodFreqInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="FoodFreqSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="10" Value="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="FoodFreqSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+FoodSettings.MinFoodFreq}" Maximum="{x:Static model:Settings+FoodSettings.MaxFoodFreq}" Value="{Binding FoodSpawnFreq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -98,7 +99,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="MaxActiveFoodLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Max active food count" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="MaxActiveFoodInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="MaxActiveFoodSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="1" Maximum="{Binding MaxChoosableMaxActiveFoods}" Value="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="MaxActiveFoodSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+FoodSettings.MinActiveFoodsLimit}" Maximum="{Binding MaxChoosableMaxActiveFoods}" Value="{Binding MaxActiveFoods, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -112,7 +113,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="RowsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid rows" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="RowsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="RowsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="3" Maximum="100" Value="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="RowsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+GridSettings.MinGridAny}" Maximum="{x:Static model:Settings+GridSettings.MaxGridAny}" Value="{Binding Rows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
@@ -126,7 +127,7 @@
                     </Grid.ColumnDefinitions>
                     <Label x:Name="ColsLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Grid columns" FontSize="17" FontFamily="Segoe UI Variable Text Semibold" Foreground="#FF95F9C0" MinWidth="70" Padding="0,0,0,0" Margin="0,0,0,3"/>
                     <TextBox x:Name="ColsInput" BorderThickness="2,2,2,2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="42" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI Variable Display" Foreground="White" RenderTransformOrigin="0.512,0.508" Grid.Column="1" BorderBrush="#E500FFBF" Padding="0,0,0,0"/>
-                    <Slider x:Name="ColsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="3" Maximum="100" Value="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
+                    <Slider x:Name="ColsSlider" HorizontalAlignment="Center" VerticalAlignment="Center" Width="188" Minimum="{x:Static model:Settings+GridSettings.MinGridAny}" Maximum="{x:Static model:Settings+GridSettings.MaxGridAny}" Value="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" Grid.Column="2" Height="18"/>
                 </Grid>
             </Border>
 
