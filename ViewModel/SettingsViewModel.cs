@@ -109,23 +109,18 @@ namespace SnakeGame.ViewModel
 
         // SNAKE 
         public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2;
-        private const int MinSnakeStartLength = 2;
         public int SnakeSpeed
         {
             get;
             set
             {
-                ClearErrors(nameof(SnakeSpeed));
-                
-                var result = Validation.Int(value, 1, 100); // TO DO:: name magic numbers later
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(SnakeSpeed), GetErrorMessage(result, nameof(SnakeSpeed), "1")); // TO DO:: fix this, it only works one way
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                TryNotify(ref field, value, this, nameof(SnakeSpeed));
+                string propName = nameof(SnakeSpeed);
+                var bounds = (Settings.SnakeSettings.MinSpeed, Settings.SnakeSettings.MaxSpeed);
+                var result = Validation.Int(value, bounds);
+
+                ValidationHelper(propName, result, bounds);
+
+                TryNotify(ref field, value, this, propName);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -134,17 +129,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                ClearErrors(nameof(StartingLength));
+                string propName = nameof(StartingLength);
+                var bounds = (Settings.SnakeSettings.MinStartLength, MaxSnakeStartLength);
+                var result = Validation.Int(value, bounds);
 
-                var result = Validation.Int(value, MinSnakeStartLength, MaxSnakeStartLength);
+                ValidationHelper(propName, result, bounds);
 
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(StartingLength), GetErrorMessage(result, nameof(StartingLength), "2"));
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-
-                TryNotify(ref field, value, this, nameof(StartingLength));
+                TryNotify(ref field, value, this, propName);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -155,19 +146,14 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                ClearErrors(nameof(Rows));
-                
-                var result = Validation.Int(value, 3, 100);
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(Rows), GetErrorMessage(result, nameof(Rows), "3"));
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                string[] ToNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
+                string propName = nameof(Rows);
+                var bounds = (Settings.GridSettings.MinGridAny, Settings.GridSettings.MaxGridAny);
+                var result = Validation.Int(value, bounds);
+                string[] toNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
 
-                TryNotify(ref field, value, this, ToNotify);
+                ValidationHelper(propName, result, bounds);
+                
+                TryNotify(ref field, value, this, toNotify);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -176,19 +162,14 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                ClearErrors(nameof(Columns));
-                
-                var result = Validation.Int(value, 3, 100);
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(Columns), GetErrorMessage(result, nameof(Columns), "3"));
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                string[] ToNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
-                
-                TryNotify(ref field, value, this, ToNotify);
+                string propName = nameof(Columns);
+                var bounds = (Settings.GridSettings.MinGridAny, Settings.GridSettings.MaxGridAny);
+                var result = Validation.Int(value, bounds);
+                string[] toNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
+
+                ValidationHelper(propName, result, bounds);
+
+                TryNotify(ref field, value, this, toNotify);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -199,17 +180,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                ClearErrors(nameof(MaxActiveFoods));
-                
-                var result = Validation.Int(value, 1, MaxChoosableMaxActiveFoods);
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(MaxActiveFoods), GetErrorMessage(result, nameof(MaxActiveFoods), "1"));
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                TryNotify(ref field, value, this, nameof(MaxActiveFoods));
+                string propName = nameof(MaxActiveFoods);
+                var bounds = (Settings.FoodSettings.MinActiveFoodsLimit, MaxChoosableMaxActiveFoods);
+                var result = Validation.Int(value, bounds);
+
+                ValidationHelper(propName, result, bounds);
+
+                TryNotify(ref field, value, this, propName);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -219,17 +196,13 @@ namespace SnakeGame.ViewModel
             get;
             set
             {
-                ClearErrors(nameof(FoodSpawnFreq));
-                
-                var result = Validation.Int(value, 1, 10);
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(FoodSpawnFreq), GetErrorMessage(result, nameof(FoodSpawnFreq), "1"));
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                TryNotify(ref field, value, this, nameof(FoodSpawnFreq));
+                string propName = nameof(FoodSpawnFreq);
+                var bounds = (Settings.FoodSettings.MinFoodFreq, Settings.FoodSettings.MaxFoodFreq);
+                var result = Validation.Int(value, bounds);
+
+                ValidationHelper(propName, result, bounds);
+
+                TryNotify(ref field, value, this, propName);
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -295,6 +268,7 @@ namespace SnakeGame.ViewModel
             this.SnakeBodyColor = OGSettings.Theme.SnakeBodyColor;
             this.BackgroundColor = OGSettings.Theme.BackgroundColor;
             this.FoodColor = OGSettings.Theme.FoodColor;
+
             updateStates = true;
         }
         private void SaveToOG()
@@ -340,6 +314,13 @@ namespace SnakeGame.ViewModel
             this.FoodColor = Settings.ThemeSettings.DefFoodColor;
 
             updateStates = true;
+        }
+        private void UpdateChangedState()
+        {
+            IsChanged = true;
+
+            if (IsDraftDefault)
+                IsDraftDefault = false;
         }
         #endregion
         public SettingsViewModel(Settings settings)
@@ -455,23 +436,27 @@ namespace SnakeGame.ViewModel
         public RelayCommand SaveInPopUpCommand { get; }
         public RelayCommand CancelInPopUpCommand { get; }
         #endregion
-        public void UpdateChangedState()
-        {
-            IsChanged = true;
-
-            if (IsDraftDefault)
-                IsDraftDefault = false;
-        }
-        private const string ForgotOtherParamMessage = "you didn't add string for 'other' arg";
-        private static string GetErrorMessage(ValidationResult vr, string propName, string? other = null) 
+        
+        private const string ForgotOtherParamMessage = "you didn't provide string for 'other' arg";
+        private static string GetErrorMessage(ValidationResult vr, string propName, (int? min, int? max) bounds, string? reason)
         => vr switch
         {
-            ValidationResult.ValueTooLow => $"{propName} cannot be lower than {other ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}.",
-            ValidationResult.ValueTooHigh => $"{propName} cannot be higher than {other ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}.",
+            ValidationResult.ValueTooLow => $"{propName} cannot be lower than {bounds.min ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}{(", because " + reason) ?? ""}.",
+            ValidationResult.ValueTooHigh => $"{propName} cannot be higher than {bounds.max ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}{(", because " + reason) ?? ""}.",
             ValidationResult.NullOrEmpty => $"{propName} cannot be empty or whitespace",
             
             _ => throw new InvalidOperationException("cannot get error message for valid result")
         };
+        private void ValidationHelper(string propName, ValidationResult result, (int? min, int? max) bounds, string? reason = null)
+        {
+            ClearErrors(propName);
+
+            if (result != ValidationResult.Valid)
+            {
+                AddError(propName, GetErrorMessage(result, propName, bounds, reason));
+                SaveChangesCommand.ScreamCanExecuteChanged();
+            }   
+        }
         public event Action? CloseWinRequest;
         public event Action? ClosePopUpRequest;
     }

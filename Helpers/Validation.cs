@@ -16,12 +16,12 @@
 
             return ValidationResult.Valid;
         }
-        public static ValidationResult Int(int input, int MinValue, int MaxValue)
+        public static ValidationResult Int(int input, (int min, int max) bounds)
         {
-            if (input < MinValue)
+            if (input < bounds.min)
                 return ValidationResult.ValueTooLow;
 
-            else if (input > MaxValue)
+            else if (input > bounds.max)
                 return ValidationResult.ValueTooHigh;
 
             return ValidationResult.Valid;
