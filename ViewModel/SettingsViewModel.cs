@@ -110,6 +110,25 @@ namespace SnakeGame.ViewModel
         // SNAKE 
         public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2;
         private const int MinSnakeStartLength = 2;
+        public int SnakeSpeed
+        {
+            get;
+            set
+            {
+                ClearErrors(nameof(SnakeSpeed));
+                
+                var result = Validation.Int(value, 1, 100); // TO DO:: name magic numbers later
+                
+                if (result != ValidationResult.Valid)
+                {
+                    AddError(nameof(SnakeSpeed), GetErrorMessage(result, nameof(SnakeSpeed), "1")); // TO DO:: fix this, it only works one way
+                    SaveChangesCommand.ScreamCanExecuteChanged();
+                }
+                
+                TryNotify(ref field, value, this, nameof(SnakeSpeed));
+                if (updateStates) UpdateChangedState();
+            }
+        }
         public int StartingLength
         {
             get;
@@ -126,15 +145,6 @@ namespace SnakeGame.ViewModel
                 }
 
                 TryNotify(ref field, value, this, nameof(StartingLength));
-                if (updateStates) UpdateChangedState();
-            }
-        }
-        public Direction StartingDirection
-        {
-            get;
-            set
-            {
-                TryNotify(ref field, value, this, nameof(StartingDirection));
                 if (updateStates) UpdateChangedState();
             }
         }
@@ -183,26 +193,7 @@ namespace SnakeGame.ViewModel
             }
         }
 
-        // GENERAL
-        public int SnakeSpeed
-        {
-            get;
-            set
-            {
-                ClearErrors(nameof(SnakeSpeed));
-                
-                var result = Validation.Int(value, 1, 100); // TO DO:: name magic numbers later
-                
-                if (result != ValidationResult.Valid)
-                {
-                    AddError(nameof(SnakeSpeed), GetErrorMessage(result, nameof(SnakeSpeed), "1")); // TO DO:: fix this, it only works one way
-                    SaveChangesCommand.ScreamCanExecuteChanged();
-                }
-                
-                TryNotify(ref field, value, this, nameof(SnakeSpeed));
-                if (updateStates) UpdateChangedState();
-            }
-        }
+        // FOOD
         public int MaxActiveFoods
         {
             get;
@@ -289,16 +280,15 @@ namespace SnakeGame.ViewModel
 
             // SNAKE
             this.StartingLength = OGSettings.Snake.StartingLength;
-            this.StartingDirection = OGSettings.Snake.StartingDirection;
 
             // GRID
             this.Rows = OGSettings.Grid.Rows;
             this.Columns = OGSettings.Grid.Columns;
 
             // GENERAL
-            this.SnakeSpeed = OGSettings.General.SnakeSpeed;
-            this.MaxActiveFoods = OGSettings.General.MaxActiveFoods;
-            this.FoodSpawnFreq = OGSettings.General.FoodSpawnFreq;
+            this.SnakeSpeed = OGSettings.Snake.Speed;
+            this.MaxActiveFoods = OGSettings.Food.MaxActiveFoods;
+            this.FoodSpawnFreq = OGSettings.Food.FoodSpawnFreq;
 
             // THEME
             this.SnakeHeadColor = OGSettings.Theme.SnakeHeadColor;
@@ -311,16 +301,15 @@ namespace SnakeGame.ViewModel
         {
             // SNAKE
             OGSettings.Snake.StartingLength = this.StartingLength;
-            OGSettings.Snake.StartingDirection = this.StartingDirection;
+            OGSettings.Snake.Speed = this.SnakeSpeed;
 
             // GRID
             OGSettings.Grid.Rows = this.Rows;
             OGSettings.Grid.Columns = this.Columns;
 
             // GENERAL
-            OGSettings.General.SnakeSpeed = this.SnakeSpeed;
-            OGSettings.General.MaxActiveFoods = this.MaxActiveFoods;
-            OGSettings.General.FoodSpawnFreq = this.FoodSpawnFreq;
+            OGSettings.Food.MaxActiveFoods = this.MaxActiveFoods;
+            OGSettings.Food.FoodSpawnFreq = this.FoodSpawnFreq;
 
             // THEME
             OGSettings.Theme.SnakeHeadColor = SnakeHeadColor;
@@ -334,16 +323,15 @@ namespace SnakeGame.ViewModel
 
             // SNAKE
             this.StartingLength = Settings.SnakeSettings.DefStartingLength;
-            this.StartingDirection = Settings.SnakeSettings.DefStartDirection;
+            this.SnakeSpeed = Settings.SnakeSettings.DefSpeed;
 
             // GRID
             this.Rows = Settings.GridSettings.DefRows;
             this.Columns = Settings.GridSettings.DefColumns;
 
-            // GENERAL
-            this.SnakeSpeed = Settings.GeneralSettings.DefSnakeSpeed;
-            this.MaxActiveFoods = Settings.GeneralSettings.DefMaxFoods;
-            this.FoodSpawnFreq = Settings.GeneralSettings.DefFoodSpawnFreq;
+            // FOOD
+            this.MaxActiveFoods = Settings.FoodSettings.DefMaxFoods;
+            this.FoodSpawnFreq = Settings.FoodSettings.DefFoodSpawnFreq;
 
             // THEME
             this.SnakeBodyColor = Settings.ThemeSettings.DefSnakeBodyColor;
@@ -440,14 +428,13 @@ namespace SnakeGame.ViewModel
         {
             // SNAKE
             [nameof(StartingLength)] = [],
-            [nameof(StartingDirection)] = [],
+            [nameof(SnakeSpeed)] = [],
 
             // GRID
             [nameof(Rows)] = [],
             [nameof(Columns)] = [],
 
             // GENERAL
-            [nameof(SnakeSpeed)] = [],
             [nameof(MaxActiveFoods)] = [],
             [nameof(FoodSpawnFreq)] = [],
 

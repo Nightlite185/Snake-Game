@@ -17,7 +17,7 @@ namespace SnakeGame.Model
                 field = value;
             }
         } = 0;
-        public FoodPool(Settings.GeneralSettings cfg)
+        public FoodPool(Settings.FoodSettings cfg)
         {
             int maxPoolCap = cfg.MaxActiveFoods + 1;
 

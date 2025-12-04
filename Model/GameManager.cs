@@ -4,8 +4,8 @@ namespace SnakeGame.Model
     {
         public GameManager(Settings cfg, GameState GS)
         {
-            InitGameObjects(cfg, GS);
             InitFields(cfg);
+            InitGameObjects(cfg, GS);
         }
         #region ViewModel public API
         public event Action? OnScoreChange;
@@ -35,7 +35,7 @@ namespace SnakeGame.Model
         // snake
         private int MaxSnakeLength;
 
-        //Food
+        // food
         private int FoodSpawningFrequency;
         private int MaxActiveFoods;
         #endregion
@@ -171,25 +171,38 @@ namespace SnakeGame.Model
         }
         private void InitFields(Settings cfg)
         {
-            QueuedDirection = cfg.Snake.StartingDirection;
+            QueuedDirection = GetStartingDir(cfg.Grid);
             MaxSnakeLength = cfg.Grid.Rows * cfg.Grid.Columns;
             MaxScore = MaxSnakeLength - cfg.Snake.StartingLength;
 
-            FoodSpawningFrequency = InvertFoodFreq(cfg.General.FoodSpawnFreq);
+            FoodSpawningFrequency = InvertFoodFreq(cfg.Food.FoodSpawnFreq);
             
-            MaxActiveFoods = cfg.General.MaxActiveFoods;
-            TickLength = SpeedToTick(cfg.General.SnakeSpeed);
+            MaxActiveFoods = cfg.Food.MaxActiveFoods;
+            TickLength = SpeedToTick(cfg.Snake.Speed);
         }
         private int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
         private int SpeedToTick(int speed) => 550 - (speed * 5);
+        private static Direction GetStartingDir(Settings.GridSettings s)
+        {
+            Direction[] temp = [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
+            /* Ik what you're gonna say, "you already have an enum so why make an array if you can
+            just rearrange the order to fit this situation, right?" well.. no, bc this exact order
+            is needed in other place in the game so it would break the logic if I reorder it for sth
+            so trivial as randomly choosing a starting dir in here lol. */
+
+            if (s.Rows > s.Columns)
+                return temp[rand.Next(0,1)];
+            
+            return temp[rand.Next(2,3)];
+        }
         private void InitGameObjects(Settings cfg, GameState gs)
         {
             Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
 
             State = gs;
             Grid = new(cfg.Grid);
-            Snake = new(cfg.Snake, snakeStartingCoords);
-            FoodPool = new(cfg.General);
+            Snake = new(cfg.Snake, snakeStartingCoords, QueuedDirection);
+            FoodPool = new(cfg.Food);
         }
         #endregion
     }
