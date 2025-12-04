@@ -16,8 +16,11 @@
 
             return ValidationResult.Valid;
         }
-        public static ValidationResult Int(int input, (int min, int max) bounds)
+        public static ValidationResult Int(int input, (double min, double max) bounds)
         {
+            //if (input == null || !int.TryParse(input, out int value))
+            //    return ValidationResult.NullOrEmpty;
+
             if (input < bounds.min)
                 return ValidationResult.ValueTooLow;
 

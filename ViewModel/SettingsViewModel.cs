@@ -101,7 +101,7 @@ namespace SnakeGame.ViewModel
             }
         }
         private bool isOGDefault = false;
-        private bool updateStates;
+        private bool liveBinding;
         private Settings OGSettings { get; set; }
         #endregion
 
@@ -116,12 +116,16 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(SnakeSpeed);
                 var bounds = (Settings.SnakeSettings.MinSpeed, Settings.SnakeSettings.MaxSpeed);
-                var result = Validation.Int(value, bounds);
-
-                ValidationHelper(propName, result, bounds);
 
                 TryNotify(ref field, value, this, propName);
-                if (updateStates) UpdateChangedState();
+                
+                if (liveBinding)
+                {
+                    var result = Validation.Int(value, bounds);
+
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
         public int StartingLength
@@ -131,12 +135,16 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(StartingLength);
                 var bounds = (Settings.SnakeSettings.MinStartLength, MaxSnakeStartLength);
-                var result = Validation.Int(value, bounds);
-
-                ValidationHelper(propName, result, bounds);
 
                 TryNotify(ref field, value, this, propName);
-                if (updateStates) UpdateChangedState();
+                
+                if (liveBinding)
+                {
+                    var result = Validation.Int(value, bounds);
+
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
 
@@ -148,13 +156,17 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(Rows);
                 var bounds = (Settings.GridSettings.MinGridAny, Settings.GridSettings.MaxGridAny);
-                var result = Validation.Int(value, bounds);
                 string[] toNotify = [nameof(Rows), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
 
-                ValidationHelper(propName, result, bounds);
-                
                 TryNotify(ref field, value, this, toNotify);
-                if (updateStates) UpdateChangedState();
+                
+                if (liveBinding) 
+                {
+                    var result = Validation.Int(value, bounds);
+
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
         public int Columns
@@ -164,13 +176,17 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(Columns);
                 var bounds = (Settings.GridSettings.MinGridAny, Settings.GridSettings.MaxGridAny);
-                var result = Validation.Int(value, bounds);
                 string[] toNotify = [nameof(Columns), nameof(MaxChoosableMaxActiveFoods), nameof(MaxSnakeStartLength)];
 
-                ValidationHelper(propName, result, bounds);
-
                 TryNotify(ref field, value, this, toNotify);
-                if (updateStates) UpdateChangedState();
+
+                if (liveBinding) 
+                {
+                    var result = Validation.Int(value, bounds);
+
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
 
@@ -182,12 +198,16 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(MaxActiveFoods);
                 var bounds = (Settings.FoodSettings.MinActiveFoodsLimit, MaxChoosableMaxActiveFoods);
-                var result = Validation.Int(value, bounds);
-
-                ValidationHelper(propName, result, bounds);
 
                 TryNotify(ref field, value, this, propName);
-                if (updateStates) UpdateChangedState();
+
+                if (liveBinding) 
+                {
+                    var result = Validation.Int(value, bounds);
+
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
         public int MaxChoosableMaxActiveFoods => Rows * Columns;
@@ -198,12 +218,16 @@ namespace SnakeGame.ViewModel
             {
                 string propName = nameof(FoodSpawnFreq);
                 var bounds = (Settings.FoodSettings.MinFoodFreq, Settings.FoodSettings.MaxFoodFreq);
-                var result = Validation.Int(value, bounds);
-
-                ValidationHelper(propName, result, bounds);
 
                 TryNotify(ref field, value, this, propName);
-                if (updateStates) UpdateChangedState();
+                
+                if (liveBinding) 
+                {
+                    var result = Validation.Int(value, bounds);
+                    
+                    UpdateChangedState();
+                    ValidationHelper(propName, result, bounds);
+                }
             }
         }
 
@@ -214,7 +238,7 @@ namespace SnakeGame.ViewModel
             set
             {
                 TryNotify(ref field, value, this, nameof(SnakeHeadColor));
-                if (updateStates) UpdateChangedState();
+                if (liveBinding) UpdateChangedState();
             }
         } 
         public Color? SnakeBodyColor
@@ -223,7 +247,7 @@ namespace SnakeGame.ViewModel
             set
             {
                 TryNotify(ref field, value, this, nameof(SnakeBodyColor));
-                if (updateStates) UpdateChangedState();
+                if (liveBinding) UpdateChangedState();
             }
         }
         public Color? BackgroundColor
@@ -232,7 +256,7 @@ namespace SnakeGame.ViewModel
             set
             {
                 TryNotify(ref field, value, this, nameof(BackgroundColor));
-                if (updateStates) UpdateChangedState();
+                if (liveBinding) UpdateChangedState();
             }
         }
         public Color? FoodColor
@@ -241,7 +265,7 @@ namespace SnakeGame.ViewModel
             set
             {
                 TryNotify(ref field, value, this, nameof(FoodColor));
-                if (updateStates) UpdateChangedState();
+                if (liveBinding) UpdateChangedState();
             }
         }
         #endregion
@@ -249,17 +273,17 @@ namespace SnakeGame.ViewModel
         #region LOAD / SAVE METHODS
         private void LoadFromOG()
         {
-            updateStates = false;
+            liveBinding = false;
 
             // SNAKE
             this.StartingLength = OGSettings.Snake.StartingLength;
+            this.SnakeSpeed = OGSettings.Snake.Speed;
 
             // GRID
             this.Rows = OGSettings.Grid.Rows;
             this.Columns = OGSettings.Grid.Columns;
 
             // GENERAL
-            this.SnakeSpeed = OGSettings.Snake.Speed;
             this.MaxActiveFoods = OGSettings.Food.MaxActiveFoods;
             this.FoodSpawnFreq = OGSettings.Food.FoodSpawnFreq;
 
@@ -269,7 +293,7 @@ namespace SnakeGame.ViewModel
             this.BackgroundColor = OGSettings.Theme.BackgroundColor;
             this.FoodColor = OGSettings.Theme.FoodColor;
 
-            updateStates = true;
+            liveBinding = true;
         }
         private void SaveToOG()
         {
@@ -293,7 +317,7 @@ namespace SnakeGame.ViewModel
         }
         private void DraftToDefault()
         {
-            updateStates = false;
+            liveBinding = false;
 
             // SNAKE
             this.StartingLength = Settings.SnakeSettings.DefStartingLength;
@@ -313,7 +337,7 @@ namespace SnakeGame.ViewModel
             this.BackgroundColor = Settings.ThemeSettings.DefBackgroundColor;
             this.FoodColor = Settings.ThemeSettings.DefFoodColor;
 
-            updateStates = true;
+            liveBinding = true;
         }
         private void UpdateChangedState()
         {
@@ -438,7 +462,7 @@ namespace SnakeGame.ViewModel
         #endregion
         
         private const string ForgotOtherParamMessage = "you didn't provide string for 'other' arg";
-        private static string GetErrorMessage(ValidationResult vr, string propName, (int? min, int? max) bounds, string? reason)
+        private static string GetErrorMessage(ValidationResult vr, string propName, (double? min, double? max) bounds, string? reason)
         => vr switch
         {
             ValidationResult.ValueTooLow => $"{propName} cannot be lower than {bounds.min ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}{(", because " + reason) ?? ""}.",
@@ -447,9 +471,10 @@ namespace SnakeGame.ViewModel
             
             _ => throw new InvalidOperationException("cannot get error message for valid result")
         };
-        private void ValidationHelper(string propName, ValidationResult result, (int? min, int? max) bounds, string? reason = null)
+        private void ValidationHelper(string propName, ValidationResult result, (double? min, double? max) bounds, string? reason = null)
         {
             ClearErrors(propName);
+            SaveChangesCommand.ScreamCanExecuteChanged();
 
             if (result != ValidationResult.Valid)
             {

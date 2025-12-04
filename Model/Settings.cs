@@ -60,9 +60,9 @@ namespace SnakeGame.Model
             }
             #endregion
             #region bounds
-            public const int MinStartLength = 2;
-            public const int MinSpeed = 1;
-            public const int MaxSpeed = 100;
+            public const double MinStartLength = 2; // yes, bounds need to be double bc xaml being a bitch about it and not accepting const ints for some reason
+            public const double MinSpeed = 1;
+            public const double MaxSpeed = 100;
             #endregion
             public int StartingLength { get; set; }
             public int Speed { get; set; }
@@ -79,8 +79,8 @@ namespace SnakeGame.Model
             }
             #endregion
             #region bounds
-            public const int MinGridAny = 3;
-            public const int MaxGridAny = 100;
+            public const double MinGridAny = 3;
+            public const double MaxGridAny = 100;
             #endregion
             public int Rows { get; set; }
             public int Columns { get; set; }
@@ -98,9 +98,9 @@ namespace SnakeGame.Model
             }
             #endregion
             #region bounds
-            public const int MinFoodFreq = 1;
-            public const int MaxFoodFreq = 10;
-            public const int MinActiveFoodsLimit = 1;
+            public const double MinFoodFreq = 1;
+            public const double MaxFoodFreq = 10;
+            public const double MinActiveFoodsLimit = 1;
             #endregion
             public int MaxActiveFoods { get; set; }
             public int FoodSpawnFreq { get; set; }
