@@ -1,6 +1,7 @@
 ﻿using SnakeGame.ViewModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SnakeGame.View
@@ -31,5 +32,29 @@ namespace SnakeGame.View
 
             base.OnClosing(e);
         }
+
+        private void Input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+
+            if (tb.Text.Length != 0) return;
+                
+            OnEmptyTextbox?.Invoke(GetBoundProp(tb));
+        }
+
+        private static string GetBoundProp(TextBox tb)
+        {
+            var expr = tb.GetBindingExpression(TextBox.TextProperty);
+            
+            return expr?.ParentBinding?.Path?.Path 
+                ?? throw new InvalidOperationException($"Could not get bound property name from {tb.Name}");
+        }
+
+        private void RejectIfNotDigit(object sender, TextCompositionEventArgs e)
+        {
+            if (!e.Text.All(char.IsDigit))
+                e.Handled = true;
+        }
+        public event Action<string>? OnEmptyTextbox;
     }
 }

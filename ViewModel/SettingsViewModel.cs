@@ -3,7 +3,10 @@ using SnakeGame.Model;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using Validation = SnakeGame.Helpers.Validation;
+using ValidationResult = SnakeGame.Helpers.ValidationResult;
 
 namespace SnakeGame.ViewModel
 {
@@ -481,6 +484,13 @@ namespace SnakeGame.ViewModel
                 AddError(propName, GetErrorMessage(result, propName, bounds, reason));
                 SaveChangesCommand.ScreamCanExecuteChanged();
             }   
+        }
+        public void EmptyTextboxHandler(string bindingPropName)
+        {
+            AddError(bindingPropName, "this field cannot be empty");
+
+            UpdateChangedState();
+            SaveChangesCommand.ScreamCanExecuteChanged();
         }
         public event Action? CloseWinRequest;
         public event Action? ClosePopUpRequest;

@@ -102,6 +102,7 @@ namespace SnakeGame.ViewModel
                     SettingsViewModel setVM = new(cfg);
                     var win = new OptionsWindow(setVM);
                     
+                    win.OnEmptyTextbox += setVM.EmptyTextboxHandler;
                     win.ShowDialog();
                 },
                 canExecute: () => State.Current == GameStates.NotStarted
