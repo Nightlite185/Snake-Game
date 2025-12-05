@@ -3,7 +3,6 @@ using SnakeGame.Model;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using Validation = SnakeGame.Helpers.Validation;
 using ValidationResult = SnakeGame.Helpers.ValidationResult;
@@ -52,11 +51,14 @@ namespace SnakeGame.ViewModel
         protected Dictionary<string, List<string>> activeErrors = null!;
         protected void AddError(string propertyName, string message)
         {
-            if (activeErrors.TryGetValue(propertyName, out var list) && !list.Contains(message))
+            if (activeErrors.TryGetValue(propertyName, out var list))
             {
+                if (list.Contains(message))
+                    return;
+
                 list.Add(message);
                 ErrorsChanged?.Invoke(this, new(propertyName));
-                
+
             }
 
             else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
@@ -70,6 +72,14 @@ namespace SnakeGame.ViewModel
             }
             
             else throw new ArgumentException(PropNotFoundMess, nameof(propertyName));
+        }
+        protected void ClearAllErrors()
+        {
+            foreach(var kvp in activeErrors.Where(kvp => kvp.Value.Count > 0))
+            {
+                kvp.Value.Clear();
+                ErrorsChanged?.Invoke(this, new(kvp.Key));
+            }
         }
         #endregion
     }
@@ -381,7 +391,6 @@ namespace SnakeGame.ViewModel
             ResetToDefaultCommand = new(
                 execute: () =>
                 {
-                    // TO DO:: maybe open some pop-up like "you sure u wanna reset???"
                     DraftToDefault();
 
                     IsChanged = true;
@@ -393,6 +402,7 @@ namespace SnakeGame.ViewModel
             DiscardChangesCommand = new(
                 execute: () =>
                 {
+                    ClearAllErrors();
                     LoadFromOG();
                     IsChanged = false;
 
