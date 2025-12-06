@@ -91,12 +91,6 @@ namespace SnakeGame.View
 
         private void NicknameInput_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (NicknameInput.Text.Length > 9)
-            {
-                NicknameInput.ToolTip = "Max length (9 characters) exceeded.";
-                return;
-            }
-            
             GameVM.NameEntered = NicknameInput.Text;
 
             if (string.IsNullOrWhiteSpace(NicknameInput.Text))
