@@ -474,12 +474,12 @@ namespace SnakeGame.ViewModel
         public RelayCommand CancelInPopUpCommand { get; }
         #endregion
         
-        private const string ForgotOtherParamMessage = "you didn't provide string for 'other' arg";
+        private static double ThrowForgotBounds(string propName) => throw new InvalidOperationException($"you didn't provide 'bounds' param for {propName}");
         private static string GetErrorMessage(ValidationResult vr, string propName, (double? min, double? max) bounds, string? reason)
         => vr switch
         {
-            ValidationResult.ValueTooLow => $"{propName} cannot be lower than {bounds.min ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}{(", because " + reason) ?? ""}.",
-            ValidationResult.ValueTooHigh => $"{propName} cannot be higher than {bounds.max ?? throw new InvalidOperationException($"{ForgotOtherParamMessage} for {propName}")}{(", because " + reason) ?? ""}.",
+            ValidationResult.ValueTooLow => $"{propName} cannot be lower than {bounds.min ?? ThrowForgotBounds(propName)}{reason ?? ""}.",
+            ValidationResult.ValueTooHigh => $"{propName} cannot be higher than {bounds.max ?? ThrowForgotBounds(propName)}{reason ?? ""}.",
             ValidationResult.NullOrEmpty => $"{propName} cannot be empty or whitespace",
             
             _ => throw new InvalidOperationException("cannot get error message for valid result")
