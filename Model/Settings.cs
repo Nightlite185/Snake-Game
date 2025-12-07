@@ -79,7 +79,7 @@ namespace SnakeGame.Model
             }
             #endregion
             #region bounds
-            public const double MinGridAny = 3;
+            public const double MinGridAny = 9;
             public const double MaxGridAny = 100;
             #endregion
             public int Rows { get; set; }

@@ -171,7 +171,6 @@ namespace SnakeGame.Model
         }
         private void InitFields(Settings cfg)
         {
-            QueuedDirection = GetStartingDir(cfg.Grid);
             MaxSnakeLength = cfg.Grid.Rows * cfg.Grid.Columns;
             MaxScore = MaxSnakeLength - cfg.Snake.StartingLength;
 
@@ -182,26 +181,32 @@ namespace SnakeGame.Model
         }
         private int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
         private int SpeedToTick(int speed) => 550 - (speed * 5);
-        private static Direction GetStartingDir(Settings.GridSettings s)
+        /// <summary> Determines snake's starting Coords and sets first QueuedDirection as a side effect. </summary>
+        /// <returns> starting Coords </returns>
+        private Coords GetFirstHeadPos(Settings.GridSettings g, int startingLength)
         {
-            Direction[] temp = [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
-            /* Ik what you're gonna say, "you already have an enum so why make an array if you can
-            just rearrange the order to fit this situation, right?" well.. no, bc this exact order
-            is needed in other place in the game so it would break the logic if I reorder it for sth
-            so trivial as randomly choosing a starting dir in here lol. */
+            if (startingLength <= (g.Rows - 2)) // prioritizing vertical spawn
+            {
+                QueuedDirection = Direction.Up;
+                return new Coords(g.Rows - 1 - startingLength, g.Columns / 2); // starting at bottom middle, going up
+            }
 
-            if (s.Rows > s.Columns)
-                return temp[rand.Next(0,1)];
-            
-            return temp[rand.Next(2,3)];
+            else if (startingLength <= (g.Columns - 2))
+            {
+                QueuedDirection = Direction.Right;
+                return new Coords(g.Rows / 2, startingLength); // starting at middle left, going right
+            }
+
+            // this should never happen bc of settings validation, but just in case
+            else throw new ArgumentOutOfRangeException(nameof(startingLength), "Grid is too small for given snake's starting length.");
         }
         private void InitGameObjects(Settings cfg, GameState gs)
         {
-            Coords snakeStartingCoords = new(cfg.Grid.Rows / 2, cfg.Grid.Columns / 2);
+            Coords startingPos = GetFirstHeadPos(cfg.Grid, cfg.Snake.StartingLength);
 
             State = gs;
             Grid = new(cfg.Grid);
-            Snake = new(cfg.Snake, snakeStartingCoords, QueuedDirection);
+            Snake = new(cfg.Snake, startingPos, QueuedDirection);
             FoodPool = new(cfg.Food);
         }
         #endregion
