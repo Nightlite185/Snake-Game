@@ -78,6 +78,7 @@ namespace SnakeGame.Model
             State.Start();
             int i = 0;
             OnIteration?.Invoke(); // first canvas initialization (before game loop)
+            await Task.Delay(TickLength);
 
             while (State.Current == GameStates.Running && Snake.Alive)
             {
@@ -183,18 +184,18 @@ namespace SnakeGame.Model
         private static int SpeedToTick(int speed) => 550 - (speed * 5);
         /// <summary> Determines snake's starting Coords and sets first QueuedDirection as a side effect. </summary>
         /// <returns> starting Coords </returns>
-        private Coords GetFirstHeadPos(Settings.GridSettings g, int startingLength)
+        private Coords GetFirstHeadPos(Settings.GridSettings grid, int startingLength)
         {
-            if (startingLength <= (g.Rows - 2)) // prioritizing vertical spawn
+            if (startingLength <= (grid.Rows - 3)) // prioritizing vertical spawn
             {
                 QueuedDirection = Direction.Up;
-                return new Coords(g.Rows - 1 - startingLength, g.Columns / 2); // starting at bottom middle, going up
+                return new Coords(grid.Rows - startingLength, grid.Columns / 2); // starting at bottom middle, going up
             }
 
-            else if (startingLength <= (g.Columns - 2))
+            else if (startingLength <= (grid.Columns - 3))
             {
                 QueuedDirection = Direction.Right;
-                return new Coords(g.Rows / 2, startingLength); // starting at middle left, going right
+                return new Coords(grid.Rows / 2, startingLength - 1); // starting at middle left, going right
             }
 
             // this should never happen bc of settings validation, but just in case

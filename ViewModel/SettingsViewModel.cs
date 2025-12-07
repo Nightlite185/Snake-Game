@@ -121,7 +121,7 @@ namespace SnakeGame.ViewModel
         #region UI SETTINGS BINDING PROPERTIES
 
         // SNAKE 
-        public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 2;
+        public int MaxSnakeStartLength => Math.Max(Rows, Columns) - 3;
         public int SnakeSpeed
         {
             get;
