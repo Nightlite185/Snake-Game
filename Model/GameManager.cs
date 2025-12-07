@@ -179,8 +179,8 @@ namespace SnakeGame.Model
             MaxActiveFoods = cfg.Food.MaxActiveFoods;
             TickLength = SpeedToTick(cfg.Snake.Speed);
         }
-        private int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
-        private int SpeedToTick(int speed) => 550 - (speed * 5);
+        private static int InvertFoodFreq(int wrong) => Math.Max(10 - wrong, 1);
+        private static int SpeedToTick(int speed) => 550 - (speed * 5);
         /// <summary> Determines snake's starting Coords and sets first QueuedDirection as a side effect. </summary>
         /// <returns> starting Coords </returns>
         private Coords GetFirstHeadPos(Settings.GridSettings g, int startingLength)
